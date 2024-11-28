@@ -1,4 +1,4 @@
-module github.com/opengovern/og-describer-template
+module github.com/opengovern/og-describer-linode
 
 go 1.22.0
 

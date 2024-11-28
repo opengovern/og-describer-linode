@@ -1,8 +1,8 @@
 package provider
 
 import (
-	model "github.com/opengovern/og-describer-template/pkg/sdk/models"
-	"github.com/opengovern/og-describer-template/provider/configs"
+	model "github.com/opengovern/og-describer-linode/pkg/sdk/models"
+	"github.com/opengovern/og-describer-linode/provider/configs"
 	"github.com/opengovern/og-util/pkg/describe/enums"
 	"golang.org/x/net/context"
 )

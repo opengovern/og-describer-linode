@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/opengovern/og-describer-template/provider/configs"
+	"github.com/opengovern/og-describer-linode/provider/configs"
 	"os"
 	"sort"
 	"strings"
