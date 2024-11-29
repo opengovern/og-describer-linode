@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
+func ListIPAddresses(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
@@ -20,7 +20,7 @@ func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *mo
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processStackScripts(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processIPAddresses(ctx, handler, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -46,26 +46,26 @@ func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *mo
 	}
 }
 
-func GetStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
-	stackScript, err := processStackScript(ctx, handler, resourceID)
+func GetIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
+	ipAddress, err := processIPAddress(ctx, handler, resourceID)
 	if err != nil {
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(stackScript.ID),
-		Name: stackScript.Label,
+		ID:   ipAddress.Address,
+		Name: ipAddress.Address,
 		Description: JSONAllFieldsMarshaller{
-			Value: stackScript,
+			Value: ipAddress,
 		},
 	}
 	return &value, nil
 }
 
-func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var stackScripts []model.StackScriptDescription
-	var stackScriptListResponse *model.StackScriptListResponse
+func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+	var ipAddresses []model.IPAddressDescription
+	var ipAddressListResponse *model.IPAddressListResponse
 	var resp *http.Response
-	baseURL := "https://api.linode.com/v4/linode/stackscripts"
+	baseURL := "https://api.linode.com/v4/networking/ips"
 	page := 1
 
 	for {
@@ -87,10 +87,10 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 			}
 			defer resp.Body.Close()
 
-			if e = json.NewDecoder(resp.Body).Decode(&stackScriptListResponse); e != nil {
+			if e = json.NewDecoder(resp.Body).Decode(&ipAddressListResponse); e != nil {
 				return nil, fmt.Errorf("failed to decode response: %w", e)
 			}
-			stackScripts = append(stackScripts, stackScriptListResponse.Data...)
+			ipAddresses = append(ipAddresses, ipAddressListResponse.Data...)
 			return resp, nil
 		}
 
@@ -99,33 +99,33 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 			return fmt.Errorf("error during request handling: %w", err)
 		}
 
-		if stackScriptListResponse.Page == stackScriptListResponse.Pages {
+		if ipAddressListResponse.Page == ipAddressListResponse.Pages {
 			break
 		}
 		page++
 	}
 
-	for _, stackScript := range stackScripts {
+	for _, ipAddress := range ipAddresses {
 		wg.Add(1)
-		go func(stackScript model.StackScriptDescription) {
+		go func(ipAddress model.IPAddressDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   strconv.Itoa(stackScript.ID),
-				Name: stackScript.Label,
+				ID:   ipAddress.Address,
+				Name: ipAddress.Address,
 				Description: JSONAllFieldsMarshaller{
-					Value: stackScript,
+					Value: ipAddress,
 				},
 			}
 			openaiChan <- value
-		}(stackScript)
+		}(ipAddress)
 	}
 	return nil
 }
 
-func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.StackScriptDescription, error) {
-	var stackScript *model.StackScriptDescription
+func processIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.IPAddressDescription, error) {
+	var ipAddress *model.IPAddressDescription
 	var resp *http.Response
-	baseURL := "https://api.linode.com/v4/linode/stackscripts/"
+	baseURL := "https://api.linode.com/v4/networking/ips/"
 
 	finalURL := fmt.Sprintf("%s%s", baseURL, resourceID)
 	req, err := http.NewRequest("GET", finalURL, nil)
@@ -140,7 +140,7 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
 
-		if e = json.NewDecoder(resp.Body).Decode(stackScript); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(ipAddress); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +150,5 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return stackScript, nil
+	return ipAddress, nil
 }

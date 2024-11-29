@@ -49,6 +49,7 @@ func ListDatabases(ctx context.Context, handler *LinodeAPIHandler, stream *model
 func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var databases []model.DatabaseDescription
 	var databaseListResponse *model.DatabaseListResponse
+	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/databases/instances"
 	page := 1
 
@@ -64,14 +65,15 @@ func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 		}
 
 		requestFunc := func(req *http.Request) (*http.Response, error) {
-			resp, err := handler.Client.Do(req)
-			if err != nil {
-				return nil, fmt.Errorf("request execution failed: %w", err)
+			var e error
+			resp, e = handler.Client.Do(req)
+			if e != nil {
+				return nil, fmt.Errorf("request execution failed: %w", e)
 			}
 			defer resp.Body.Close()
 
-			if err := json.NewDecoder(resp.Body).Decode(&databaseListResponse); err != nil {
-				return nil, fmt.Errorf("failed to decode response: %w", err)
+			if e = json.NewDecoder(resp.Body).Decode(&databaseListResponse); e != nil {
+				return nil, fmt.Errorf("failed to decode response: %w", e)
 			}
 			databases = append(databases, databaseListResponse.Data...)
 			return resp, nil

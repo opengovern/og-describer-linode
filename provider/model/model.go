@@ -377,3 +377,84 @@ type StackScriptDescription struct {
 	UserDefinedFields *[]StackScriptUDF `json:"user_defined_fields"`
 	UserGravatarID    string            `json:"user_gravatar_id"`
 }
+
+type VolumeListResponse struct {
+	Data  []VolumeDescription `json:"data"`
+	Page  int                 `json:"page"`
+	Pages int                 `json:"pages"`
+}
+
+type VolumeDescription struct {
+	ID             int        `json:"id"`
+	Label          string     `json:"label"`
+	Status         string     `json:"status"`
+	Region         string     `json:"region"`
+	Size           int        `json:"size"`
+	LinodeID       *int       `json:"linode_id"`
+	FilesystemPath string     `json:"filesystem_path"`
+	Tags           []string   `json:"tags"`
+	Created        *time.Time `json:"created"`
+	Updated        *time.Time `json:"updated"`
+	Encryption     string     `json:"encryption"`
+}
+
+type VPCSubnetLinodeInterface struct {
+	ID     int  `json:"id"`
+	Active bool `json:"active"`
+}
+
+type VPCSubnetLinode struct {
+	ID         int                        `json:"id"`
+	Interfaces []VPCSubnetLinodeInterface `json:"interfaces"`
+}
+
+type VPCSubnet struct {
+	ID      int               `json:"id"`
+	Label   string            `json:"label"`
+	IPv4    string            `json:"ipv4"`
+	Linodes []VPCSubnetLinode `json:"linodes"`
+	Created *time.Time        `json:"created"`
+	Updated *time.Time        `json:"updated"`
+}
+
+type VPCListResponse struct {
+	Data  []VPCDescription `json:"data"`
+	Page  int              `json:"page"`
+	Pages int              `json:"pages"`
+}
+
+type VPCDescription struct {
+	ID          int         `json:"id"`
+	Label       string      `json:"label"`
+	Description string      `json:"description"`
+	Region      string      `json:"region"`
+	Subnets     []VPCSubnet `json:"subnets"`
+	Created     *time.Time  `json:"created"`
+	Updated     *time.Time  `json:"updated"`
+}
+
+type InstanceIPNAT1To1 struct {
+	Address  string `json:"address"`
+	SubnetID int    `json:"subnet_id"`
+	VPCID    int    `json:"vpc_id"`
+}
+
+type IPAddressListResponse struct {
+	Data  []IPAddressDescription `json:"data"`
+	Page  int                    `json:"page"`
+	Pages int                    `json:"pages"`
+}
+
+type IPAddressDescription struct {
+	Address    string             `json:"address"`
+	Gateway    string             `json:"gateway"`
+	SubnetMask string             `json:"subnet_mask"`
+	Prefix     int                `json:"prefix"`
+	Type       string             `json:"type"`
+	Public     bool               `json:"public"`
+	RDNS       string             `json:"rdns"`
+	LinodeID   int                `json:"linode_id"`
+	Region     string             `json:"region"`
+	VPCNAT1To1 *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
+	Reserved   bool               `json:"reserved"`
+}

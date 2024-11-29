@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
+func ListVPCs(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
@@ -20,7 +20,7 @@ func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *mo
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processStackScripts(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processVPCs(ctx, handler, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -46,26 +46,26 @@ func ListStackScripts(ctx context.Context, handler *LinodeAPIHandler, stream *mo
 	}
 }
 
-func GetStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
-	stackScript, err := processStackScript(ctx, handler, resourceID)
+func GetVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
+	vpc, err := processVPC(ctx, handler, resourceID)
 	if err != nil {
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(stackScript.ID),
-		Name: stackScript.Label,
+		ID:   strconv.Itoa(vpc.ID),
+		Name: vpc.Label,
 		Description: JSONAllFieldsMarshaller{
-			Value: stackScript,
+			Value: vpc,
 		},
 	}
 	return &value, nil
 }
 
-func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var stackScripts []model.StackScriptDescription
-	var stackScriptListResponse *model.StackScriptListResponse
+func processVPCs(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+	var vpcs []model.VPCDescription
+	var vpcListResponse *model.VPCListResponse
 	var resp *http.Response
-	baseURL := "https://api.linode.com/v4/linode/stackscripts"
+	baseURL := "https://api.linode.com/v4/vpcs"
 	page := 1
 
 	for {
@@ -87,10 +87,10 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 			}
 			defer resp.Body.Close()
 
-			if e = json.NewDecoder(resp.Body).Decode(&stackScriptListResponse); e != nil {
+			if e = json.NewDecoder(resp.Body).Decode(&vpcListResponse); e != nil {
 				return nil, fmt.Errorf("failed to decode response: %w", e)
 			}
-			stackScripts = append(stackScripts, stackScriptListResponse.Data...)
+			vpcs = append(vpcs, vpcListResponse.Data...)
 			return resp, nil
 		}
 
@@ -99,33 +99,32 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 			return fmt.Errorf("error during request handling: %w", err)
 		}
 
-		if stackScriptListResponse.Page == stackScriptListResponse.Pages {
+		if vpcListResponse.Page == vpcListResponse.Pages {
 			break
 		}
 		page++
 	}
-
-	for _, stackScript := range stackScripts {
+	for _, vpc := range vpcs {
 		wg.Add(1)
-		go func(stackScript model.StackScriptDescription) {
+		go func(vpc model.VPCDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   strconv.Itoa(stackScript.ID),
-				Name: stackScript.Label,
+				ID:   strconv.Itoa(vpc.ID),
+				Name: vpc.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: stackScript,
+					Value: vpc,
 				},
 			}
 			openaiChan <- value
-		}(stackScript)
+		}(vpc)
 	}
 	return nil
 }
 
-func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.StackScriptDescription, error) {
-	var stackScript *model.StackScriptDescription
+func processVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.VPCDescription, error) {
+	var vpc *model.VPCDescription
 	var resp *http.Response
-	baseURL := "https://api.linode.com/v4/linode/stackscripts/"
+	baseURL := "https://api.linode.com/v4/vpcs/"
 
 	finalURL := fmt.Sprintf("%s%s", baseURL, resourceID)
 	req, err := http.NewRequest("GET", finalURL, nil)
@@ -140,7 +139,7 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
 
-		if e = json.NewDecoder(resp.Body).Decode(stackScript); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(vpc); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +149,5 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return stackScript, nil
+	return vpc, nil
 }

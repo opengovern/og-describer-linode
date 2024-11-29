@@ -15,22 +15,35 @@ import (
 func ListNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
+	errorChan := make(chan error, 1) // Buffered channel to capture errors
+
 	go func() {
-		processNodeBalancers(ctx, handler, linodeChan, &wg)
+		defer close(linodeChan)
+		defer close(errorChan)
+		if err := processNodeBalancers(ctx, handler, linodeChan, &wg); err != nil {
+			errorChan <- err // Send error to the error channel
+		}
 		wg.Wait()
-		close(linodeChan)
 	}()
+
 	var values []models.Resource
-	for value := range linodeChan {
-		if stream != nil {
-			if err := (*stream)(value); err != nil {
-				return nil, err
+	for {
+		select {
+		case value, ok := <-linodeChan:
+			if !ok {
+				return values, nil
 			}
-		} else {
-			values = append(values, value)
+			if stream != nil {
+				if err := (*stream)(value); err != nil {
+					return nil, err
+				}
+			} else {
+				values = append(values, value)
+			}
+		case err := <-errorChan:
+			return nil, err
 		}
 	}
-	return values, nil
 }
 
 func GetNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
@@ -52,39 +65,50 @@ func GetNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 	return &value, nil
 }
 
-func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) {
+func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var nodeBalancers []model.NodeBalancerDescription
 	var nodeBalancerListResponse *model.NodeBalancerListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers"
-	requestFunc := func(req *http.Request) (*http.Response, error) {
-		var e error
-		page := 1
-		for {
-			params := url.Values{}
-			params.Set("page", strconv.Itoa(page))
-			params.Set("page_size", "500")
-			finalURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
-			req, e = http.NewRequest("GET", finalURL, nil)
-			if e != nil {
-				return nil, e
-			}
+	page := 1
+
+	for {
+		params := url.Values{}
+		params.Set("page", strconv.Itoa(page))
+		params.Set("page_size", "500")
+		finalURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+
+		req, err := http.NewRequest("GET", finalURL, nil)
+		if err != nil {
+			return fmt.Errorf("failed to create request: %w", err)
+		}
+
+		requestFunc := func(req *http.Request) (*http.Response, error) {
+			var e error
 			resp, e = handler.Client.Do(req)
+			if e != nil {
+				return nil, fmt.Errorf("request execution failed: %w", e)
+			}
+			defer resp.Body.Close()
+
 			if e = json.NewDecoder(resp.Body).Decode(&nodeBalancerListResponse); e != nil {
-				return nil, e
+				return nil, fmt.Errorf("failed to decode response: %w", e)
 			}
 			nodeBalancers = append(nodeBalancers, nodeBalancerListResponse.Data...)
-			if nodeBalancerListResponse.Page == nodeBalancerListResponse.Pages {
-				break
-			}
-			page += 1
+			return resp, nil
 		}
-		return resp, e
+
+		err = handler.DoRequest(ctx, req, requestFunc)
+		if err != nil {
+			return fmt.Errorf("error during request handling: %w", err)
+		}
+
+		if nodeBalancerListResponse.Page == nodeBalancerListResponse.Pages {
+			break
+		}
+		page++
 	}
-	err := handler.DoRequest(ctx, &http.Request{}, requestFunc)
-	if err != nil {
-		return
-	}
+
 	for _, nodeBalancer := range nodeBalancers {
 		wg.Add(1)
 		go func(nodeBalancer model.NodeBalancerDescription) {
@@ -103,28 +127,36 @@ func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openai
 			openaiChan <- value
 		}(nodeBalancer)
 	}
+	return nil
 }
 
 func processNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.NodeBalancerDescription, error) {
 	var nodeBalancer *model.NodeBalancerDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers/"
+
+	finalURL := fmt.Sprintf("%s%s", baseURL, resourceID)
+	req, err := http.NewRequest("GET", finalURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
 	requestFunc := func(req *http.Request) (*http.Response, error) {
 		var e error
-		finalURL := fmt.Sprintf("%s%s", baseURL, resourceID)
-		req, e = http.NewRequest("GET", finalURL, nil)
-		if e != nil {
-			return nil, e
-		}
 		resp, e = handler.Client.Do(req)
+		if e != nil {
+			return nil, fmt.Errorf("request execution failed: %w", e)
+		}
+
 		if e = json.NewDecoder(resp.Body).Decode(nodeBalancer); e != nil {
-			return nil, e
+			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
 	}
-	err := handler.DoRequest(ctx, &http.Request{}, requestFunc)
+
+	err = handler.DoRequest(ctx, req, requestFunc)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
 	return nodeBalancer, nil
 }
