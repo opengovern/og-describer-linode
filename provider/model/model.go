@@ -5,6 +5,8 @@
 package model
 
 import (
+	"github.com/linode/linodego"
+	"net"
 	"time"
 )
 
@@ -135,4 +137,160 @@ type EventDescription struct {
 	Created         *time.Time   `json:"created"`
 	Message         string       `json:"message"`
 	Duration        float64      `json:"duration"`
+}
+
+type InstanceAlert struct {
+	CPU           int `json:"cpu"`
+	IO            int `json:"io"`
+	NetworkIn     int `json:"network_in"`
+	NetworkOut    int `json:"network_out"`
+	TransferQuota int `json:"transfer_quota"`
+}
+
+type InstanceBackup struct {
+	Available bool `json:"available,omitempty"`
+	Enabled   bool `json:"enabled,omitempty"`
+	Schedule  struct {
+		Day    string `json:"day,omitempty"`
+		Window string `json:"window,omitempty"`
+	} `json:"schedule,omitempty"`
+}
+
+type InstanceSpec struct {
+	Disk     int `json:"disk"`
+	Memory   int `json:"memory"`
+	VCPUs    int `json:"vcpus"`
+	Transfer int `json:"transfer"`
+	GPUs     int `json:"gpus"`
+}
+
+type InstancePlacementGroup struct {
+	ID                   int    `json:"id"`
+	Label                string `json:"label"`
+	PlacementGroupType   string `json:"placement_group_type"`
+	PlacementGroupPolicy string `json:"placement_group_policy"`
+}
+
+type LinodeListResponse struct {
+	Data  []LinodeDescription `json:"data"`
+	Page  int                 `json:"page"`
+	Pages int                 `json:"pages"`
+}
+
+type LinodeDescription struct {
+	ID              int                     `json:"id"`
+	Created         *time.Time              `json:"-"`
+	Updated         *time.Time              `json:"-"`
+	Region          string                  `json:"region"`
+	Alerts          *InstanceAlert          `json:"alerts"`
+	Backups         *InstanceBackup         `json:"backups"`
+	Image           string                  `json:"image"`
+	Group           string                  `json:"group"`
+	IPv4            []*net.IP               `json:"ipv4"`
+	IPv6            string                  `json:"ipv6"`
+	Label           string                  `json:"label"`
+	Type            string                  `json:"type"`
+	Status          string                  `json:"status"`
+	HasUserData     bool                    `json:"has_user_data"`
+	Hypervisor      string                  `json:"hypervisor"`
+	HostUUID        string                  `json:"host_uuid"`
+	Specs           *InstanceSpec           `json:"specs"`
+	WatchdogEnabled bool                    `json:"watchdog_enabled"`
+	Tags            []string                `json:"tags"`
+	PlacementGroup  *InstancePlacementGroup `json:"placement_group"`
+	DiskEncryption  string                  `json:"disk_encryption"`
+	LKEClusterID    int                     `json:"lke_cluster_id"`
+	Capabilities    []string                `json:"capabilities"`
+}
+
+type NetworkAddresses struct {
+	IPv4 *[]string `json:"ipv4,omitempty"`
+	IPv6 *[]string `json:"ipv6,omitempty"`
+}
+
+type FirewallRule struct {
+	Action      string           `json:"action"`
+	Label       string           `json:"label"`
+	Description string           `json:"description,omitempty"`
+	Ports       string           `json:"ports,omitempty"`
+	Protocol    string           `json:"protocol"`
+	Addresses   NetworkAddresses `json:"addresses"`
+}
+
+type FirewallRuleSet struct {
+	Inbound        []FirewallRule `json:"inbound"`
+	InboundPolicy  string         `json:"inbound_policy"`
+	Outbound       []FirewallRule `json:"outbound"`
+	OutboundPolicy string         `json:"outbound_policy"`
+}
+
+type FirewallListResponse struct {
+	Data  []FirewallDescription `json:"data"`
+	Page  int                   `json:"page"`
+	Pages int                   `json:"pages"`
+}
+
+type FirewallDescription struct {
+	ID      int             `json:"id"`
+	Label   string          `json:"label"`
+	Status  string          `json:"status"`
+	Tags    []string        `json:"tags,omitempty"`
+	Rules   FirewallRuleSet `json:"rules"`
+	Created *time.Time      `json:"created"`
+	Updated *time.Time      `json:"updated"`
+}
+
+type ImageRegion struct {
+	Region string `json:"region"`
+	Status string `json:"status"`
+}
+
+type ImageListResponse struct {
+	Data  []ImageDescription `json:"data"`
+	Page  int                `json:"page"`
+	Pages int                `json:"pages"`
+}
+
+type ImageDescription struct {
+	ID           string        `json:"id"`
+	CreatedBy    string        `json:"created_by"`
+	Capabilities []string      `json:"capabilities"`
+	Label        string        `json:"label"`
+	Description  string        `json:"description"`
+	Type         string        `json:"type"`
+	Vendor       string        `json:"vendor"`
+	Status       string        `json:"status"`
+	Size         int           `json:"size"`
+	TotalSize    int           `json:"total_size"`
+	IsPublic     bool          `json:"is_public"`
+	Deprecated   bool          `json:"deprecated"`
+	Regions      []ImageRegion `json:"regions"`
+	Tags         []string      `json:"tags"`
+	Updated      *time.Time    `json:"updated"`
+	Created      *time.Time    `json:"created"`
+	Expiry       *time.Time    `json:"expiry"`
+	EOL          *time.Time    `json:"eol"`
+}
+
+type LKEClusterControlPlane struct {
+	HighAvailability bool `json:"high_availability"`
+}
+
+type KubernetesClusterListResponse struct {
+	Data  []KubernetesClusterDescription `json:"data"`
+	Page  int                            `json:"page"`
+	Pages int                            `json:"pages"`
+}
+
+type KubernetesClusterDescription struct {
+	linodego.LKECluster
+	ID           int                    `json:"id"`
+	Created      *time.Time             `json:"-"`
+	Updated      *time.Time             `json:"-"`
+	Label        string                 `json:"label"`
+	Region       string                 `json:"region"`
+	Status       string                 `json:"status"`
+	K8sVersion   string                 `json:"k8s_version"`
+	Tags         []string               `json:"tags"`
+	ControlPlane LKEClusterControlPlane `json:"control_plane"`
 }

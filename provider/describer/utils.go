@@ -2,10 +2,13 @@ package describer
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/opengovern/og-describer-linode/provider/model"
 	"golang.org/x/time/rate"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -28,6 +31,42 @@ func NewLinodeAPIHandler(token string, rateLimit rate.Limit, burst int, maxConcu
 		MaxRetries:   maxRetries,
 		RetryBackoff: retryBackoff,
 	}
+}
+
+func getLinodeInstances(ctx context.Context, handler *LinodeAPIHandler) ([]model.LinodeDescription, error) {
+	var linodeInstances []model.LinodeDescription
+	var linodeListResponse *model.LinodeListResponse
+	var resp *http.Response
+	baseURL := "https://api.linode.com/v4/linode/instances"
+	requestFunc := func(req *http.Request) (*http.Response, error) {
+		var e error
+		page := 1
+		for {
+			params := url.Values{}
+			params.Set("page", strconv.Itoa(page))
+			params.Set("page_size", "500")
+			finalURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+			req, e = http.NewRequest("GET", finalURL, nil)
+			if e != nil {
+				return nil, e
+			}
+			resp, e = handler.Client.Do(req)
+			if e = json.NewDecoder(resp.Body).Decode(&linodeListResponse); e != nil {
+				return nil, e
+			}
+			linodeInstances = append(linodeInstances, linodeListResponse.Data...)
+			if linodeListResponse.Page == linodeListResponse.Pages {
+				break
+			}
+			page += 1
+		}
+		return resp, e
+	}
+	err := handler.DoRequest(ctx, &http.Request{}, requestFunc)
+	if err != nil {
+		return nil, err
+	}
+	return linodeInstances, nil
 }
 
 // DoRequest executes the linode API request with rate limiting, retries, and concurrency control.
