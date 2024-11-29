@@ -23,7 +23,7 @@ var (
 	pluginPath        = flag.String("pluginPath", "", "Location of the steampipe plugin")
 )
 
-const PluginPath = "" // TODO: give the steampipe plugin path
+const PluginPath = "../../../../steampipe-plugin-linode/linode"
 
 type IntegrationType struct {
 	Name            string

@@ -1,9 +1,86 @@
 [
   {
-    "ResourceName": "AWS::Redshift::Snapshot",
-    "ListDescriber": "ParallelDescribeRegional(describer.RedshiftSnapshot)",
-    "GetDescriber": "ParallelDescribeRegionalSingleResource(describer.GetRedshiftSnapshot)",
-    "SteampipeTable": "aws_redshift_snapshot",
-    "Model": "RedshiftSnapshot"
+    "ResourceName": "Linode/Account",
+    "ListDescriber": "DescribeListByLinode(describer.GetAccount)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_account",
+    "Model": "Account"
+  },
+  {
+    "ResourceName": "Linode/Database",
+    "ListDescriber": "DescribeListByLinode(describer.ListDatabases)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_database",
+    "Model": "Database"
+  },
+  {
+    "ResourceName": "Linode/Domain",
+    "ListDescriber": "DescribeListByLinode(describer.ListDomains)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_domain",
+    "Model": "Domain"
+  },
+  {
+    "ResourceName": "Linode/Event",
+    "ListDescriber": "DescribeListByLinode(describer.ListEvents)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_event",
+    "Model": "Event"
+  },
+  {
+    "ResourceName": "Linode/Firewall",
+    "ListDescriber": "DescribeListByLinode(describer.ListFirewalls)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_firewall",
+    "Model": "Firewall"
+  },
+  {
+    "ResourceName": "Linode/Image",
+    "ListDescriber": "DescribeListByLinode(describer.ListImages)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetImage)",
+    "SteampipeTable": "linode_image",
+    "Model": "Image"
+  },
+  {
+    "ResourceName": "Linode/Kubernetes/Cluster",
+    "ListDescriber": "DescribeListByLinode(describer.ListKubernetesClusters)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetKubernetesCluster)",
+    "SteampipeTable": "linode_kubernetes_cluster",
+    "Model": "KubernetesCluster"
+  },
+  {
+    "ResourceName": "Linode/Instance",
+    "ListDescriber": "DescribeListByLinode(describer.ListLinodeInstances)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetLinodeInstance)",
+    "SteampipeTable": "linode_instance",
+    "Model": "Instance"
+  },
+  {
+    "ResourceName": "Linode/Longview/Client",
+    "ListDescriber": "DescribeListByLinode(describer.ListLongViewClients)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetLongViewClient)",
+    "SteampipeTable": "linode_longview_client",
+    "Model": "LongViewClient"
+  },
+  {
+    "ResourceName": "Linode/NodeBalancer",
+    "ListDescriber": "DescribeListByLinode(describer.ListNodeBalancers)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetNodeBalancer)",
+    "SteampipeTable": "linode_node_balancer",
+    "Model": "NodeBalancer"
+  },
+  {
+    "ResourceName": "Linode/ObjectStorage",
+    "ListDescriber": "",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetObjectStorage)",
+    "SteampipeTable": "linode_object_storage",
+    "Model": "ObjectStorage"
+  },
+  {
+    "ResourceName": "Linode/SlackScripts",
+    "ListDescriber": "DescribeListByLinode(describer.ListStackScripts)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetStackScript)",
+    "SteampipeTable": "linode_slack_script",
+    "Model": "StackScript"
   }
 ]

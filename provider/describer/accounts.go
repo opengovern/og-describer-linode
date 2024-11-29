@@ -9,13 +9,14 @@ import (
 	"net/http"
 )
 
-func GetAccount(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
+func GetAccount(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
 	account, err := processAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
 	balance := fmt.Sprintf("%f", account.Balance)
 	balanceUninvoiced := fmt.Sprintf("%f", account.BalanceUninvoiced)
+	var values []models.Resource
 	value := models.Resource{
 		ID:   account.Email,
 		Name: fmt.Sprintf("%s %s", account.FirstName, account.LastName),
@@ -40,7 +41,14 @@ func GetAccount(ctx context.Context, handler *LinodeAPIHandler, resourceID strin
 			},
 		},
 	}
-	return &value, nil
+	if stream != nil {
+		if err = (*stream)(value); err != nil {
+			return nil, err
+		}
+	} else {
+		values = append(values, value)
+	}
+	return values, nil
 }
 
 func processAccount(ctx context.Context, handler *LinodeAPIHandler) (*model.Account, error) {

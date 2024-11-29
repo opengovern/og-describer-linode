@@ -33,8 +33,8 @@ func NewLinodeAPIHandler(token string, rateLimit rate.Limit, burst int, maxConcu
 	}
 }
 
-func getLinodeInstances(ctx context.Context, handler *LinodeAPIHandler) ([]model.LinodeDescription, error) {
-	var linodeInstances []model.LinodeDescription
+func getLinodeInstances(ctx context.Context, handler *LinodeAPIHandler) ([]model.InstanceDescription, error) {
+	var linodeInstances []model.InstanceDescription
 	var linodeListResponse *model.LinodeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances"
