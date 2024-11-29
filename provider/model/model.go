@@ -171,12 +171,12 @@ type InstancePlacementGroup struct {
 }
 
 type LinodeListResponse struct {
-	Data  []LinodeDescription `json:"data"`
-	Page  int                 `json:"page"`
-	Pages int                 `json:"pages"`
+	Data  []InstanceDescription `json:"data"`
+	Page  int                   `json:"page"`
+	Pages int                   `json:"pages"`
 }
 
-type LinodeDescription struct {
+type InstanceDescription struct {
 	ID              int                     `json:"id"`
 	Created         *time.Time              `json:"-"`
 	Updated         *time.Time              `json:"-"`

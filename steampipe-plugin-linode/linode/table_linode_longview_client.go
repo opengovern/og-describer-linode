@@ -1,19 +1,15 @@
 package linode
 
 import (
-	"context"
-	"fmt"
-	"strings"
-
-	"github.com/linode/linodego"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	"golang.org/x/net/context"
 )
 
-func tableLinodeInstance(ctx context.Context) *plugin.Table {
+func tableLinodeLongviewClient(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "linode_instance",
+		Name:        "linode_longview_client",
 		Description: "Instances in the Linode account.",
 		List: &plugin.ListConfig{
 			Hydrate: listInstance,
@@ -46,62 +42,4 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 			{Name: "watchdog_enabled", Type: proto.ColumnType_BOOL, Description: "The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly."},
 		}),
 	}
-}
-
-func listInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	conn, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_instance.listInstance", "connection_error", err)
-		return nil, err
-	}
-
-	opts := linodego.ListOptions{}
-	keyQuals := d.EqualsQuals
-	if keyQuals["filter"] != nil {
-		opts.Filter = keyQuals["filter"].GetStringValue()
-	} else {
-		filterParts := []string{}
-		/*
-			// Image filters seem to return "Error: [400] [X-Filter] Could not apply filter"
-			if keyQuals["image"] != nil {
-				filterParts = append(filterParts, fmt.Sprintf(`"image":"%s"`, keyQuals["image"].GetStringValue()))
-			}
-		*/
-		if keyQuals["label"] != nil {
-			filterParts = append(filterParts, fmt.Sprintf(`"label":"%s"`, keyQuals["label"].GetStringValue()))
-		}
-		if keyQuals["region"] != nil {
-			filterParts = append(filterParts, fmt.Sprintf(`"region":"%s"`, keyQuals["region"].GetStringValue()))
-		}
-		// TODO: ipv4
-		// TODO: tags
-		if len(filterParts) > 0 {
-			opts.Filter = fmt.Sprintf("{%s}", strings.Join(filterParts, ","))
-		}
-	}
-
-	items, err := conn.ListInstances(ctx, &opts)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_instance.listInstance", "query_error", err, "opts", opts)
-		return nil, err
-	}
-	for _, i := range items {
-		d.StreamListItem(ctx, i)
-	}
-	return nil, nil
-}
-
-func getInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	conn, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_instance.getInstance", "connection_error", err)
-		return nil, err
-	}
-	id := int(d.EqualsQuals["id"].GetInt64Value())
-	item, err := conn.GetInstance(ctx, id)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_instance.getInstance", "query_error", err)
-		return nil, err
-	}
-	return item, err
 }

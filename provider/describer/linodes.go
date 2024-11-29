@@ -62,7 +62,7 @@ func GetLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceI
 }
 
 func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var linodeInstances []model.LinodeDescription
+	var linodeInstances []model.InstanceDescription
 	var linodeListResponse *model.LinodeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances"
@@ -107,7 +107,7 @@ func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, open
 
 	for _, linode := range linodeInstances {
 		wg.Add(1)
-		go func(linode model.LinodeDescription) {
+		go func(linode model.InstanceDescription) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(linode.ID),
@@ -122,8 +122,8 @@ func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, open
 	return nil
 }
 
-func processLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.LinodeDescription, error) {
-	var linode *model.LinodeDescription
+func processLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.InstanceDescription, error) {
+	var linode *model.InstanceDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances/"
 

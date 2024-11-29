@@ -1,9 +1,9 @@
 package configs
 
 const (
-	StreamName           = "stream_name"
-	JobQueueTopic        = "job_queue_topic"
-	ConsumerGroup        = "consumer-group"
-	JobQueueTopicManuals = "job_queue_topic_manuals"
-	ConsumerGroupManuals = "consumer-group-manuals"
+	StreamName           = "og_describer_linode"
+	JobQueueTopic        = "og_describer_linode_job_queue"
+	ConsumerGroup        = "describer-linode"
+	JobQueueTopicManuals = "og_describer_linode_manuals_job_queue"
+	ConsumerGroupManuals = "describer-linode-manuals"
 )
