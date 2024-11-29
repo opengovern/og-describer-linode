@@ -2,52 +2,46 @@ package linode
 
 import (
 	"context"
+	"encoding/json"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v5/memoize"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func commonColumns(c []*plugin.Column) []*plugin.Column {
-	return append([]*plugin.Column{
+	return append(c, []*plugin.Column{
 		{
-			Name:        "euuid",
-			Description: "An external unique identifier for this account.",
+			Name:        "platform_account_id",
 			Type:        proto.ColumnType_STRING,
-			Hydrate:     getAccountEuuid,
-			Transform:   transform.FromValue(),
+			Description: "The Platform Account ID in which the resource is located.",
+			Transform:   transform.FromField("IntegrationID"),
 		},
-	}, c...)
+		{
+			Name:        "platform_resource_id",
+			Type:        proto.ColumnType_STRING,
+			Description: "The unique ID of the resource in opengovernance.",
+			Transform:   transform.FromField("PlatformID"),
+		},
+		{
+			Name:        "platform_metadata",
+			Type:        proto.ColumnType_JSON,
+			Description: "The metadata of the resource",
+			Transform:   transform.FromField("Metadata").Transform(marshalJSON),
+		},
+		{
+			Name:        "platform_resource_description",
+			Type:        proto.ColumnType_JSON,
+			Description: "The full model description of the resource",
+			Transform:   transform.FromField("Description").Transform(marshalJSON),
+		},
+	}...)
 }
 
-// if the caching is required other than per connection, build a cache key for the call and use it in Memoize.
-var getAccountEuuidMemoized = plugin.HydrateFunc(getAccountEuuidUncached).Memoize(memoize.WithCacheKeyFunction(getAccountEuuidCacheKey))
-
-// declare a wrapper hydrate function to call the memoized function
-// - this is required when a memoized function is used for a column definition
-func getAccountEuuid(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	return getAccountEuuidMemoized(ctx, d, h)
-}
-
-// Build a cache key for the call to getAccountEuuidCacheKey.
-func getAccountEuuidCacheKey(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	key := "getAccountEuuid"
-	return key, nil
-}
-
-func getAccountEuuidUncached(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-
-	conn, err := connect(ctx, d)
+func marshalJSON(_ context.Context, d *transform.TransformData) (interface{}, error) {
+	b, err := json.Marshal(d.Value)
 	if err != nil {
-		plugin.Logger(ctx).Error("linode_account_settings.getAccount", "connection_error", err)
 		return nil, err
 	}
-	item, err := conn.GetAccount(ctx)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_account_settings.getAccount", "query_error", err)
-		return nil, err
-	}
-
-	return item.EUUID, nil
+	return string(b), nil
 }

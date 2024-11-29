@@ -21,13 +21,6 @@
     "Model": "Domain"
   },
   {
-    "ResourceName": "Linode/Event",
-    "ListDescriber": "DescribeListByLinode(describer.ListEvents)",
-    "GetDescriber": "DescribeSingleByLinode(describer.GetEvent)",
-    "SteampipeTable": "linode_event",
-    "Model": "Event"
-  },
-  {
     "ResourceName": "Linode/Firewall",
     "ListDescriber": "DescribeListByLinode(describer.ListFirewalls)",
     "GetDescriber": "DescribeSingleByLinode(describer.GetFirewall)",
@@ -71,16 +64,37 @@
   },
   {
     "ResourceName": "Linode/ObjectStorage",
-    "ListDescriber": "",
-    "GetDescriber": "DescribeSingleByLinode(describer.GetObjectStorage)",
+    "ListDescriber": "DescribeListByLinode(describer.ListObjectStorages)",
+    "GetDescriber": "",
     "SteampipeTable": "linode_object_storage",
-    "Model": "ObjectStorage"
+    "Model": "ObjectStorageBucket"
   },
   {
-    "ResourceName": "Linode/SlackScript",
+    "ResourceName": "Linode/StackScript",
     "ListDescriber": "DescribeListByLinode(describer.ListStackScripts)",
     "GetDescriber": "DescribeSingleByLinode(describer.GetStackScript)",
-    "SteampipeTable": "linode_slack_script",
+    "SteampipeTable": "linode_stack_script",
     "Model": "StackScript"
+  },
+  {
+    "ResourceName": "Linode/Vpc",
+    "ListDescriber": "DescribeListByLinode(describer.ListVPCs)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetVPC)",
+    "SteampipeTable": "linode_vpc",
+    "Model": "VPC"
+  },
+  {
+    "ResourceName": "Linode/Volume",
+    "ListDescriber": "DescribeListByLinode(describer.ListVolumes)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetVolume)",
+    "SteampipeTable": "linode_volume",
+    "Model": "Volume"
+  },
+  {
+    "ResourceName": "Linode/IPAddress",
+    "ListDescriber": "DescribeListByLinode(describer.ListIPAddresses)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetIPAddress)",
+    "SteampipeTable": "linode_ip_address",
+    "Model": "IPAddress"
   }
 ]

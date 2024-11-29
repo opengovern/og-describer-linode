@@ -2,7 +2,6 @@ package linode
 
 import (
 	"context"
-	"encoding/base64"
 	"net/http"
 	"os"
 
@@ -10,9 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
-	"github.com/turbot/go-kit/types"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func connect(_ context.Context, d *plugin.QueryData) (linodego.Client, error) {
@@ -51,16 +48,4 @@ func connect(_ context.Context, d *plugin.QueryData) (linodego.Client, error) {
 	d.ConnectionManager.Cache.Set(cacheKey, conn)
 
 	return conn, nil
-}
-
-func base64DecodedData(_ context.Context, d *transform.TransformData) (interface{}, error) {
-	data, err := base64.StdEncoding.DecodeString(types.SafeString(d.Value))
-	if err != nil {
-		return nil, nil
-	}
-	return data, nil
-}
-
-func isNotFoundError(err error) bool {
-	return err.Error() == "[404] Not found"
 }

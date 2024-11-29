@@ -95,7 +95,22 @@ func (p AccountPaginator) NextPage(ctx context.Context) ([]Account, error) {
 }
 
 var listAccountFilters = map[string]string{
-	"euuid": "EUUID",
+	"address_1":          "Description.Address1",
+	"address_2":          "Description.Address2",
+	"balance":            "Description.Balance",
+	"balance_uninvoiced": "Description.BalanceUninvoiced",
+	"city":               "Description.City",
+	"company":            "Description.Company",
+	"country":            "Description.Country",
+	"credit_card":        "Description.CreditCard",
+	"email":              "Description.Email",
+	"euuid":              "Description.Euuid",
+	"first_name":         "Description.FirstName",
+	"last_name":          "Description.LastName",
+	"phone":              "Description.Phone",
+	"state":              "Description.State",
+	"tax_id":             "Description.TaxID",
+	"zip":                "Description.Zip",
 }
 
 func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -159,7 +174,22 @@ func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 }
 
 var getAccountFilters = map[string]string{
-	"euuid": "EUUID",
+	"address_1":          "Description.Address1",
+	"address_2":          "Description.Address2",
+	"balance":            "Description.Balance",
+	"balance_uninvoiced": "Description.BalanceUninvoiced",
+	"city":               "Description.City",
+	"company":            "Description.Company",
+	"country":            "Description.Country",
+	"credit_card":        "Description.CreditCard",
+	"email":              "Description.Email",
+	"euuid":              "Description.Euuid",
+	"first_name":         "Description.FirstName",
+	"last_name":          "Description.LastName",
+	"phone":              "Description.Phone",
+	"state":              "Description.State",
+	"tax_id":             "Description.TaxID",
+	"zip":                "Description.Zip",
 }
 
 func GetAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -298,10 +328,22 @@ func (p DatabasePaginator) NextPage(ctx context.Context) ([]Database, error) {
 }
 
 var listDatabaseFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"allow_list":       "Description.AllowList",
+	"cluster_size":     "Description.ClusterSize",
+	"created":          "Description.Created",
+	"encrypted":        "Description.Encrypted",
+	"engine":           "Description.Engine",
+	"hosts":            "Description.Hosts",
+	"id":               "Description.ID",
+	"instance_uri":     "Description.InstanceURI",
+	"label":            "Description.Label",
+	"region":           "Description.Region",
+	"replication_type": "Description.ReplicationType",
+	"ssl_connection":   "Description.SSLConnection",
+	"status":           "Description.Status",
+	"type":             "Description.Type",
+	"updated":          "Description.Updated",
+	"version":          "Description.Version",
 }
 
 func ListDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -365,10 +407,22 @@ func ListDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 }
 
 var getDatabaseFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"allow_list":       "Description.AllowList",
+	"cluster_size":     "Description.ClusterSize",
+	"created":          "Description.Created",
+	"encrypted":        "Description.Encrypted",
+	"engine":           "Description.Engine",
+	"hosts":            "Description.Hosts",
+	"id":               "Description.ID",
+	"instance_uri":     "Description.InstanceURI",
+	"label":            "Description.Label",
+	"region":           "Description.Region",
+	"replication_type": "Description.ReplicationType",
+	"ssl_connection":   "Description.SSLConnection",
+	"status":           "Description.Status",
+	"type":             "Description.Type",
+	"updated":          "Description.Updated",
+	"version":          "Description.Version",
 }
 
 func GetDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -507,12 +561,19 @@ func (p DomainPaginator) NextPage(ctx context.Context) ([]Domain, error) {
 }
 
 var listDomainFilters = map[string]string{
-	"axfr_ips":    "AXfrIPs",
-	"domain_type": "Type",
-	"master_ips":  "MasterIPs",
-	"soa_email":   "SOAEmail",
-	"tags_src":    "Tags",
-	"ttl_sec":     "TTLSec",
+	"axfr_ips":    "Description.AXfrIPs",
+	"description": "Description.Description",
+	"domain":      "Description.Domain",
+	"domain_type": "Description.Type",
+	"expire_sec":  "Description.ExpireSec",
+	"id":          "Description.ID",
+	"master_ips":  "Description.MasterIPs",
+	"refresh_sec": "Description.RefreshSec",
+	"retry_sec":   "Description.RetrySec",
+	"soa_email":   "Description.SOAEmail",
+	"status":      "Description.Status",
+	"tags_src":    "Description.Tags",
+	"ttl_sec":     "Description.TTLSec",
 }
 
 func ListDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -576,12 +637,19 @@ func ListDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 }
 
 var getDomainFilters = map[string]string{
-	"axfr_ips":    "AXfrIPs",
-	"domain_type": "Type",
-	"master_ips":  "MasterIPs",
-	"soa_email":   "SOAEmail",
-	"tags_src":    "Tags",
-	"ttl_sec":     "TTLSec",
+	"axfr_ips":    "Description.AXfrIPs",
+	"description": "Description.Description",
+	"domain":      "Description.Domain",
+	"domain_type": "Description.Type",
+	"expire_sec":  "Description.ExpireSec",
+	"id":          "Description.ID",
+	"master_ips":  "Description.MasterIPs",
+	"refresh_sec": "Description.RefreshSec",
+	"retry_sec":   "Description.RetrySec",
+	"soa_email":   "Description.SOAEmail",
+	"status":      "Description.Status",
+	"tags_src":    "Description.Tags",
+	"ttl_sec":     "Description.TTLSec",
 }
 
 func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -638,205 +706,6 @@ func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 // ==========================  END: Domain =============================
-
-// ==========================  START: Event =============================
-
-type Event struct {
-	ResourceID      string                  `json:"resource_id"`
-	PlatformID      string                  `json:"platform_id"`
-	Description     linode.EventDescription `json:"description"`
-	Metadata        linode.Metadata         `json:"metadata"`
-	DescribedBy     string                  `json:"described_by"`
-	ResourceType    string                  `json:"resource_type"`
-	IntegrationType string                  `json:"integration_type"`
-	IntegrationID   string                  `json:"integration_id"`
-}
-
-type EventHit struct {
-	ID      string        `json:"_id"`
-	Score   float64       `json:"_score"`
-	Index   string        `json:"_index"`
-	Type    string        `json:"_type"`
-	Version int64         `json:"_version,omitempty"`
-	Source  Event         `json:"_source"`
-	Sort    []interface{} `json:"sort"`
-}
-
-type EventHits struct {
-	Total essdk.SearchTotal `json:"total"`
-	Hits  []EventHit        `json:"hits"`
-}
-
-type EventSearchResponse struct {
-	PitID string    `json:"pit_id"`
-	Hits  EventHits `json:"hits"`
-}
-
-type EventPaginator struct {
-	paginator *essdk.BaseESPaginator
-}
-
-func (k Client) NewEventPaginator(filters []essdk.BoolFilter, limit *int64) (EventPaginator, error) {
-	paginator, err := essdk.NewPaginator(k.ES(), "linode_event", filters, limit)
-	if err != nil {
-		return EventPaginator{}, err
-	}
-
-	p := EventPaginator{
-		paginator: paginator,
-	}
-
-	return p, nil
-}
-
-func (p EventPaginator) HasNext() bool {
-	return !p.paginator.Done()
-}
-
-func (p EventPaginator) Close(ctx context.Context) error {
-	return p.paginator.Deallocate(ctx)
-}
-
-func (p EventPaginator) NextPage(ctx context.Context) ([]Event, error) {
-	var response EventSearchResponse
-	err := p.paginator.Search(ctx, &response)
-	if err != nil {
-		return nil, err
-	}
-
-	var values []Event
-	for _, hit := range response.Hits.Hits {
-		values = append(values, hit.Source)
-	}
-
-	hits := int64(len(response.Hits.Hits))
-	if hits > 0 {
-		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
-	} else {
-		p.paginator.UpdateState(hits, nil, "")
-	}
-
-	return values, nil
-}
-
-var listEventFilters = map[string]string{}
-
-func ListEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	plugin.Logger(ctx).Trace("ListEvent")
-	runtime.GC()
-
-	// create service
-	cfg := essdk.GetConfig(d.Connection)
-	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent NewClientCached", "error", err)
-		return nil, err
-	}
-	k := Client{Client: ke}
-
-	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent NewSelfClientCached", "error", err)
-		return nil, err
-	}
-	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
-		return nil, err
-	}
-	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
-		return nil, err
-	}
-	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
-		return nil, err
-	}
-
-	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, listEventFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
-	if err != nil {
-		plugin.Logger(ctx).Error("ListEvent NewEventPaginator", "error", err)
-		return nil, err
-	}
-
-	for paginator.HasNext() {
-		page, err := paginator.NextPage(ctx)
-		if err != nil {
-			plugin.Logger(ctx).Error("ListEvent paginator.NextPage", "error", err)
-			return nil, err
-		}
-
-		for _, v := range page {
-			d.StreamListItem(ctx, v)
-		}
-	}
-
-	err = paginator.Close(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
-}
-
-var getEventFilters = map[string]string{}
-
-func GetEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	plugin.Logger(ctx).Trace("GetEvent")
-	runtime.GC()
-	// create service
-	cfg := essdk.GetConfig(d.Connection)
-	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
-	if err != nil {
-		return nil, err
-	}
-	k := Client{Client: ke}
-
-	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
-	if err != nil {
-		return nil, err
-	}
-	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
-	if err != nil {
-		return nil, err
-	}
-	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
-	if err != nil {
-		return nil, err
-	}
-	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
-	if err != nil {
-		return nil, err
-	}
-
-	limit := int64(1)
-	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, getEventFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
-	if err != nil {
-		return nil, err
-	}
-
-	for paginator.HasNext() {
-		page, err := paginator.NextPage(ctx)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, v := range page {
-			return v, nil
-		}
-	}
-
-	err = paginator.Close(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
-}
-
-// ==========================  END: Event =============================
 
 // ==========================  START: Instance =============================
 
@@ -919,10 +788,22 @@ func (p InstancePaginator) NextPage(ctx context.Context) ([]Instance, error) {
 }
 
 var listInstanceFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"alerts":           "Description.Alerts",
+	"backups":          "Description.Backups",
+	"created":          "Description.Created",
+	"hypervisor":       "Description.Hypervisor",
+	"id":               "Description.ID",
+	"image":            "Description.Image",
+	"instance_type":    "Description.Type",
+	"ipv4":             "Description.IPv4",
+	"ipv6":             "Description.IPv6",
+	"label":            "Description.Label",
+	"region":           "Description.Region",
+	"specs":            "Description.Specs",
+	"status":           "Description.Status",
+	"tags_src":         "Description.Tags",
+	"updated":          "Description.Updated",
+	"watchdog_enabled": "Description.WatchdogEnabled",
 }
 
 func ListInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -986,10 +867,22 @@ func ListInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 }
 
 var getInstanceFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"alerts":           "Description.Alerts",
+	"backups":          "Description.Backups",
+	"created":          "Description.Created",
+	"hypervisor":       "Description.Hypervisor",
+	"id":               "Description.ID",
+	"image":            "Description.Image",
+	"instance_type":    "Description.Type",
+	"ipv4":             "Description.IPv4",
+	"ipv6":             "Description.IPv6",
+	"label":            "Description.Label",
+	"region":           "Description.Region",
+	"specs":            "Description.Specs",
+	"status":           "Description.Status",
+	"tags_src":         "Description.Tags",
+	"updated":          "Description.Updated",
+	"watchdog_enabled": "Description.WatchdogEnabled",
 }
 
 func GetInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1127,7 +1020,15 @@ func (p FirewallPaginator) NextPage(ctx context.Context) ([]Firewall, error) {
 	return values, nil
 }
 
-var listFirewallFilters = map[string]string{}
+var listFirewallFilters = map[string]string{
+	"created": "Description.Created",
+	"id":      "Description.ID",
+	"label":   "Description.Label",
+	"rules":   "Description.Rules",
+	"status":  "Description.Status",
+	"tags":    "Description.Tags",
+	"updated": "Description.Updated",
+}
 
 func ListFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	plugin.Logger(ctx).Trace("ListFirewall")
@@ -1189,7 +1090,15 @@ func ListFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 	return nil, nil
 }
 
-var getFirewallFilters = map[string]string{}
+var getFirewallFilters = map[string]string{
+	"created": "Description.Created",
+	"id":      "Description.ID",
+	"label":   "Description.Label",
+	"rules":   "Description.Rules",
+	"status":  "Description.Status",
+	"tags":    "Description.Tags",
+	"updated": "Description.Updated",
+}
 
 func GetFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	plugin.Logger(ctx).Trace("GetFirewall")
@@ -1327,7 +1236,17 @@ func (p ImagePaginator) NextPage(ctx context.Context) ([]Image, error) {
 }
 
 var listImageFilters = map[string]string{
-	"image_type": "type",
+	"created":     "Description.Created",
+	"created_by":  "Description.CreatedBy",
+	"deprecated":  "Description.Deprecated",
+	"description": "Description.Description",
+	"expiry":      "Description.Expiry",
+	"id":          "Description.ID",
+	"image_type":  "Description.Type",
+	"is_public":   "Description.IsPublic",
+	"label":       "Description.Label",
+	"size":        "Description.Size",
+	"vendor":      "Description.Vendor",
 }
 
 func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1391,7 +1310,17 @@ func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 var getImageFilters = map[string]string{
-	"image_type": "type",
+	"created":     "Description.Created",
+	"created_by":  "Description.CreatedBy",
+	"deprecated":  "Description.Deprecated",
+	"description": "Description.Description",
+	"expiry":      "Description.Expiry",
+	"id":          "Description.ID",
+	"image_type":  "Description.Type",
+	"is_public":   "Description.IsPublic",
+	"label":       "Description.Label",
+	"size":        "Description.Size",
+	"vendor":      "Description.Vendor",
 }
 
 func GetImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1530,8 +1459,14 @@ func (p KubernetesClusterPaginator) NextPage(ctx context.Context) ([]KubernetesC
 }
 
 var listKubernetesClusterFilters = map[string]string{
-	"k8s_version": "K8sVersion",
-	"tags_src":    "Tags",
+	"created":     "Description.Created",
+	"id":          "Description.ID",
+	"k8s_version": "Description.K8sVersion",
+	"label":       "Description.Label",
+	"region":      "Description.Region",
+	"status":      "Description.Status",
+	"tags_src":    "Description.Tags",
+	"updated":     "Description.Updated",
 }
 
 func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1595,8 +1530,14 @@ func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 }
 
 var getKubernetesClusterFilters = map[string]string{
-	"k8s_version": "K8sVersion",
-	"tags_src":    "Tags",
+	"created":     "Description.Created",
+	"id":          "Description.ID",
+	"k8s_version": "Description.K8sVersion",
+	"label":       "Description.Label",
+	"region":      "Description.Region",
+	"status":      "Description.Status",
+	"tags_src":    "Description.Tags",
+	"updated":     "Description.Updated",
 }
 
 func GetKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1735,10 +1676,13 @@ func (p LongViewClientPaginator) NextPage(ctx context.Context) ([]LongViewClient
 }
 
 var listLongViewClientFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"api_key":      "Description.APIKey",
+	"apps":         "Description.Apps",
+	"created":      "Description.Created",
+	"id":           "Description.ID",
+	"install_code": "Description.InstallCode",
+	"label":        "Description.Label",
+	"updated":      "Description.Updated",
 }
 
 func ListLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1802,10 +1746,13 @@ func ListLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 }
 
 var getLongViewClientFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"api_key":      "Description.APIKey",
+	"apps":         "Description.Apps",
+	"created":      "Description.Created",
+	"id":           "Description.ID",
+	"install_code": "Description.InstallCode",
+	"label":        "Description.Label",
+	"updated":      "Description.Updated",
 }
 
 func GetLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1944,8 +1891,17 @@ func (p NodeBalancerPaginator) NextPage(ctx context.Context) ([]NodeBalancer, er
 }
 
 var listNodeBalancerFilters = map[string]string{
-	"ipv4": "IPv4",
-	"ipv6": "IPv6",
+	"client_conn_throttle": "Description.ClientConnThrottle",
+	"created":              "Description.Created",
+	"hostname":             "Description.Hostname",
+	"id":                   "Description.ID",
+	"ipv4":                 "Description.IPv4",
+	"ipv6":                 "Description.IPv6",
+	"label":                "Description.Label",
+	"region":               "Description.Region",
+	"tags":                 "Description.Tags",
+	"transfer":             "Description.Transfer",
+	"updated":              "Description.Updated",
 }
 
 func ListNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -2009,8 +1965,17 @@ func ListNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 }
 
 var getNodeBalancerFilters = map[string]string{
-	"ipv4": "IPv4",
-	"ipv6": "IPv6",
+	"client_conn_throttle": "Description.ClientConnThrottle",
+	"created":              "Description.Created",
+	"hostname":             "Description.Hostname",
+	"id":                   "Description.ID",
+	"ipv4":                 "Description.IPv4",
+	"ipv6":                 "Description.IPv6",
+	"label":                "Description.Label",
+	"region":               "Description.Region",
+	"tags":                 "Description.Tags",
+	"transfer":             "Description.Transfer",
+	"updated":              "Description.Updated",
 }
 
 func GetNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -2068,72 +2033,72 @@ func GetNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 
 // ==========================  END: NodeBalancer =============================
 
-// ==========================  START: ObjectStorage =============================
+// ==========================  START: ObjectStorageBucket =============================
 
-type ObjectStorage struct {
-	ResourceID      string                          `json:"resource_id"`
-	PlatformID      string                          `json:"platform_id"`
-	Description     linode.ObjectStorageDescription `json:"description"`
-	Metadata        linode.Metadata                 `json:"metadata"`
-	DescribedBy     string                          `json:"described_by"`
-	ResourceType    string                          `json:"resource_type"`
-	IntegrationType string                          `json:"integration_type"`
-	IntegrationID   string                          `json:"integration_id"`
+type ObjectStorageBucket struct {
+	ResourceID      string                                `json:"resource_id"`
+	PlatformID      string                                `json:"platform_id"`
+	Description     linode.ObjectStorageBucketDescription `json:"description"`
+	Metadata        linode.Metadata                       `json:"metadata"`
+	DescribedBy     string                                `json:"described_by"`
+	ResourceType    string                                `json:"resource_type"`
+	IntegrationType string                                `json:"integration_type"`
+	IntegrationID   string                                `json:"integration_id"`
 }
 
-type ObjectStorageHit struct {
-	ID      string        `json:"_id"`
-	Score   float64       `json:"_score"`
-	Index   string        `json:"_index"`
-	Type    string        `json:"_type"`
-	Version int64         `json:"_version,omitempty"`
-	Source  ObjectStorage `json:"_source"`
-	Sort    []interface{} `json:"sort"`
+type ObjectStorageBucketHit struct {
+	ID      string              `json:"_id"`
+	Score   float64             `json:"_score"`
+	Index   string              `json:"_index"`
+	Type    string              `json:"_type"`
+	Version int64               `json:"_version,omitempty"`
+	Source  ObjectStorageBucket `json:"_source"`
+	Sort    []interface{}       `json:"sort"`
 }
 
-type ObjectStorageHits struct {
-	Total essdk.SearchTotal  `json:"total"`
-	Hits  []ObjectStorageHit `json:"hits"`
+type ObjectStorageBucketHits struct {
+	Total essdk.SearchTotal        `json:"total"`
+	Hits  []ObjectStorageBucketHit `json:"hits"`
 }
 
-type ObjectStorageSearchResponse struct {
-	PitID string            `json:"pit_id"`
-	Hits  ObjectStorageHits `json:"hits"`
+type ObjectStorageBucketSearchResponse struct {
+	PitID string                  `json:"pit_id"`
+	Hits  ObjectStorageBucketHits `json:"hits"`
 }
 
-type ObjectStoragePaginator struct {
+type ObjectStorageBucketPaginator struct {
 	paginator *essdk.BaseESPaginator
 }
 
-func (k Client) NewObjectStoragePaginator(filters []essdk.BoolFilter, limit *int64) (ObjectStoragePaginator, error) {
+func (k Client) NewObjectStorageBucketPaginator(filters []essdk.BoolFilter, limit *int64) (ObjectStorageBucketPaginator, error) {
 	paginator, err := essdk.NewPaginator(k.ES(), "linode_objectstorage", filters, limit)
 	if err != nil {
-		return ObjectStoragePaginator{}, err
+		return ObjectStorageBucketPaginator{}, err
 	}
 
-	p := ObjectStoragePaginator{
+	p := ObjectStorageBucketPaginator{
 		paginator: paginator,
 	}
 
 	return p, nil
 }
 
-func (p ObjectStoragePaginator) HasNext() bool {
+func (p ObjectStorageBucketPaginator) HasNext() bool {
 	return !p.paginator.Done()
 }
 
-func (p ObjectStoragePaginator) Close(ctx context.Context) error {
+func (p ObjectStorageBucketPaginator) Close(ctx context.Context) error {
 	return p.paginator.Deallocate(ctx)
 }
 
-func (p ObjectStoragePaginator) NextPage(ctx context.Context) ([]ObjectStorage, error) {
-	var response ObjectStorageSearchResponse
+func (p ObjectStorageBucketPaginator) NextPage(ctx context.Context) ([]ObjectStorageBucket, error) {
+	var response ObjectStorageBucketSearchResponse
 	err := p.paginator.Search(ctx, &response)
 	if err != nil {
 		return nil, err
 	}
 
-	var values []ObjectStorage
+	var values []ObjectStorageBucket
 	for _, hit := range response.Hits.Hits {
 		values = append(values, hit.Source)
 	}
@@ -2148,57 +2113,60 @@ func (p ObjectStoragePaginator) NextPage(ctx context.Context) ([]ObjectStorage, 
 	return values, nil
 }
 
-var listObjectStorageFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+var listObjectStorageBucketFilters = map[string]string{
+	"cluster":  "Description.Cluster",
+	"created":  "Description.Created",
+	"hostname": "Description.Hostname",
+	"label":    "Description.Label",
+	"objects":  "Description.Objects",
+	"region":   "Description.Region",
+	"size":     "Description.Size",
 }
 
-func ListObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	plugin.Logger(ctx).Trace("ListObjectStorage")
+func ListObjectStorageBucket(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListObjectStorageBucket")
 	runtime.GC()
 
 	// create service
 	cfg := essdk.GetConfig(d.Connection)
 	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage NewClientCached", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket NewClientCached", "error", err)
 		return nil, err
 	}
 	k := Client{Client: ke}
 
 	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage NewSelfClientCached", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket NewSelfClientCached", "error", err)
 		return nil, err
 	}
 	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
 		return nil, err
 	}
 	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
 		return nil, err
 	}
 	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
 		return nil, err
 	}
 
-	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, listObjectStorageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewObjectStorageBucketPaginator(essdk.BuildFilter(ctx, d.QueryContext, listObjectStorageBucketFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
-		plugin.Logger(ctx).Error("ListObjectStorage NewObjectStoragePaginator", "error", err)
+		plugin.Logger(ctx).Error("ListObjectStorageBucket NewObjectStorageBucketPaginator", "error", err)
 		return nil, err
 	}
 
 	for paginator.HasNext() {
 		page, err := paginator.NextPage(ctx)
 		if err != nil {
-			plugin.Logger(ctx).Error("ListObjectStorage paginator.NextPage", "error", err)
+			plugin.Logger(ctx).Error("ListObjectStorageBucket paginator.NextPage", "error", err)
 			return nil, err
 		}
 
@@ -2215,15 +2183,18 @@ func ListObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 	return nil, nil
 }
 
-var getObjectStorageFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+var getObjectStorageBucketFilters = map[string]string{
+	"cluster":  "Description.Cluster",
+	"created":  "Description.Created",
+	"hostname": "Description.Hostname",
+	"label":    "Description.Label",
+	"objects":  "Description.Objects",
+	"region":   "Description.Region",
+	"size":     "Description.Size",
 }
 
-func GetObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	plugin.Logger(ctx).Trace("GetObjectStorage")
+func GetObjectStorageBucket(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetObjectStorageBucket")
 	runtime.GC()
 	// create service
 	cfg := essdk.GetConfig(d.Connection)
@@ -2251,7 +2222,7 @@ func GetObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, getObjectStorageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewObjectStorageBucketPaginator(essdk.BuildFilter(ctx, d.QueryContext, getObjectStorageBucketFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -2275,7 +2246,7 @@ func GetObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 	return nil, nil
 }
 
-// ==========================  END: ObjectStorage =============================
+// ==========================  END: ObjectStorageBucket =============================
 
 // ==========================  START: StackScript =============================
 
@@ -2315,7 +2286,7 @@ type StackScriptPaginator struct {
 }
 
 func (k Client) NewStackScriptPaginator(filters []essdk.BoolFilter, limit *int64) (StackScriptPaginator, error) {
-	paginator, err := essdk.NewPaginator(k.ES(), "linode_slackscript", filters, limit)
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_stackscript", filters, limit)
 	if err != nil {
 		return StackScriptPaginator{}, err
 	}
@@ -2358,10 +2329,23 @@ func (p StackScriptPaginator) NextPage(ctx context.Context) ([]StackScript, erro
 }
 
 var listStackScriptFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"created":             "Description.Created",
+	"deployments_active":  "Description.DeploymentsActive",
+	"deployments_total":   "Description.DeploymentsTotal",
+	"description":         "Description.Description",
+	"id":                  "Description.ID",
+	"images":              "Description.Images",
+	"is_public":           "Description.IsPublic",
+	"label":               "Description.Label",
+	"logo_url":            "Description.LogoURL",
+	"mine":                "Description.Mine",
+	"ordinal":             "Description.Ordinal",
+	"rev_note":            "Description.RevNote",
+	"script":              "Description.Script",
+	"updated":             "Description.Updated",
+	"user_defined_fields": "Description.UserDefinedFields",
+	"user_gravatar_id":    "Description.UserGravatarID",
+	"username":            "Description.Username",
 }
 
 func ListStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -2425,10 +2409,23 @@ func ListStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 }
 
 var getStackScriptFilters = map[string]string{
-	"instance_type": "Type",
-	"ipv4":          "IPv4",
-	"ipv6":          "IPv6",
-	"tags_src":      "Tags",
+	"created":             "Description.Created",
+	"deployments_active":  "Description.DeploymentsActive",
+	"deployments_total":   "Description.DeploymentsTotal",
+	"description":         "Description.Description",
+	"id":                  "Description.ID",
+	"images":              "Description.Images",
+	"is_public":           "Description.IsPublic",
+	"label":               "Description.Label",
+	"logo_url":            "Description.LogoURL",
+	"mine":                "Description.Mine",
+	"ordinal":             "Description.Ordinal",
+	"rev_note":            "Description.RevNote",
+	"script":              "Description.Script",
+	"updated":             "Description.Updated",
+	"user_defined_fields": "Description.UserDefinedFields",
+	"user_gravatar_id":    "Description.UserGravatarID",
+	"username":            "Description.Username",
 }
 
 func GetStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -2485,3 +2482,662 @@ func GetStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 }
 
 // ==========================  END: StackScript =============================
+
+// ==========================  START: Volume =============================
+
+type Volume struct {
+	ResourceID      string                   `json:"resource_id"`
+	PlatformID      string                   `json:"platform_id"`
+	Description     linode.VolumeDescription `json:"description"`
+	Metadata        linode.Metadata          `json:"metadata"`
+	DescribedBy     string                   `json:"described_by"`
+	ResourceType    string                   `json:"resource_type"`
+	IntegrationType string                   `json:"integration_type"`
+	IntegrationID   string                   `json:"integration_id"`
+}
+
+type VolumeHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  Volume        `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type VolumeHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []VolumeHit       `json:"hits"`
+}
+
+type VolumeSearchResponse struct {
+	PitID string     `json:"pit_id"`
+	Hits  VolumeHits `json:"hits"`
+}
+
+type VolumePaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewVolumePaginator(filters []essdk.BoolFilter, limit *int64) (VolumePaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_volume", filters, limit)
+	if err != nil {
+		return VolumePaginator{}, err
+	}
+
+	p := VolumePaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p VolumePaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p VolumePaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p VolumePaginator) NextPage(ctx context.Context) ([]Volume, error) {
+	var response VolumeSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []Volume
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listVolumeFilters = map[string]string{
+	"created":         "Description.Created",
+	"filesystem_path": "Description.FilesystemPath",
+	"id":              "Description.ID",
+	"label":           "Description.Label",
+	"linode_id":       "Description.LinodeID",
+	"region":          "Description.Region",
+	"size":            "Description.Size",
+	"status":          "Description.Status",
+	"tags_src":        "Description.Tags",
+	"updated":         "Description.Updated",
+}
+
+func ListVolume(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListVolume")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewVolumePaginator(essdk.BuildFilter(ctx, d.QueryContext, listVolumeFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVolume NewVolumePaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListVolume paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getVolumeFilters = map[string]string{
+	"created":         "Description.Created",
+	"filesystem_path": "Description.FilesystemPath",
+	"id":              "Description.ID",
+	"label":           "Description.Label",
+	"linode_id":       "Description.LinodeID",
+	"region":          "Description.Region",
+	"size":            "Description.Size",
+	"status":          "Description.Status",
+	"tags_src":        "Description.Tags",
+	"updated":         "Description.Updated",
+}
+
+func GetVolume(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetVolume")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewVolumePaginator(essdk.BuildFilter(ctx, d.QueryContext, getVolumeFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: Volume =============================
+
+// ==========================  START: VPC =============================
+
+type VPC struct {
+	ResourceID      string                `json:"resource_id"`
+	PlatformID      string                `json:"platform_id"`
+	Description     linode.VPCDescription `json:"description"`
+	Metadata        linode.Metadata       `json:"metadata"`
+	DescribedBy     string                `json:"described_by"`
+	ResourceType    string                `json:"resource_type"`
+	IntegrationType string                `json:"integration_type"`
+	IntegrationID   string                `json:"integration_id"`
+}
+
+type VPCHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  VPC           `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type VPCHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []VPCHit          `json:"hits"`
+}
+
+type VPCSearchResponse struct {
+	PitID string  `json:"pit_id"`
+	Hits  VPCHits `json:"hits"`
+}
+
+type VPCPaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewVPCPaginator(filters []essdk.BoolFilter, limit *int64) (VPCPaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_vpc", filters, limit)
+	if err != nil {
+		return VPCPaginator{}, err
+	}
+
+	p := VPCPaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p VPCPaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p VPCPaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p VPCPaginator) NextPage(ctx context.Context) ([]VPC, error) {
+	var response VPCSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []VPC
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listVPCFilters = map[string]string{
+	"created":     "Description.Created",
+	"description": "Description.Description",
+	"id":          "Description.ID",
+	"label":       "Description.Label",
+	"region":      "Description.Region",
+	"subnets":     "Description.Subnets",
+	"updated":     "Description.Updated",
+}
+
+func ListVPC(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListVPC")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewVPCPaginator(essdk.BuildFilter(ctx, d.QueryContext, listVPCFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListVPC NewVPCPaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListVPC paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getVPCFilters = map[string]string{
+	"created":     "Description.Created",
+	"description": "Description.Description",
+	"id":          "Description.ID",
+	"label":       "Description.Label",
+	"region":      "Description.Region",
+	"subnets":     "Description.Subnets",
+	"updated":     "Description.Updated",
+}
+
+func GetVPC(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetVPC")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewVPCPaginator(essdk.BuildFilter(ctx, d.QueryContext, getVPCFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: VPC =============================
+
+// ==========================  START: IPAddress =============================
+
+type IPAddress struct {
+	ResourceID      string                      `json:"resource_id"`
+	PlatformID      string                      `json:"platform_id"`
+	Description     linode.IPAddressDescription `json:"description"`
+	Metadata        linode.Metadata             `json:"metadata"`
+	DescribedBy     string                      `json:"described_by"`
+	ResourceType    string                      `json:"resource_type"`
+	IntegrationType string                      `json:"integration_type"`
+	IntegrationID   string                      `json:"integration_id"`
+}
+
+type IPAddressHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  IPAddress     `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type IPAddressHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []IPAddressHit    `json:"hits"`
+}
+
+type IPAddressSearchResponse struct {
+	PitID string        `json:"pit_id"`
+	Hits  IPAddressHits `json:"hits"`
+}
+
+type IPAddressPaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewIPAddressPaginator(filters []essdk.BoolFilter, limit *int64) (IPAddressPaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_ipaddress", filters, limit)
+	if err != nil {
+		return IPAddressPaginator{}, err
+	}
+
+	p := IPAddressPaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p IPAddressPaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p IPAddressPaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p IPAddressPaginator) NextPage(ctx context.Context) ([]IPAddress, error) {
+	var response IPAddressSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []IPAddress
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listIPAddressFilters = map[string]string{
+	"address":     "Description.Address",
+	"gateway":     "Description.Gateway",
+	"linode_id":   "Description.LinodeID",
+	"prefix":      "Description.Prefix",
+	"public":      "Description.Public",
+	"rdns":        "Description.RDNS",
+	"region":      "Description.Region",
+	"reserved":    "Description.Reserved",
+	"subnet_mask": "Description.SubnetMask",
+	"type":        "Description.Type",
+	"vpc_nat_1_1": "Description.VPCNAT1To1",
+}
+
+func ListIPAddress(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListIPAddress")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress GetConfigTableValueOrNil for OpenGovernanceConfigKeyAccountID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewIPAddressPaginator(essdk.BuildFilter(ctx, d.QueryContext, listIPAddressFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListIPAddress NewIPAddressPaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListIPAddress paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getIPAddressFilters = map[string]string{
+	"address":     "Description.Address",
+	"gateway":     "Description.Gateway",
+	"linode_id":   "Description.LinodeID",
+	"prefix":      "Description.Prefix",
+	"public":      "Description.Public",
+	"rdns":        "Description.RDNS",
+	"region":      "Description.Region",
+	"reserved":    "Description.Reserved",
+	"subnet_mask": "Description.SubnetMask",
+	"type":        "Description.Type",
+	"vpc_nat_1_1": "Description.VPCNAT1To1",
+}
+
+func GetIPAddress(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetIPAddress")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	accountId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyAccountID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewIPAddressPaginator(essdk.BuildFilter(ctx, d.QueryContext, getIPAddressFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: IPAddress =============================

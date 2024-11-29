@@ -39,8 +39,7 @@ func main() {
 	var resourceTypes []ResourceType
 
 	if resourceTypesFile == nil || len(*resourceTypesFile) == 0 {
-		rt := "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\provider\\resource_types\\resource-types.json"
-		//rt := "../../../../provider/resource_types/resource-types.json"
+		rt := "../../../../provider/resource_types/resource-types.json"
 		resourceTypesFile = &rt
 	}
 
@@ -71,8 +70,7 @@ func main() {
 
 	// Set default output paths if not provided
 	if output == nil || len(*output) == 0 {
-		v := "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\provider\\resource_types.go"
-		//v := "../../../../provider/resource_types.go"
+		v := "../../../../provider/resource_types.go"
 		output = &v
 	}
 

@@ -2,6 +2,7 @@ package linode
 
 import (
 	"context"
+	opengovernance "github.com/opengovern/og-describer-linode/pkg/sdk/es"
 
 	"github.com/linode/linodego"
 
@@ -15,60 +16,80 @@ func tableLinodeKubernetesCluster(ctx context.Context) *plugin.Table {
 		Name:        "linode_kubernetes_cluster",
 		Description: "Kubernetes clusters in the Linode account.",
 		List: &plugin.ListConfig{
-			Hydrate: listKubernetesCluster,
+			Hydrate: opengovernance.ListKubernetesCluster,
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    getKubernetesCluster,
+			Hydrate:    opengovernance.GetKubernetesCluster,
 		},
 		Columns: commonColumns([]*plugin.Column{
 			// Top columns
-			{Name: "id", Type: proto.ColumnType_INT, Description: "This Kubernetes cluster’s unique ID."},
-			{Name: "label", Type: proto.ColumnType_STRING, Description: "This Kubernetes cluster’s unique label for display purposes only."},
+			{
+				Name:        "id",
+				Type:        proto.ColumnType_INT,
+				Transform:   transform.FromField("Description.ID"),
+				Description: "This Kubernetes cluster’s unique ID."},
+			{
+				Name:        "label",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Label"),
+				Description: "This Kubernetes cluster’s unique label for display purposes only."},
 			// Other columns
-			{Name: "api_endpoints", Type: proto.ColumnType_JSON, Hydrate: listKubernetesClusterAPIEndpoints, Transform: transform.FromValue(), Description: "API endpoints for the cluster."},
-			{Name: "created", Type: proto.ColumnType_TIMESTAMP, Description: "When this Kubernetes cluster was created."},
-			{Name: "k8s_version", Type: proto.ColumnType_STRING, Transform: transform.FromField("K8sVersion"), Description: "The desired Kubernetes version for this Kubernetes cluster in the format of <major>.<minor>, and the latest supported patch version will be deployed."},
-			{Name: "kubeconfig", Type: proto.ColumnType_STRING, Hydrate: getKubeConfig, Transform: transform.FromField("KubeConfig").Transform(base64DecodedData), Description: "Kube config for the cluster."},
-			{Name: "pools", Type: proto.ColumnType_JSON, Hydrate: listKubernetesClusterPools, Transform: transform.FromValue(), Description: "Pools for the cluster."},
-			{Name: "region", Type: proto.ColumnType_STRING, Description: "This Kubernetes cluster’s location."},
-			{Name: "status", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "tags", Type: proto.ColumnType_JSON, Transform: transform.FromField("Tags").Transform(transform.StringArrayToMap), Description: "Tags applied to the Kubernetes cluster as a map."},
-			{Name: "tags_src", Type: proto.ColumnType_JSON, Transform: transform.FromField("Tags"), Description: "List of Tags applied to the Kubernetes cluster."},
-			{Name: "updated", Type: proto.ColumnType_TIMESTAMP, Description: "When this Kubernetes cluster was updated."},
+			//{
+			//	Name: "api_endpoints",
+			//	Type: proto.ColumnType_JSON,
+			//	Hydrate: listKubernetesClusterAPIEndpoints,
+			//	Transform: transform.FromValue(),
+			//	Description: "API endpoints for the cluster."},
+			{
+				Name:        "created",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Transform:   transform.FromField("Description.Created"),
+				Description: "When this Kubernetes cluster was created."},
+			{
+				Name:        "k8s_version",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.K8sVersion"),
+				Description: "The desired Kubernetes version for this Kubernetes cluster in the format of <major>.<minor>, and the latest supported patch version will be deployed."},
+			//{
+			//	Name: "kubeconfig",
+			//	Type: proto.ColumnType_STRING,
+			//	Hydrate: getKubeConfig,
+			//	Transform: transform.FromField("KubeConfig").Transform(base64DecodedData),
+			//	Description: "Kube config for the cluster."},
+			//{
+			//	Name: "pools",
+			//	Type: proto.ColumnType_JSON,
+			//	Hydrate: listKubernetesClusterPools,
+			//	Transform: transform.FromValue(),
+			//	Description: "Pools for the cluster."},
+			{
+				Name:        "region",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Region"),
+				Description: "This Kubernetes cluster’s location."},
+			{
+				Name:        "status",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Status"),
+				Description: ""},
+			{
+				Name:        "tags",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromField("Description.Tags").Transform(transform.StringArrayToMap),
+				Description: "Tags applied to the Kubernetes cluster as a map."},
+			{
+				Name:        "tags_src",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromField("Description.Tags"),
+				Description: "List of Tags applied to the Kubernetes cluster."},
+			{
+				Name:        "updated",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Transform:   transform.FromField("Description.Updated"),
+				Description: "When this Kubernetes cluster was updated."},
 		}),
 	}
-}
-
-func listKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	conn, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_kubernetes_cluster.listKubernetesCluster", "connection_error", err)
-		return nil, err
-	}
-	items, err := conn.ListLKEClusters(ctx, nil)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_kubernetes_cluster.listKubernetesCluster", "query_error", err)
-		return nil, err
-	}
-	for _, i := range items {
-		d.StreamListItem(ctx, i)
-	}
-	return nil, nil
-}
-
-func getKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	conn, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_kubernetes_cluster.getKubernetesCluster", "connection_error", err)
-		return nil, err
-	}
-	item, err := conn.GetLKECluster(ctx, int(d.EqualsQuals["id"].GetInt64Value()))
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_kubernetes_cluster.getKubernetesCluster", "query_error", err)
-		return nil, err
-	}
-	return item, err
 }
 
 func getKubeConfig(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

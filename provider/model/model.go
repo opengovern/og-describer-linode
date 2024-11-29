@@ -384,8 +384,23 @@ type NodeBalancerDescription struct {
 	Updated            *TimeStamp           `json:"updated"`
 }
 
-type ObjectStorageDescription struct {
-	AmountUsed int `json:"used"`
+type ObjectStorageBucketListResponse struct {
+	Data  []ObjectStorageBucketDescription `json:"data"`
+	Page  int                              `json:"page"`
+	Pages int                              `json:"pages"`
+}
+
+// ObjectStorageBucketDescription represents a ObjectStorage object
+type ObjectStorageBucketDescription struct {
+	Label string `json:"label"`
+
+	Cluster string `json:"cluster"`
+	Region  string `json:"region"`
+
+	Created  *TimeStamp `json:"-"`
+	Hostname string     `json:"hostname"`
+	Objects  int        `json:"objects"`
+	Size     int        `json:"size"`
 }
 
 type StackScriptUDF struct {
