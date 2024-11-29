@@ -25,7 +25,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"linode_kubernetes_cluster": tableLinodeKubernetesCluster(ctx),
 			"linode_node_balancer":      tableLinodeNodeBalancer(ctx),
 			"linode_volume":             tableLinodeVolume(ctx),
-			"linode_slack_script":       tableLinodeStackScript(ctx),
+			"linode_stack_script":       tableLinodeStackScript(ctx),
 			"linode_database":           tableLinodeDatabase(ctx),
 			"linode_longview_client":    tableLinodeLongviewClient(ctx),
 			"linode_object_storage":     tableLinodeObjectStorageBucket(ctx),
