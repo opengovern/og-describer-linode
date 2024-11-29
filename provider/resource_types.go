@@ -1,8 +1,8 @@
 package provider
 import (
-	"repo-url/provider/describer"
-	"repo-url/provider/configs"
-	model "github.com/opengovern/og-describer-integrationType/pkg/sdk/models"
+	"github.com/opengovern/og-describer-linode/provider/describer"
+	"github.com/opengovern/og-describer-linode/provider/configs"
+	model "github.com/opengovern/og-describer-linode/pkg/sdk/models"
 )
 var ResourceTypes = map[string]model.ResourceType{
 

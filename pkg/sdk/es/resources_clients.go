@@ -3,13 +3,10 @@ package opengovernance
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
+	linode "github.com/opengovern/og-describer-linode/provider/model"
 	essdk "github.com/opengovern/og-util/pkg/opengovernance-es-sdk"
 	steampipesdk "github.com/opengovern/og-util/pkg/steampipe"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	integrationTypeDescriber "repo-url/provider/describer"
-	integrationType "repo-url/provider/model"
 	"runtime"
 )
 
@@ -20,14 +17,14 @@ type Client struct {
 // ==========================  START: Account =============================
 
 type Account struct {
-	ResourceID      string                             `json:"resource_id"`
-	PlatformID      string                             `json:"platform_id"`
-	Description     integrationType.AccountDescription `json:"description"`
-	Metadata        integrationType.Metadata           `json:"metadata"`
-	DescribedBy     string                             `json:"described_by"`
-	ResourceType    string                             `json:"resource_type"`
-	IntegrationType string                             `json:"integration_type"`
-	IntegrationID   string                             `json:"integration_id"`
+	ResourceID      string                    `json:"resource_id"`
+	PlatformID      string                    `json:"platform_id"`
+	Description     linode.AccountDescription `json:"description"`
+	Metadata        linode.Metadata           `json:"metadata"`
+	DescribedBy     string                    `json:"described_by"`
+	ResourceType    string                    `json:"resource_type"`
+	IntegrationType string                    `json:"integration_type"`
+	IntegrationID   string                    `json:"integration_id"`
 }
 
 type AccountHit struct {
@@ -135,7 +132,7 @@ func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		return nil, err
 	}
 
-	paginator, err := k.NewAccountPaginator(essdk.BuildFilter(ctx, d.QueryContext, listAccountFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewAccountPaginator(essdk.BuildFilter(ctx, d.QueryContext, listAccountFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListAccount NewAccountPaginator", "error", err)
 		return nil, err
@@ -194,7 +191,7 @@ func GetAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewAccountPaginator(essdk.BuildFilter(ctx, d.QueryContext, getAccountFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewAccountPaginator(essdk.BuildFilter(ctx, d.QueryContext, getAccountFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -223,14 +220,14 @@ func GetAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 // ==========================  START: Database =============================
 
 type Database struct {
-	ResourceID      string                              `json:"resource_id"`
-	PlatformID      string                              `json:"platform_id"`
-	Description     integrationType.DatabaseDescription `json:"description"`
-	Metadata        integrationType.Metadata            `json:"metadata"`
-	DescribedBy     string                              `json:"described_by"`
-	ResourceType    string                              `json:"resource_type"`
-	IntegrationType string                              `json:"integration_type"`
-	IntegrationID   string                              `json:"integration_id"`
+	ResourceID      string                     `json:"resource_id"`
+	PlatformID      string                     `json:"platform_id"`
+	Description     linode.DatabaseDescription `json:"description"`
+	Metadata        linode.Metadata            `json:"metadata"`
+	DescribedBy     string                     `json:"described_by"`
+	ResourceType    string                     `json:"resource_type"`
+	IntegrationType string                     `json:"integration_type"`
+	IntegrationID   string                     `json:"integration_id"`
 }
 
 type DatabaseHit struct {
@@ -341,7 +338,7 @@ func ListDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		return nil, err
 	}
 
-	paginator, err := k.NewDatabasePaginator(essdk.BuildFilter(ctx, d.QueryContext, listDatabaseFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewDatabasePaginator(essdk.BuildFilter(ctx, d.QueryContext, listDatabaseFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListDatabase NewDatabasePaginator", "error", err)
 		return nil, err
@@ -403,7 +400,7 @@ func GetDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewDatabasePaginator(essdk.BuildFilter(ctx, d.QueryContext, getDatabaseFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewDatabasePaginator(essdk.BuildFilter(ctx, d.QueryContext, getDatabaseFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -432,14 +429,14 @@ func GetDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 // ==========================  START: Domain =============================
 
 type Domain struct {
-	ResourceID      string                            `json:"resource_id"`
-	PlatformID      string                            `json:"platform_id"`
-	Description     integrationType.DomainDescription `json:"description"`
-	Metadata        integrationType.Metadata          `json:"metadata"`
-	DescribedBy     string                            `json:"described_by"`
-	ResourceType    string                            `json:"resource_type"`
-	IntegrationType string                            `json:"integration_type"`
-	IntegrationID   string                            `json:"integration_id"`
+	ResourceID      string                   `json:"resource_id"`
+	PlatformID      string                   `json:"platform_id"`
+	Description     linode.DomainDescription `json:"description"`
+	Metadata        linode.Metadata          `json:"metadata"`
+	DescribedBy     string                   `json:"described_by"`
+	ResourceType    string                   `json:"resource_type"`
+	IntegrationType string                   `json:"integration_type"`
+	IntegrationID   string                   `json:"integration_id"`
 }
 
 type DomainHit struct {
@@ -552,7 +549,7 @@ func ListDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		return nil, err
 	}
 
-	paginator, err := k.NewDomainPaginator(essdk.BuildFilter(ctx, d.QueryContext, listDomainFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewDomainPaginator(essdk.BuildFilter(ctx, d.QueryContext, listDomainFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListDomain NewDomainPaginator", "error", err)
 		return nil, err
@@ -616,7 +613,7 @@ func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewDomainPaginator(essdk.BuildFilter(ctx, d.QueryContext, getDomainFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewDomainPaginator(essdk.BuildFilter(ctx, d.QueryContext, getDomainFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -645,14 +642,14 @@ func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 // ==========================  START: Event =============================
 
 type Event struct {
-	ResourceID      string                           `json:"resource_id"`
-	PlatformID      string                           `json:"platform_id"`
-	Description     integrationType.EventDescription `json:"description"`
-	Metadata        integrationType.Metadata         `json:"metadata"`
-	DescribedBy     string                           `json:"described_by"`
-	ResourceType    string                           `json:"resource_type"`
-	IntegrationType string                           `json:"integration_type"`
-	IntegrationID   string                           `json:"integration_id"`
+	ResourceID      string                  `json:"resource_id"`
+	PlatformID      string                  `json:"platform_id"`
+	Description     linode.EventDescription `json:"description"`
+	Metadata        linode.Metadata         `json:"metadata"`
+	DescribedBy     string                  `json:"described_by"`
+	ResourceType    string                  `json:"resource_type"`
+	IntegrationType string                  `json:"integration_type"`
+	IntegrationID   string                  `json:"integration_id"`
 }
 
 type EventHit struct {
@@ -758,7 +755,7 @@ func ListEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		return nil, err
 	}
 
-	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, listEventFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, listEventFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListEvent NewEventPaginator", "error", err)
 		return nil, err
@@ -815,7 +812,7 @@ func GetEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, getEventFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, getEventFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -844,14 +841,14 @@ func GetEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 // ==========================  START: Instance =============================
 
 type Instance struct {
-	ResourceID      string                              `json:"resource_id"`
-	PlatformID      string                              `json:"platform_id"`
-	Description     integrationType.InstanceDescription `json:"description"`
-	Metadata        integrationType.Metadata            `json:"metadata"`
-	DescribedBy     string                              `json:"described_by"`
-	ResourceType    string                              `json:"resource_type"`
-	IntegrationType string                              `json:"integration_type"`
-	IntegrationID   string                              `json:"integration_id"`
+	ResourceID      string                     `json:"resource_id"`
+	PlatformID      string                     `json:"platform_id"`
+	Description     linode.InstanceDescription `json:"description"`
+	Metadata        linode.Metadata            `json:"metadata"`
+	DescribedBy     string                     `json:"described_by"`
+	ResourceType    string                     `json:"resource_type"`
+	IntegrationType string                     `json:"integration_type"`
+	IntegrationID   string                     `json:"integration_id"`
 }
 
 type InstanceHit struct {
@@ -962,7 +959,7 @@ func ListInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		return nil, err
 	}
 
-	paginator, err := k.NewInstancePaginator(essdk.BuildFilter(ctx, d.QueryContext, listInstanceFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewInstancePaginator(essdk.BuildFilter(ctx, d.QueryContext, listInstanceFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListInstance NewInstancePaginator", "error", err)
 		return nil, err
@@ -1024,7 +1021,7 @@ func GetInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewInstancePaginator(essdk.BuildFilter(ctx, d.QueryContext, getInstanceFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewInstancePaginator(essdk.BuildFilter(ctx, d.QueryContext, getInstanceFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -1053,14 +1050,14 @@ func GetInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 // ==========================  START: Firewall =============================
 
 type Firewall struct {
-	ResourceID      string                              `json:"resource_id"`
-	PlatformID      string                              `json:"platform_id"`
-	Description     integrationType.FirewallDescription `json:"description"`
-	Metadata        integrationType.Metadata            `json:"metadata"`
-	DescribedBy     string                              `json:"described_by"`
-	ResourceType    string                              `json:"resource_type"`
-	IntegrationType string                              `json:"integration_type"`
-	IntegrationID   string                              `json:"integration_id"`
+	ResourceID      string                     `json:"resource_id"`
+	PlatformID      string                     `json:"platform_id"`
+	Description     linode.FirewallDescription `json:"description"`
+	Metadata        linode.Metadata            `json:"metadata"`
+	DescribedBy     string                     `json:"described_by"`
+	ResourceType    string                     `json:"resource_type"`
+	IntegrationType string                     `json:"integration_type"`
+	IntegrationID   string                     `json:"integration_id"`
 }
 
 type FirewallHit struct {
@@ -1166,7 +1163,7 @@ func ListFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		return nil, err
 	}
 
-	paginator, err := k.NewFirewallPaginator(essdk.BuildFilter(ctx, d.QueryContext, listFirewallFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewFirewallPaginator(essdk.BuildFilter(ctx, d.QueryContext, listFirewallFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListFirewall NewFirewallPaginator", "error", err)
 		return nil, err
@@ -1223,7 +1220,7 @@ func GetFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewFirewallPaginator(essdk.BuildFilter(ctx, d.QueryContext, getFirewallFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewFirewallPaginator(essdk.BuildFilter(ctx, d.QueryContext, getFirewallFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -1252,14 +1249,14 @@ func GetFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 // ==========================  START: Image =============================
 
 type Image struct {
-	ResourceID      string                           `json:"resource_id"`
-	PlatformID      string                           `json:"platform_id"`
-	Description     integrationType.ImageDescription `json:"description"`
-	Metadata        integrationType.Metadata         `json:"metadata"`
-	DescribedBy     string                           `json:"described_by"`
-	ResourceType    string                           `json:"resource_type"`
-	IntegrationType string                           `json:"integration_type"`
-	IntegrationID   string                           `json:"integration_id"`
+	ResourceID      string                  `json:"resource_id"`
+	PlatformID      string                  `json:"platform_id"`
+	Description     linode.ImageDescription `json:"description"`
+	Metadata        linode.Metadata         `json:"metadata"`
+	DescribedBy     string                  `json:"described_by"`
+	ResourceType    string                  `json:"resource_type"`
+	IntegrationType string                  `json:"integration_type"`
+	IntegrationID   string                  `json:"integration_id"`
 }
 
 type ImageHit struct {
@@ -1367,7 +1364,7 @@ func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		return nil, err
 	}
 
-	paginator, err := k.NewImagePaginator(essdk.BuildFilter(ctx, d.QueryContext, listImageFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewImagePaginator(essdk.BuildFilter(ctx, d.QueryContext, listImageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListImage NewImagePaginator", "error", err)
 		return nil, err
@@ -1426,7 +1423,7 @@ func GetImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewImagePaginator(essdk.BuildFilter(ctx, d.QueryContext, getImageFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewImagePaginator(essdk.BuildFilter(ctx, d.QueryContext, getImageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -1455,14 +1452,14 @@ func GetImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 // ==========================  START: KubernetesCluster =============================
 
 type KubernetesCluster struct {
-	ResourceID      string                                       `json:"resource_id"`
-	PlatformID      string                                       `json:"platform_id"`
-	Description     integrationType.KubernetesClusterDescription `json:"description"`
-	Metadata        integrationType.Metadata                     `json:"metadata"`
-	DescribedBy     string                                       `json:"described_by"`
-	ResourceType    string                                       `json:"resource_type"`
-	IntegrationType string                                       `json:"integration_type"`
-	IntegrationID   string                                       `json:"integration_id"`
+	ResourceID      string                              `json:"resource_id"`
+	PlatformID      string                              `json:"platform_id"`
+	Description     linode.KubernetesClusterDescription `json:"description"`
+	Metadata        linode.Metadata                     `json:"metadata"`
+	DescribedBy     string                              `json:"described_by"`
+	ResourceType    string                              `json:"resource_type"`
+	IntegrationType string                              `json:"integration_type"`
+	IntegrationID   string                              `json:"integration_id"`
 }
 
 type KubernetesClusterHit struct {
@@ -1571,7 +1568,7 @@ func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 		return nil, err
 	}
 
-	paginator, err := k.NewKubernetesClusterPaginator(essdk.BuildFilter(ctx, d.QueryContext, listKubernetesClusterFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewKubernetesClusterPaginator(essdk.BuildFilter(ctx, d.QueryContext, listKubernetesClusterFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListKubernetesCluster NewKubernetesClusterPaginator", "error", err)
 		return nil, err
@@ -1631,7 +1628,7 @@ func GetKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewKubernetesClusterPaginator(essdk.BuildFilter(ctx, d.QueryContext, getKubernetesClusterFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewKubernetesClusterPaginator(essdk.BuildFilter(ctx, d.QueryContext, getKubernetesClusterFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -1660,14 +1657,14 @@ func GetKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 // ==========================  START: LongViewClient =============================
 
 type LongViewClient struct {
-	ResourceID      string                                    `json:"resource_id"`
-	PlatformID      string                                    `json:"platform_id"`
-	Description     integrationType.LongViewClientDescription `json:"description"`
-	Metadata        integrationType.Metadata                  `json:"metadata"`
-	DescribedBy     string                                    `json:"described_by"`
-	ResourceType    string                                    `json:"resource_type"`
-	IntegrationType string                                    `json:"integration_type"`
-	IntegrationID   string                                    `json:"integration_id"`
+	ResourceID      string                           `json:"resource_id"`
+	PlatformID      string                           `json:"platform_id"`
+	Description     linode.LongViewClientDescription `json:"description"`
+	Metadata        linode.Metadata                  `json:"metadata"`
+	DescribedBy     string                           `json:"described_by"`
+	ResourceType    string                           `json:"resource_type"`
+	IntegrationType string                           `json:"integration_type"`
+	IntegrationID   string                           `json:"integration_id"`
 }
 
 type LongViewClientHit struct {
@@ -1778,7 +1775,7 @@ func ListLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 		return nil, err
 	}
 
-	paginator, err := k.NewLongViewClientPaginator(essdk.BuildFilter(ctx, d.QueryContext, listLongViewClientFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewLongViewClientPaginator(essdk.BuildFilter(ctx, d.QueryContext, listLongViewClientFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListLongViewClient NewLongViewClientPaginator", "error", err)
 		return nil, err
@@ -1840,7 +1837,7 @@ func GetLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewLongViewClientPaginator(essdk.BuildFilter(ctx, d.QueryContext, getLongViewClientFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewLongViewClientPaginator(essdk.BuildFilter(ctx, d.QueryContext, getLongViewClientFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -1869,14 +1866,14 @@ func GetLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 // ==========================  START: NodeBalancer =============================
 
 type NodeBalancer struct {
-	ResourceID      string                                  `json:"resource_id"`
-	PlatformID      string                                  `json:"platform_id"`
-	Description     integrationType.NodeBalancerDescription `json:"description"`
-	Metadata        integrationType.Metadata                `json:"metadata"`
-	DescribedBy     string                                  `json:"described_by"`
-	ResourceType    string                                  `json:"resource_type"`
-	IntegrationType string                                  `json:"integration_type"`
-	IntegrationID   string                                  `json:"integration_id"`
+	ResourceID      string                         `json:"resource_id"`
+	PlatformID      string                         `json:"platform_id"`
+	Description     linode.NodeBalancerDescription `json:"description"`
+	Metadata        linode.Metadata                `json:"metadata"`
+	DescribedBy     string                         `json:"described_by"`
+	ResourceType    string                         `json:"resource_type"`
+	IntegrationType string                         `json:"integration_type"`
+	IntegrationID   string                         `json:"integration_id"`
 }
 
 type NodeBalancerHit struct {
@@ -1985,7 +1982,7 @@ func ListNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 		return nil, err
 	}
 
-	paginator, err := k.NewNodeBalancerPaginator(essdk.BuildFilter(ctx, d.QueryContext, listNodeBalancerFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewNodeBalancerPaginator(essdk.BuildFilter(ctx, d.QueryContext, listNodeBalancerFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListNodeBalancer NewNodeBalancerPaginator", "error", err)
 		return nil, err
@@ -2045,7 +2042,7 @@ func GetNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewNodeBalancerPaginator(essdk.BuildFilter(ctx, d.QueryContext, getNodeBalancerFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewNodeBalancerPaginator(essdk.BuildFilter(ctx, d.QueryContext, getNodeBalancerFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -2074,14 +2071,14 @@ func GetNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 // ==========================  START: ObjectStorage =============================
 
 type ObjectStorage struct {
-	ResourceID      string                                   `json:"resource_id"`
-	PlatformID      string                                   `json:"platform_id"`
-	Description     integrationType.ObjectStorageDescription `json:"description"`
-	Metadata        integrationType.Metadata                 `json:"metadata"`
-	DescribedBy     string                                   `json:"described_by"`
-	ResourceType    string                                   `json:"resource_type"`
-	IntegrationType string                                   `json:"integration_type"`
-	IntegrationID   string                                   `json:"integration_id"`
+	ResourceID      string                          `json:"resource_id"`
+	PlatformID      string                          `json:"platform_id"`
+	Description     linode.ObjectStorageDescription `json:"description"`
+	Metadata        linode.Metadata                 `json:"metadata"`
+	DescribedBy     string                          `json:"described_by"`
+	ResourceType    string                          `json:"resource_type"`
+	IntegrationType string                          `json:"integration_type"`
+	IntegrationID   string                          `json:"integration_id"`
 }
 
 type ObjectStorageHit struct {
@@ -2192,7 +2189,7 @@ func ListObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 		return nil, err
 	}
 
-	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, listObjectStorageFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, listObjectStorageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListObjectStorage NewObjectStoragePaginator", "error", err)
 		return nil, err
@@ -2254,7 +2251,7 @@ func GetObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, getObjectStorageFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewObjectStoragePaginator(essdk.BuildFilter(ctx, d.QueryContext, getObjectStorageFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}
@@ -2283,14 +2280,14 @@ func GetObjectStorage(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 // ==========================  START: StackScript =============================
 
 type StackScript struct {
-	ResourceID      string                                 `json:"resource_id"`
-	PlatformID      string                                 `json:"platform_id"`
-	Description     integrationType.StackScriptDescription `json:"description"`
-	Metadata        integrationType.Metadata               `json:"metadata"`
-	DescribedBy     string                                 `json:"described_by"`
-	ResourceType    string                                 `json:"resource_type"`
-	IntegrationType string                                 `json:"integration_type"`
-	IntegrationID   string                                 `json:"integration_id"`
+	ResourceID      string                        `json:"resource_id"`
+	PlatformID      string                        `json:"platform_id"`
+	Description     linode.StackScriptDescription `json:"description"`
+	Metadata        linode.Metadata               `json:"metadata"`
+	DescribedBy     string                        `json:"described_by"`
+	ResourceType    string                        `json:"resource_type"`
+	IntegrationType string                        `json:"integration_type"`
+	IntegrationID   string                        `json:"integration_id"`
 }
 
 type StackScriptHit struct {
@@ -2401,7 +2398,7 @@ func ListStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 		return nil, err
 	}
 
-	paginator, err := k.NewStackScriptPaginator(essdk.BuildFilter(ctx, d.QueryContext, listStackScriptFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	paginator, err := k.NewStackScriptPaginator(essdk.BuildFilter(ctx, d.QueryContext, listStackScriptFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
 	if err != nil {
 		plugin.Logger(ctx).Error("ListStackScript NewStackScriptPaginator", "error", err)
 		return nil, err
@@ -2463,7 +2460,7 @@ func GetStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 	}
 
 	limit := int64(1)
-	paginator, err := k.NewStackScriptPaginator(essdk.BuildFilter(ctx, d.QueryContext, getStackScriptFilters, "integrationType", accountId, encodedResourceCollectionFilters, clientType), &limit)
+	paginator, err := k.NewStackScriptPaginator(essdk.BuildFilter(ctx, d.QueryContext, getStackScriptFilters, "linode", accountId, encodedResourceCollectionFilters, clientType), &limit)
 	if err != nil {
 		return nil, err
 	}

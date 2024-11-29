@@ -1,7 +1,7 @@
 package steampipe
 
 import (
-	"repo-url/pkg/sdk/es"
+	"github.com/opengovern/og-describer-linode/pkg/sdk/es"
 )
 
 var Map = map[string]string{
