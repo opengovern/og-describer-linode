@@ -63,7 +63,7 @@ func GetEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID string)
 
 func processEvents(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var events []model.EventDescription
-	var eventListResponse *model.EventListResponse
+	var eventListResponse model.EventListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/account/events"
 	page := 1
@@ -122,7 +122,7 @@ func processEvents(ctx context.Context, handler *LinodeAPIHandler, openaiChan ch
 }
 
 func processEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.EventDescription, error) {
-	var event *model.EventDescription
+	var event model.EventDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/account/events/"
 
@@ -138,8 +138,9 @@ func processEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID str
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(event); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&event); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -149,5 +150,5 @@ func processEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID str
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return event, nil
+	return &event, nil
 }

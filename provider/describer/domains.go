@@ -63,7 +63,7 @@ func GetDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 
 func processDomains(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var domains []model.DomainDescription
-	var domainListResponse *model.DomainListResponse
+	var domainListResponse model.DomainListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/domains"
 	page := 1
@@ -122,7 +122,7 @@ func processDomains(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 }
 
 func processDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.DomainDescription, error) {
-	var domain *model.DomainDescription
+	var domain model.DomainDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/domains/"
 
@@ -138,8 +138,9 @@ func processDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID st
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(domain); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&domain); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -149,5 +150,5 @@ func processDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID st
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return domain, nil
+	return &domain, nil
 }

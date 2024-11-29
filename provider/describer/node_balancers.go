@@ -67,7 +67,7 @@ func GetNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 
 func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var nodeBalancers []model.NodeBalancerDescription
-	var nodeBalancerListResponse *model.NodeBalancerListResponse
+	var nodeBalancerListResponse model.NodeBalancerListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers"
 	page := 1
@@ -131,7 +131,7 @@ func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openai
 }
 
 func processNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.NodeBalancerDescription, error) {
-	var nodeBalancer *model.NodeBalancerDescription
+	var nodeBalancer model.NodeBalancerDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers/"
 
@@ -147,8 +147,9 @@ func processNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourc
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(nodeBalancer); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&nodeBalancer); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -158,5 +159,5 @@ func processNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourc
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return nodeBalancer, nil
+	return &nodeBalancer, nil
 }

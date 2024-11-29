@@ -48,7 +48,7 @@ func ListDatabases(ctx context.Context, handler *LinodeAPIHandler, stream *model
 
 func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var databases []model.DatabaseDescription
-	var databaseListResponse *model.DatabaseListResponse
+	var databaseListResponse model.DatabaseListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/databases/instances"
 	page := 1

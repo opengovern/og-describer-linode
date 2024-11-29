@@ -50,17 +50,19 @@ func (h *LinodeAPIHandler) DoRequest(ctx context.Context, req *http.Request, req
 			return nil
 		}
 		// Set rate limiter new value
-		retryAfter := resp.Header.Get("Retry-After")
 		var resetDuration int
-		if retryAfter != "" {
-			resetDuration, _ = strconv.Atoi(retryAfter)
-		}
-		var remainRequests int
-		remainRequestsStr := resp.Header.Get("X-RateLimit-Remaining")
-		if remainRequestsStr != "" {
-			remainRequests, err = strconv.Atoi(remainRequestsStr)
-			if err == nil && resetDuration > 0 {
-				h.RateLimiter = rate.NewLimiter(rate.Every(time.Duration(resetDuration)/time.Duration(remainRequests)), 1)
+		if resp != nil {
+			retryAfter := resp.Header.Get("Retry-After")
+			if retryAfter != "" {
+				resetDuration, _ = strconv.Atoi(retryAfter)
+			}
+			var remainRequests int
+			remainRequestsStr := resp.Header.Get("X-RateLimit-Remaining")
+			if remainRequestsStr != "" {
+				remainRequests, err = strconv.Atoi(remainRequestsStr)
+				if err == nil && resetDuration > 0 {
+					h.RateLimiter = rate.NewLimiter(rate.Every(time.Duration(resetDuration)/time.Duration(remainRequests)), 1)
+				}
 			}
 		}
 		// Handle rate limit errors

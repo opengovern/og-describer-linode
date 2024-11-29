@@ -1,7 +1,7 @@
 [
   {
     "ResourceName": "Linode/Account",
-    "ListDescriber": "DescribeListByLinode(describer.GetAccount)",
+    "ListDescriber": "DescribeListByLinode(describer.ListAccounts)",
     "GetDescriber": "",
     "SteampipeTable": "linode_account",
     "Model": "Account"
@@ -16,21 +16,21 @@
   {
     "ResourceName": "Linode/Domain",
     "ListDescriber": "DescribeListByLinode(describer.ListDomains)",
-    "GetDescriber": "",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetDomain)",
     "SteampipeTable": "linode_domain",
     "Model": "Domain"
   },
   {
     "ResourceName": "Linode/Event",
     "ListDescriber": "DescribeListByLinode(describer.ListEvents)",
-    "GetDescriber": "",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetEvent)",
     "SteampipeTable": "linode_event",
     "Model": "Event"
   },
   {
     "ResourceName": "Linode/Firewall",
     "ListDescriber": "DescribeListByLinode(describer.ListFirewalls)",
-    "GetDescriber": "",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetFirewall)",
     "SteampipeTable": "linode_firewall",
     "Model": "Firewall"
   },
@@ -77,7 +77,7 @@
     "Model": "ObjectStorage"
   },
   {
-    "ResourceName": "Linode/SlackScripts",
+    "ResourceName": "Linode/SlackScript",
     "ListDescriber": "DescribeListByLinode(describer.ListStackScripts)",
     "GetDescriber": "DescribeSingleByLinode(describer.GetStackScript)",
     "SteampipeTable": "linode_slack_script",

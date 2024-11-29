@@ -63,7 +63,7 @@ func GetLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceI
 
 func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var linodeInstances []model.InstanceDescription
-	var linodeListResponse *model.LinodeListResponse
+	var linodeListResponse model.LinodeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances"
 	page := 1
@@ -123,7 +123,7 @@ func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, open
 }
 
 func processLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.InstanceDescription, error) {
-	var linode *model.InstanceDescription
+	var linode model.InstanceDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances/"
 
@@ -139,8 +139,9 @@ func processLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resou
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(linode); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&linode); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resou
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return linode, nil
+	return &linode, nil
 }

@@ -63,7 +63,7 @@ func GetIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID str
 
 func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var ipAddresses []model.IPAddressDescription
-	var ipAddressListResponse *model.IPAddressListResponse
+	var ipAddressListResponse model.IPAddressListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/networking/ips"
 	page := 1
@@ -123,7 +123,7 @@ func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiCh
 }
 
 func processIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.IPAddressDescription, error) {
-	var ipAddress *model.IPAddressDescription
+	var ipAddress model.IPAddressDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/networking/ips/"
 
@@ -139,8 +139,9 @@ func processIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(ipAddress); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&ipAddress); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return ipAddress, nil
+	return &ipAddress, nil
 }

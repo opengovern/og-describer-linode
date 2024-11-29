@@ -63,7 +63,7 @@ func GetLongViewClient(ctx context.Context, handler *LinodeAPIHandler, resourceI
 
 func processLongViewClients(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var clients []model.LongViewClientDescription
-	var clientListResponse *model.LongViewClientListResponse
+	var clientListResponse model.LongViewClientListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/longview/clients"
 	page := 1
@@ -123,7 +123,7 @@ func processLongViewClients(ctx context.Context, handler *LinodeAPIHandler, open
 }
 
 func processLongViewClient(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.LongViewClientDescription, error) {
-	var client *model.LongViewClientDescription
+	var client model.LongViewClientDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/longview/clients/"
 
@@ -139,8 +139,9 @@ func processLongViewClient(ctx context.Context, handler *LinodeAPIHandler, resou
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(client); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&client); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processLongViewClient(ctx context.Context, handler *LinodeAPIHandler, resou
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return client, nil
+	return &client, nil
 }

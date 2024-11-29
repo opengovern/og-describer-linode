@@ -23,7 +23,9 @@ var (
 	pluginPath        = flag.String("pluginPath", "", "Location of the steampipe plugin")
 )
 
-const PluginPath = "../../../../steampipe-plugin-linode/linode"
+const PluginPath = "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\steampipe-plugin-linode\\linode"
+
+//const PluginPath = "../../../../steampipe-plugin-linode/linode"
 
 type IntegrationType struct {
 	Name            string
@@ -43,11 +45,13 @@ type ResourceType struct {
 
 func main() {
 	if output == nil || len(*output) == 0 {
-		v := "../../es/resources_clients.go"
+		//v := "../../es/resources_clients.go"
+		v := "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\pkg\\sdk\\es\\resources_clients.go"
 		output = &v
 	}
 	if file == nil || len(*file) == 0 {
-		v := "../../../../provider/model/model.go"
+		//v := "../../../../provider/model/model.go"
+		v := "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\provider\\model\\model.go"
 		file = &v
 	}
 
@@ -57,7 +61,8 @@ func main() {
 	}
 
 	if resourceTypesFile == nil || len(*resourceTypesFile) == 0 {
-		rt := "../../../../provider/resource_types/resource-types.json"
+		//rt := "../../../../provider/resource_types/resource-types.json"
+		rt := "C:\\Users\\ASUS\\GolandProjects\\og-describer-linode\\provider\\resource_types\\resource-types.json"
 		resourceTypesFile = &rt
 	}
 

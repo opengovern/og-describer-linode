@@ -63,7 +63,7 @@ func GetKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, resour
 
 func processKubernetesClusters(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var clusters []model.KubernetesClusterDescription
-	var clusterListResponse *model.KubernetesClusterListResponse
+	var clusterListResponse model.KubernetesClusterListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/lke/clusters"
 	page := 1
@@ -123,7 +123,7 @@ func processKubernetesClusters(ctx context.Context, handler *LinodeAPIHandler, o
 }
 
 func processKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.KubernetesClusterDescription, error) {
-	var cluster *model.KubernetesClusterDescription
+	var cluster model.KubernetesClusterDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/lke/clusters/"
 
@@ -139,8 +139,9 @@ func processKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, re
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(cluster); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&cluster); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, re
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return cluster, nil
+	return &cluster, nil
 }

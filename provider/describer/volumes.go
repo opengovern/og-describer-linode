@@ -63,7 +63,7 @@ func GetVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 
 func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var volumes []model.VolumeDescription
-	var volumeListResponse *model.VolumeListResponse
+	var volumeListResponse model.VolumeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/volumes"
 	page := 1
@@ -122,7 +122,7 @@ func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 }
 
 func processVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.VolumeDescription, error) {
-	var volume *model.VolumeDescription
+	var volume model.VolumeDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/volumes/"
 
@@ -138,8 +138,9 @@ func processVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID st
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(volume); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&volume); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -149,5 +150,5 @@ func processVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID st
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return volume, nil
+	return &volume, nil
 }

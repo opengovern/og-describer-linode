@@ -25,7 +25,7 @@ func GetObjectStorage(ctx context.Context, handler *LinodeAPIHandler, resourceID
 }
 
 func processObjectStorage(ctx context.Context, handler *LinodeAPIHandler) (*model.ObjectStorageDescription, error) {
-	var objectStorage *model.ObjectStorageDescription
+	var objectStorage model.ObjectStorageDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/object-storage/transfer"
 
@@ -40,8 +40,9 @@ func processObjectStorage(ctx context.Context, handler *LinodeAPIHandler) (*mode
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(objectStorage); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&objectStorage); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -51,5 +52,5 @@ func processObjectStorage(ctx context.Context, handler *LinodeAPIHandler) (*mode
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return objectStorage, nil
+	return &objectStorage, nil
 }

@@ -63,7 +63,7 @@ func GetVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (
 
 func processVPCs(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var vpcs []model.VPCDescription
-	var vpcListResponse *model.VPCListResponse
+	var vpcListResponse model.VPCListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/vpcs"
 	page := 1
@@ -122,7 +122,7 @@ func processVPCs(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan
 }
 
 func processVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.VPCDescription, error) {
-	var vpc *model.VPCDescription
+	var vpc model.VPCDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/vpcs/"
 
@@ -131,6 +131,7 @@ func processVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID strin
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	requestFunc := func(req *http.Request) (*http.Response, error) {
 		var e error
@@ -139,7 +140,7 @@ func processVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID strin
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
 
-		if e = json.NewDecoder(resp.Body).Decode(vpc); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&vpc); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -149,5 +150,5 @@ func processVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID strin
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return vpc, nil
+	return &vpc, nil
 }

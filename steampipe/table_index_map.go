@@ -16,7 +16,7 @@ var Map = map[string]string{
   "Linode/Longview/Client": "linode_longview_client",
   "Linode/NodeBalancer": "linode_node_balancer",
   "Linode/ObjectStorage": "linode_object_storage",
-  "Linode/SlackScripts": "linode_slack_script",
+  "Linode/SlackScript": "linode_slack_script",
 }
 
 var DescriptionMap = map[string]interface{}{
@@ -31,7 +31,7 @@ var DescriptionMap = map[string]interface{}{
   "Linode/Longview/Client": opengovernance.LongViewClient{},
   "Linode/NodeBalancer": opengovernance.NodeBalancer{},
   "Linode/ObjectStorage": opengovernance.ObjectStorage{},
-  "Linode/SlackScripts": opengovernance.StackScript{},
+  "Linode/SlackScript": opengovernance.StackScript{},
 }
 
 var ReverseMap = map[string]string{
@@ -46,5 +46,5 @@ var ReverseMap = map[string]string{
   "linode_longview_client": "Linode/Longview/Client",
   "linode_node_balancer": "Linode/NodeBalancer",
   "linode_object_storage": "Linode/ObjectStorage",
-  "linode_slack_script": "Linode/SlackScripts",
+  "linode_slack_script": "Linode/SlackScript",
 }

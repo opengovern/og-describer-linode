@@ -63,7 +63,7 @@ func GetStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID s
 
 func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var stackScripts []model.StackScriptDescription
-	var stackScriptListResponse *model.StackScriptListResponse
+	var stackScriptListResponse model.StackScriptListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/stackscripts"
 	page := 1
@@ -123,7 +123,7 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 }
 
 func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.StackScriptDescription, error) {
-	var stackScript *model.StackScriptDescription
+	var stackScript model.StackScriptDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/stackscripts/"
 
@@ -139,8 +139,9 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(stackScript); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&stackScript); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processStackScript(ctx context.Context, handler *LinodeAPIHandler, resource
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return stackScript, nil
+	return &stackScript, nil
 }

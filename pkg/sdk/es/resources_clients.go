@@ -2315,7 +2315,7 @@ type StackScriptPaginator struct {
 }
 
 func (k Client) NewStackScriptPaginator(filters []essdk.BoolFilter, limit *int64) (StackScriptPaginator, error) {
-	paginator, err := essdk.NewPaginator(k.ES(), "linode_slackscripts", filters, limit)
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_slackscript", filters, limit)
 	if err != nil {
 		return StackScriptPaginator{}, err
 	}

@@ -63,7 +63,7 @@ func GetFirewall(ctx context.Context, handler *LinodeAPIHandler, resourceID stri
 
 func processFirewalls(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var firewalls []model.FirewallDescription
-	var firewallListResponse *model.FirewallListResponse
+	var firewallListResponse model.FirewallListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/networking/firewalls"
 	page := 1
@@ -123,7 +123,7 @@ func processFirewalls(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 }
 
 func processFirewall(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.FirewallDescription, error) {
-	var firewall *model.FirewallDescription
+	var firewall model.FirewallDescription
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/networking/firewalls/"
 
@@ -139,8 +139,9 @@ func processFirewall(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(firewall); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&firewall); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -150,5 +151,5 @@ func processFirewall(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return firewall, nil
+	return &firewall, nil
 }

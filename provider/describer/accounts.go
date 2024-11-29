@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func GetAccount(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
+func ListAccounts(ctx context.Context, handler *LinodeAPIHandler, stream *models.StreamSender) ([]models.Resource, error) {
 	account, err := processAccount(ctx, handler)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func GetAccount(ctx context.Context, handler *LinodeAPIHandler, stream *models.S
 }
 
 func processAccount(ctx context.Context, handler *LinodeAPIHandler) (*model.Account, error) {
-	var account *model.Account
+	var account model.Account
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/account"
 
@@ -67,8 +67,9 @@ func processAccount(ctx context.Context, handler *LinodeAPIHandler) (*model.Acco
 		if e != nil {
 			return nil, fmt.Errorf("request execution failed: %w", e)
 		}
+		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(account); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&account); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -78,5 +79,5 @@ func processAccount(ctx context.Context, handler *LinodeAPIHandler) (*model.Acco
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return account, nil
+	return &account, nil
 }
