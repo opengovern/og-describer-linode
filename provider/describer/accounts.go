@@ -33,7 +33,7 @@ func ListAccounts(ctx context.Context, handler *LinodeAPIHandler, stream *models
 				CreditCard:        account.CreditCard,
 				FirstName:         account.FirstName,
 				LastName:          account.LastName,
-				Euuid:             account.Euuid,
+				Euuid:             account.EUUID,
 				Phone:             account.Phone,
 				State:             account.State,
 				TaxID:             account.TaxID,

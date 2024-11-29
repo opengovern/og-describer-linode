@@ -49,6 +49,9 @@ func (h *LinodeAPIHandler) DoRequest(ctx context.Context, req *http.Request, req
 		if err == nil {
 			return nil
 		}
+		if resp == nil {
+			return err
+		}
 		// Set rate limiter new value
 		var resetDuration int
 		if resp != nil {
