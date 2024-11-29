@@ -5,7 +5,6 @@
 package model
 
 import (
-	"github.com/linode/linodego"
 	"net"
 	"time"
 )
@@ -283,14 +282,98 @@ type KubernetesClusterListResponse struct {
 }
 
 type KubernetesClusterDescription struct {
-	linodego.LKECluster
 	ID           int                    `json:"id"`
-	Created      *time.Time             `json:"-"`
-	Updated      *time.Time             `json:"-"`
+	Created      *time.Time             `json:"created"`
+	Updated      *time.Time             `json:"updated"`
 	Label        string                 `json:"label"`
 	Region       string                 `json:"region"`
 	Status       string                 `json:"status"`
 	K8sVersion   string                 `json:"k8s_version"`
 	Tags         []string               `json:"tags"`
 	ControlPlane LKEClusterControlPlane `json:"control_plane"`
+}
+
+type LongViewClientListResponse struct {
+	Data  []LongViewClientDescription `json:"data"`
+	Page  int                         `json:"page"`
+	Pages int                         `json:"pages"`
+}
+
+type LongViewClientDescription struct {
+	ID          int        `json:"id"`
+	APIKey      string     `json:"api_key"`
+	Created     *time.Time `json:"created"`
+	InstallCode string     `json:"install_code"`
+	Label       string     `json:"label"`
+	Updated     *time.Time `json:"updated"`
+	Apps        struct {
+		Apache any `json:"apache"`
+		MySQL  any `json:"mysql"`
+		NginX  any `json:"nginx"`
+	} `json:"apps"`
+}
+
+type NodeBalancerTransfer struct {
+	Total *float64 `json:"total"`
+	Out   *float64 `json:"out"`
+	In    *float64 `json:"in"`
+}
+
+type NodeBalancerListResponse struct {
+	Data  []NodeBalancerDescription `json:"data"`
+	Page  int                       `json:"page"`
+	Pages int                       `json:"pages"`
+}
+
+type NodeBalancerDescription struct {
+	ID                 int                  `json:"id"`
+	Label              *string              `json:"label"`
+	Region             string               `json:"region"`
+	Hostname           *string              `json:"hostname"`
+	IPv4               *string              `json:"ipv4"`
+	IPv6               *string              `json:"ipv6"`
+	ClientConnThrottle int                  `json:"client_conn_throttle"`
+	Transfer           NodeBalancerTransfer `json:"transfer"`
+	Tags               []string             `json:"tags"`
+	Created            *time.Time           `json:"created"`
+	Updated            *time.Time           `json:"updated"`
+}
+
+type ObjectStorageDescription struct {
+	AmountUsed int `json:"used"`
+}
+
+type StackScriptUDF struct {
+	Label   string `json:"label"`
+	Name    string `json:"name"`
+	Example string `json:"example"`
+	OneOf   string `json:"oneOf,omitempty"`
+	ManyOf  string `json:"manyOf,omitempty"`
+	Default string `json:"default,omitempty"`
+}
+
+type StackScriptListResponse struct {
+	Data  []StackScriptDescription `json:"data"`
+	Page  int                      `json:"page"`
+	Pages int                      `json:"pages"`
+}
+
+type StackScriptDescription struct {
+	ID                int               `json:"id"`
+	Username          string            `json:"username"`
+	Label             string            `json:"label"`
+	Description       string            `json:"description"`
+	Ordinal           int               `json:"ordinal"`
+	LogoURL           string            `json:"logo_url"`
+	Images            []string          `json:"images"`
+	DeploymentsTotal  int               `json:"deployments_total"`
+	DeploymentsActive int               `json:"deployments_active"`
+	IsPublic          bool              `json:"is_public"`
+	Mine              bool              `json:"mine"`
+	Created           *time.Time        `json:"created"`
+	Updated           *time.Time        `json:"updated"`
+	RevNote           string            `json:"rev_note"`
+	Script            string            `json:"script"`
+	UserDefinedFields *[]StackScriptUDF `json:"user_defined_fields"`
+	UserGravatarID    string            `json:"user_gravatar_id"`
 }

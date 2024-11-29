@@ -10,7 +10,7 @@ import (
 )
 
 func GetAccount(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*models.Resource, error) {
-	account, err := processAccount(ctx, handler, resourceID)
+	account, err := processAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func GetAccount(ctx context.Context, handler *LinodeAPIHandler, resourceID strin
 	return &value, nil
 }
 
-func processAccount(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (*model.Account, error) {
+func processAccount(ctx context.Context, handler *LinodeAPIHandler) (*model.Account, error) {
 	var account *model.Account
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/account"
