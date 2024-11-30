@@ -53,11 +53,6 @@ func tableLinodeLongviewClient(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.InstallCode"),
 				Description: "Alerts are triggered if CPU, IO, etc exceed these limits."},
 			{
-				Name:        "label",
-				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromField("Description.Label"),
-				Description: "Alerts are triggered if CPU, IO, etc exceed these limits."},
-			{
 				Name:        "apps",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromField("Description.Apps"),
