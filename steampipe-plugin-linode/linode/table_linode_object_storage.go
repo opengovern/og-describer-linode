@@ -16,7 +16,7 @@ func tableLinodeObjectStorageBucket(ctx context.Context) *plugin.Table {
 			Hydrate: opengovernance.ListObjectStorageBucket,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.AllColumns([]string{"cluster", "label"}),
 			Hydrate:    opengovernance.GetObjectStorageBucket,
 		},
 		Columns: commonColumns([]*plugin.Column{
