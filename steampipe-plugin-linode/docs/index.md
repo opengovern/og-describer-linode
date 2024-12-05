@@ -6,7 +6,7 @@ brand_color: "#00b050"
 display_name: "Linode"
 short_name: "linode"
 description: "Steampipe plugin to query resources, users and more from Linode."
-og_description: "Query Linode with SQL! Open source CLI. No DB required."
+platform_description: "Query Linode with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/linode-social-graphic.png"
 engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
