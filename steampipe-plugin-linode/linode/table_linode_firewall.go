@@ -29,12 +29,12 @@ func tableLinodeFirewall(ctx context.Context) *plugin.Table {
 				Description: "The unique ID of this Firewall."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "The date and time this firewall was created."},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "The date and time this firewall was updated."},
 			{

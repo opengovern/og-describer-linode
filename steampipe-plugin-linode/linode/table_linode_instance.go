@@ -44,7 +44,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "Information about this Linode’s backups status."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Instance was created."},
 			{
@@ -69,7 +69,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "Array of this Linode’s IPv4 Addresses."},
 			{
 				Name:        "ipv6",
-				Type:        proto.ColumnType_CIDR,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.IPv6"),
 				Description: "This Linode’s IPv6 SLAAC address."},
 			{
@@ -99,7 +99,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "List of Tags applied to this instance."},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When this Instance was last updated."},
 			{

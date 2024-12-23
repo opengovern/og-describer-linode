@@ -31,7 +31,7 @@ func tableLinodeImage(ctx context.Context) *plugin.Table {
 				Description: "A short description of the Image."},
 			// Other columns
 			{Name: "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Image was created."},
 			{Name: "created_by",
@@ -47,7 +47,7 @@ func tableLinodeImage(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Description"),
 				Description: "A detailed description of this Image."},
 			{Name: "expiry",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Expiry"),
 				Description: "Only Images created automatically (from a deleted Linode; type=automatic) will expire."},
 			{

@@ -39,7 +39,7 @@ func tableLinodeVolume(ctx context.Context) *plugin.Table {
 			// Other columns
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Volume was created."},
 			{
@@ -74,7 +74,7 @@ func tableLinodeVolume(ctx context.Context) *plugin.Table {
 				Description: ""},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When this Volume was last updated."},
 		}),

@@ -79,12 +79,12 @@ func tableLinodeStackScript(ctx context.Context) *plugin.Table {
 			},
 			{
 				Name:      "created",
-				Type:      proto.ColumnType_TIMESTAMP,
+				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Created"),
 			},
 			{
 				Name:      "updated",
-				Type:      proto.ColumnType_TIMESTAMP,
+				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Updated"),
 			},
 			{

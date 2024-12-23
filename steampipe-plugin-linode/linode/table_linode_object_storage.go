@@ -34,7 +34,7 @@ func tableLinodeObjectStorageBucket(ctx context.Context) *plugin.Table {
 				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Region")},
 			{Name: "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this bucket was created."},
 			{Name: "hostname",
