@@ -45,30 +45,34 @@ type Promotion struct {
 }
 
 type Account struct {
-	Email   string `json:"email"`
-	Company string `json:"company"`
-	City    string `json:"city"`
-	Country string `json:"country"`
-	EUUID   string `json:"euuid"`
+	FirstName         string      `json:"first_name"`
+	LastName          string      `json:"last_name"`
+	Email             string      `json:"email"`
+	Company           string      `json:"company"`
+	Address1          string      `json:"address_1"`
+	Address2          string      `json:"address_2"`
+	Balance           float32     `json:"balance"`
+	BalanceUninvoiced float32     `json:"balance_uninvoiced"`
+	City              string      `json:"city"`
+	State             string      `json:"state"`
+	Zip               string      `json:"zip"`
+	Country           string      `json:"country"`
+	TaxID             string      `json:"tax_id"`
+	Phone             string      `json:"phone"`
+	CreditCard        *CreditCard `json:"credit_card"`
+	EUUID             string      `json:"euuid"`
+	BillingSource     string      `json:"billing_source"`
+	Capabilities      []string    `json:"capabilities"`
+	ActiveSince       *TimeStamp  `json:"active_since"`
+	ActivePromotions  []Promotion `json:"active_promotions"`
 }
 
 type AccountDescription struct {
-	Email             string      `json:"email"`
-	Address1          string      `json:"address_1"`
-	Address2          string      `json:"address_2"`
-	Balance           string      `json:"balance"`
-	BalanceUninvoiced string      `json:"balance_uninvoiced"`
-	City              string      `json:"city"`
-	Company           string      `json:"company"`
-	Country           string      `json:"country"`
-	CreditCard        *CreditCard `json:"credit_card"`
-	FirstName         string      `json:"first_name"`
-	LastName          string      `json:"last_name"`
-	Euuid             string      `json:"euuid"`
-	Phone             string      `json:"phone"`
-	State             string      `json:"state"`
-	TaxID             string      `json:"tax_id"`
-	Zip               string      `json:"zip"`
+	Email   string `json:"email"`
+	City    string `json:"city"`
+	Company string `json:"company"`
+	Country string `json:"country"`
+	Euuid   string `json:"euuid"`
 }
 
 type DatabaseListResponse struct {
