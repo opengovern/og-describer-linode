@@ -26,12 +26,12 @@ func tableLinodeNodeBalancer(ctx context.Context) *plugin.Table {
 				Description: "The unique ID of this NodeBalancer."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When the NodeBalancer was created."},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When the NodeBalancer was updated."},
 			{
@@ -51,13 +51,13 @@ func tableLinodeNodeBalancer(ctx context.Context) *plugin.Table {
 				Description: "The NodeBalancer's hostname, ending with .nodebalancer.linode.com."},
 			{
 				Name:        "ipv4",
-				Type:        proto.ColumnType_IPADDR,
+				Type:        proto.ColumnType_STRING,
 				Description: "The NodeBalancer's public IPv4 address.",
 				Transform:   transform.FromField("Description.IPv4"),
 			},
 			{
 				Name:        "ipv6",
-				Type:        proto.ColumnType_IPADDR,
+				Type:        proto.ColumnType_STRING,
 				Description: "The NodeBalancer's public IPv6 address.",
 				Transform:   transform.FromField("Description.IPv6"),
 			},

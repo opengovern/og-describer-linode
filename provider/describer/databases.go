@@ -90,10 +90,7 @@ func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 		page++
 	}
 
-	fmt.Println("here1")
 	for _, database := range databases {
-		fmt.Println("here2")
-		fmt.Println(database)
 		wg.Add(1)
 		go func(database model.DatabaseDescription) {
 			defer wg.Done()

@@ -43,7 +43,7 @@ func tableLinodeDomain(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Description"),
 				Description: "A description for this Domain. This is for display purposes only."},
 			{
-				Name:        "domain_type",
+				Name:        "type",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Type"),
 				Description: "If this Domain represents the authoritative source of information for the domain it describes, or if it is a read-only copy of a master (also called a slave)."},
@@ -78,15 +78,15 @@ func tableLinodeDomain(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Status"),
 				Description: "Used to control whether this Domain is currently being rendered: disabled, active, edit_mode, has_errors."},
 			{
+				Name:        "group",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Group"),
+				Description: ""},
+			{
 				Name:        "tags",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromField("Description.Tags").Transform(transform.StringArrayToMap),
 				Description: "Tags applied to this domain as a map."},
-			{
-				Name:        "tags_src",
-				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromField("Description.Tags"),
-				Description: "List of Tags applied to this domain."},
 			{
 				Name:        "ttl_sec",
 				Type:        proto.ColumnType_INT,

@@ -43,7 +43,7 @@ func tableLinodeKubernetesCluster(ctx context.Context) *plugin.Table {
 			//	Description: "API endpoints for the cluster."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Kubernetes cluster was created."},
 			{
@@ -85,7 +85,7 @@ func tableLinodeKubernetesCluster(ctx context.Context) *plugin.Table {
 				Description: ""},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When this Kubernetes cluster was updated."},
 		}),

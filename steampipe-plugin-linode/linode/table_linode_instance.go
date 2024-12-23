@@ -44,7 +44,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "Information about this Linode’s backups status."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Instance was created."},
 			{
@@ -69,7 +69,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "Array of this Linode’s IPv4 Addresses."},
 			{
 				Name:        "ipv6",
-				Type:        proto.ColumnType_CIDR,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.IPv6"),
 				Description: "This Linode’s IPv6 SLAAC address."},
 			{
@@ -99,7 +99,7 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Description: "List of Tags applied to this instance."},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When this Instance was last updated."},
 			{
@@ -107,6 +107,46 @@ func tableLinodeInstance(ctx context.Context) *plugin.Table {
 				Type:        proto.ColumnType_BOOL,
 				Transform:   transform.FromField("Description.WatchdogEnabled"),
 				Description: "The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly."},
+			{
+				Name:        "group",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Group"),
+				Description: ""},
+			{
+				Name:        "type",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Type"),
+				Description: ""},
+			{
+				Name:        "has_user_data",
+				Type:        proto.ColumnType_BOOL,
+				Transform:   transform.FromField("Description.HasUserData"),
+				Description: ""},
+			{
+				Name:        "host_uuid",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.HostUUID"),
+				Description: ""},
+			{
+				Name:        "placement_group",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromField("Description.PlacementGroup"),
+				Description: ""},
+			{
+				Name:        "disk_encryption",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.DiskEncryption"),
+				Description: ""},
+			{
+				Name:        "lke_cluster_id",
+				Type:        proto.ColumnType_INT,
+				Transform:   transform.FromField("Description.LKEClusterID"),
+				Description: ""},
+			{
+				Name:        "capabilities",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromField("Description.Capabilities"),
+				Description: ""},
 		}),
 	}
 }

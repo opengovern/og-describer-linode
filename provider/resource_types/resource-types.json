@@ -42,6 +42,13 @@
     "Model": "KubernetesCluster"
   },
   {
+    "ResourceName": "Linode/Event",
+    "ListDescriber": "DescribeListByLinode(describer.ListEvents)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetEvent)",
+    "SteampipeTable": "linode_event",
+    "Model": "Event"
+  },
+  {
     "ResourceName": "Linode/Instance",
     "ListDescriber": "DescribeListByLinode(describer.ListLinodeInstances)",
     "GetDescriber": "DescribeSingleByLinode(describer.GetLinodeInstance)",

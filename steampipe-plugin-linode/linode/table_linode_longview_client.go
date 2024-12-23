@@ -39,12 +39,12 @@ func tableLinodeLongviewClient(ctx context.Context) *plugin.Table {
 				Description: "Alerts are triggered if CPU, IO, etc exceed these limits."},
 			{
 				Name:        "created",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Created"),
 				Description: "When this Instance was created."},
 			{
 				Name:        "updated",
-				Type:        proto.ColumnType_TIMESTAMP,
+				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Updated"),
 				Description: "When this Instance was created."},
 			{
