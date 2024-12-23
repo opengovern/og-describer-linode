@@ -31,6 +31,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"linode_objectstorage_bucket": tableLinodeObjectStorageBucket(ctx),
 			"linode_vpc":                  tableLinodeVPC(ctx),
 			"linode_ip_address":           tableLinodeIPAddress(ctx),
+			"linode_event":                tableLinodeEventClient(ctx),
 		},
 	}
 	for key, table := range p.TableMap {

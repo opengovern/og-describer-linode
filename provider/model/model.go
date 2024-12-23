@@ -6,8 +6,6 @@ package model
 
 import (
 	"net"
-	"strings"
-	"time"
 )
 
 type Metadata struct{}
@@ -29,7 +27,7 @@ type Promotion struct {
 	Description string `json:"description"`
 
 	// When this promotion's credits expire.
-	ExpirationDate *TimeStamp `json:"-"`
+	ExpirationDate string `json:"-"`
 
 	// The location of an image for this promotion.
 	ImageURL string `json:"image_url"`
@@ -63,7 +61,7 @@ type Account struct {
 	EUUID             string      `json:"euuid"`
 	BillingSource     string      `json:"billing_source"`
 	Capabilities      []string    `json:"capabilities"`
-	ActiveSince       *TimeStamp  `json:"active_since"`
+	ActiveSince       string      `json:"active_since"`
 	ActivePromotions  []Promotion `json:"active_promotions"`
 }
 
@@ -101,8 +99,8 @@ type DatabaseDescription struct {
 	Encrypted       bool         `json:"encrypted"`
 	AllowList       []string     `json:"allow_list"`
 	InstanceURI     string       `json:"instance_uri"`
-	Created         *TimeStamp   `json:"created"`
-	Updated         *TimeStamp   `json:"updated"`
+	Created         string       `json:"created"`
+	Updated         string       `json:"updated"`
 }
 
 type DomainListResponse struct {
@@ -154,23 +152,9 @@ type EventDescription struct {
 	Username        string       `json:"username"`
 	Entity          *EventEntity `json:"entity"`
 	SecondaryEntity *EventEntity `json:"secondary_entity"`
-	Created         *TimeStamp   `json:"created"`
+	Created         string       `json:"created"`
 	Message         string       `json:"message"`
 	Duration        float64      `json:"duration"`
-}
-
-type TimeStamp struct {
-	time.Time
-}
-
-func (ct *TimeStamp) UnmarshalJSON(b []byte) error {
-	str := strings.Trim(string(b), `"`) // Remove quotes
-	t, err := time.Parse("2006-01-02T15:04:05", str)
-	if err != nil {
-		return err
-	}
-	ct.Time = t
-	return nil
 }
 
 type InstanceAlert struct {
@@ -213,8 +197,8 @@ type LinodeListResponse struct {
 
 type InstanceDescription struct {
 	ID              int                     `json:"id"`
-	Created         *TimeStamp              `json:"created"`
-	Updated         *TimeStamp              `json:"updated"`
+	Created         string                  `json:"created"`
+	Updated         string                  `json:"updated"`
 	Region          string                  `json:"region"`
 	Alerts          *InstanceAlert          `json:"alerts"`
 	Backups         *InstanceBackup         `json:"backups"`
@@ -270,8 +254,8 @@ type FirewallDescription struct {
 	Status  string          `json:"status"`
 	Tags    []string        `json:"tags,omitempty"`
 	Rules   FirewallRuleSet `json:"rules"`
-	Created *TimeStamp      `json:"created"`
-	Updated *TimeStamp      `json:"updated"`
+	Created string          `json:"created"`
+	Updated string          `json:"updated"`
 }
 
 type ImageRegion struct {
@@ -300,10 +284,10 @@ type ImageDescription struct {
 	Deprecated   bool          `json:"deprecated"`
 	Regions      []ImageRegion `json:"regions"`
 	Tags         []string      `json:"tags"`
-	Updated      *TimeStamp    `json:"updated"`
-	Created      *TimeStamp    `json:"created"`
-	Expiry       *TimeStamp    `json:"expiry"`
-	EOL          *TimeStamp    `json:"eol"`
+	Updated      string        `json:"updated"`
+	Created      string        `json:"created"`
+	Expiry       string        `json:"expiry"`
+	EOL          string        `json:"eol"`
 }
 
 type LKEClusterControlPlane struct {
@@ -318,8 +302,8 @@ type KubernetesClusterListResponse struct {
 
 type KubernetesClusterDescription struct {
 	ID           int                    `json:"id"`
-	Created      *TimeStamp             `json:"created"`
-	Updated      *TimeStamp             `json:"updated"`
+	Created      string                 `json:"created"`
+	Updated      string                 `json:"updated"`
 	Label        string                 `json:"label"`
 	Region       string                 `json:"region"`
 	Status       string                 `json:"status"`
@@ -335,12 +319,12 @@ type LongViewClientListResponse struct {
 }
 
 type LongViewClientDescription struct {
-	ID          int        `json:"id"`
-	APIKey      string     `json:"api_key"`
-	Created     *TimeStamp `json:"created"`
-	InstallCode string     `json:"install_code"`
-	Label       string     `json:"label"`
-	Updated     *TimeStamp `json:"updated"`
+	ID          int    `json:"id"`
+	APIKey      string `json:"api_key"`
+	Created     string `json:"created"`
+	InstallCode string `json:"install_code"`
+	Label       string `json:"label"`
+	Updated     string `json:"updated"`
 	Apps        struct {
 		Apache any `json:"apache"`
 		MySQL  any `json:"mysql"`
@@ -370,8 +354,8 @@ type NodeBalancerDescription struct {
 	ClientConnThrottle int                  `json:"client_conn_throttle"`
 	Transfer           NodeBalancerTransfer `json:"transfer"`
 	Tags               []string             `json:"tags"`
-	Created            *TimeStamp           `json:"created"`
-	Updated            *TimeStamp           `json:"updated"`
+	Created            string               `json:"created"`
+	Updated            string               `json:"updated"`
 }
 
 type ObjectStorageBucketListResponse struct {
@@ -387,10 +371,10 @@ type ObjectStorageBucketDescription struct {
 	Cluster string `json:"cluster"`
 	Region  string `json:"region"`
 
-	Created  *TimeStamp `json:"-"`
-	Hostname string     `json:"hostname"`
-	Objects  int        `json:"objects"`
-	Size     int        `json:"size"`
+	Created  string `json:"-"`
+	Hostname string `json:"hostname"`
+	Objects  int    `json:"objects"`
+	Size     int    `json:"size"`
 }
 
 type StackScriptUDF struct {
@@ -420,8 +404,8 @@ type StackScriptDescription struct {
 	DeploymentsActive int               `json:"deployments_active"`
 	IsPublic          bool              `json:"is_public"`
 	Mine              bool              `json:"mine"`
-	Created           *TimeStamp        `json:"created"`
-	Updated           *TimeStamp        `json:"updated"`
+	Created           string            `json:"created"`
+	Updated           string            `json:"updated"`
 	RevNote           string            `json:"rev_note"`
 	Script            string            `json:"script"`
 	UserDefinedFields *[]StackScriptUDF `json:"user_defined_fields"`
@@ -435,17 +419,17 @@ type VolumeListResponse struct {
 }
 
 type VolumeDescription struct {
-	ID             int        `json:"id"`
-	Label          string     `json:"label"`
-	Status         string     `json:"status"`
-	Region         string     `json:"region"`
-	Size           int        `json:"size"`
-	LinodeID       *int       `json:"linode_id"`
-	FilesystemPath string     `json:"filesystem_path"`
-	Tags           []string   `json:"tags"`
-	Created        *TimeStamp `json:"created"`
-	Updated        *TimeStamp `json:"updated"`
-	Encryption     string     `json:"encryption"`
+	ID             int      `json:"id"`
+	Label          string   `json:"label"`
+	Status         string   `json:"status"`
+	Region         string   `json:"region"`
+	Size           int      `json:"size"`
+	LinodeID       *int     `json:"linode_id"`
+	FilesystemPath string   `json:"filesystem_path"`
+	Tags           []string `json:"tags"`
+	Created        string   `json:"created"`
+	Updated        string   `json:"updated"`
+	Encryption     string   `json:"encryption"`
 }
 
 type VPCSubnetLinodeInterface struct {
@@ -463,8 +447,8 @@ type VPCSubnet struct {
 	Label   string            `json:"label"`
 	IPv4    string            `json:"ipv4"`
 	Linodes []VPCSubnetLinode `json:"linodes"`
-	Created *TimeStamp        `json:"created"`
-	Updated *TimeStamp        `json:"updated"`
+	Created string            `json:"created"`
+	Updated string            `json:"updated"`
 }
 
 type VPCListResponse struct {
@@ -479,8 +463,8 @@ type VPCDescription struct {
 	Description string      `json:"description"`
 	Region      string      `json:"region"`
 	Subnets     []VPCSubnet `json:"subnets"`
-	Created     *TimeStamp  `json:"created"`
-	Updated     *TimeStamp  `json:"updated"`
+	Created     string      `json:"created"`
+	Updated     string      `json:"updated"`
 }
 
 type InstanceIPNAT1To1 struct {

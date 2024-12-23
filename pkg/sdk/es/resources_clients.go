@@ -542,16 +542,16 @@ var listDomainFilters = map[string]string{
 	"axfr_ips":    "Description.AXfrIPs",
 	"description": "Description.Description",
 	"domain":      "Description.Domain",
-	"domain_type": "Description.Type",
 	"expire_sec":  "Description.ExpireSec",
+	"group":       "Description.Group",
 	"id":          "Description.ID",
 	"master_ips":  "Description.MasterIPs",
 	"refresh_sec": "Description.RefreshSec",
 	"retry_sec":   "Description.RetrySec",
 	"soa_email":   "Description.SOAEmail",
 	"status":      "Description.Status",
-	"tags_src":    "Description.Tags",
 	"ttl_sec":     "Description.TTLSec",
+	"type":        "Description.Type",
 }
 
 func ListDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -618,16 +618,16 @@ var getDomainFilters = map[string]string{
 	"axfr_ips":    "Description.AXfrIPs",
 	"description": "Description.Description",
 	"domain":      "Description.Domain",
-	"domain_type": "Description.Type",
 	"expire_sec":  "Description.ExpireSec",
+	"group":       "Description.Group",
 	"id":          "Description.ID",
 	"master_ips":  "Description.MasterIPs",
 	"refresh_sec": "Description.RefreshSec",
 	"retry_sec":   "Description.RetrySec",
 	"soa_email":   "Description.SOAEmail",
 	"status":      "Description.Status",
-	"tags_src":    "Description.Tags",
 	"ttl_sec":     "Description.TTLSec",
+	"type":        "Description.Type",
 }
 
 func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -684,6 +684,235 @@ func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 // ==========================  END: Domain =============================
+
+// ==========================  START: Event =============================
+
+type Event struct {
+	ResourceID      string                  `json:"resource_id"`
+	PlatformID      string                  `json:"platform_id"`
+	Description     linode.EventDescription `json:"description"`
+	Metadata        linode.Metadata         `json:"metadata"`
+	DescribedBy     string                  `json:"described_by"`
+	ResourceType    string                  `json:"resource_type"`
+	IntegrationType string                  `json:"integration_type"`
+	IntegrationID   string                  `json:"integration_id"`
+}
+
+type EventHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  Event         `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type EventHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []EventHit        `json:"hits"`
+}
+
+type EventSearchResponse struct {
+	PitID string    `json:"pit_id"`
+	Hits  EventHits `json:"hits"`
+}
+
+type EventPaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewEventPaginator(filters []essdk.BoolFilter, limit *int64) (EventPaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_event", filters, limit)
+	if err != nil {
+		return EventPaginator{}, err
+	}
+
+	p := EventPaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p EventPaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p EventPaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p EventPaginator) NextPage(ctx context.Context) ([]Event, error) {
+	var response EventSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []Event
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listEventFilters = map[string]string{
+	"action":           "Description.Action",
+	"created":          "Description.Created",
+	"duration":         "Description.Duration",
+	"entity":           "Description.Entity",
+	"id":               "Description.ID",
+	"message":          "Description.Message",
+	"percent_complete": "Description.PercentComplete",
+	"rate":             "Description.Rate",
+	"read":             "Description.Read",
+	"secondary_entity": "Description.SecondaryEntity",
+	"seen":             "Description.Seen",
+	"status":           "Description.Status",
+	"time_remaining":   "Description.TimeRemaining",
+	"username":         "Description.Username",
+}
+
+func ListEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListEvent")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	integrationID, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyIntegrationID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, listEventFilters, integrationID, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListEvent NewEventPaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListEvent paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getEventFilters = map[string]string{
+	"action":           "Description.Action",
+	"created":          "Description.Created",
+	"duration":         "Description.Duration",
+	"entity":           "Description.Entity",
+	"id":               "Description.ID",
+	"message":          "Description.Message",
+	"percent_complete": "Description.PercentComplete",
+	"rate":             "Description.Rate",
+	"read":             "Description.Read",
+	"secondary_entity": "Description.SecondaryEntity",
+	"seen":             "Description.Seen",
+	"status":           "Description.Status",
+	"time_remaining":   "Description.TimeRemaining",
+	"username":         "Description.Username",
+}
+
+func GetEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetEvent")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	integrationID, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewEventPaginator(essdk.BuildFilter(ctx, d.QueryContext, getEventFilters, integrationID, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: Event =============================
 
 // ==========================  START: Instance =============================
 
@@ -768,7 +997,12 @@ func (p InstancePaginator) NextPage(ctx context.Context) ([]Instance, error) {
 var listInstanceFilters = map[string]string{
 	"alerts":           "Description.Alerts",
 	"backups":          "Description.Backups",
+	"capabilities":     "Description.Capabilities",
 	"created":          "Description.Created",
+	"disk_encryption":  "Description.DiskEncryption",
+	"group":            "Description.Group",
+	"has_user_data":    "Description.HasUserData",
+	"host_uuid":        "Description.HostUUID",
 	"hypervisor":       "Description.Hypervisor",
 	"id":               "Description.ID",
 	"image":            "Description.Image",
@@ -776,10 +1010,13 @@ var listInstanceFilters = map[string]string{
 	"ipv4":             "Description.IPv4",
 	"ipv6":             "Description.IPv6",
 	"label":            "Description.Label",
+	"lke_cluster_id":   "Description.LKEClusterID",
+	"placement_group":  "Description.PlacementGroup",
 	"region":           "Description.Region",
 	"specs":            "Description.Specs",
 	"status":           "Description.Status",
 	"tags_src":         "Description.Tags",
+	"type":             "Description.Type",
 	"updated":          "Description.Updated",
 	"watchdog_enabled": "Description.WatchdogEnabled",
 }
@@ -847,7 +1084,12 @@ func ListInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 var getInstanceFilters = map[string]string{
 	"alerts":           "Description.Alerts",
 	"backups":          "Description.Backups",
+	"capabilities":     "Description.Capabilities",
 	"created":          "Description.Created",
+	"disk_encryption":  "Description.DiskEncryption",
+	"group":            "Description.Group",
+	"has_user_data":    "Description.HasUserData",
+	"host_uuid":        "Description.HostUUID",
 	"hypervisor":       "Description.Hypervisor",
 	"id":               "Description.ID",
 	"image":            "Description.Image",
@@ -855,10 +1097,13 @@ var getInstanceFilters = map[string]string{
 	"ipv4":             "Description.IPv4",
 	"ipv6":             "Description.IPv6",
 	"label":            "Description.Label",
+	"lke_cluster_id":   "Description.LKEClusterID",
+	"placement_group":  "Description.PlacementGroup",
 	"region":           "Description.Region",
 	"specs":            "Description.Specs",
 	"status":           "Description.Status",
 	"tags_src":         "Description.Tags",
+	"type":             "Description.Type",
 	"updated":          "Description.Updated",
 	"watchdog_enabled": "Description.WatchdogEnabled",
 }
@@ -1214,17 +1459,24 @@ func (p ImagePaginator) NextPage(ctx context.Context) ([]Image, error) {
 }
 
 var listImageFilters = map[string]string{
-	"created":     "Description.Created",
-	"created_by":  "Description.CreatedBy",
-	"deprecated":  "Description.Deprecated",
-	"description": "Description.Description",
-	"expiry":      "Description.Expiry",
-	"id":          "Description.ID",
-	"image_type":  "Description.Type",
-	"is_public":   "Description.IsPublic",
-	"label":       "Description.Label",
-	"size":        "Description.Size",
-	"vendor":      "Description.Vendor",
+	"capabilities": "Description.Capabilities",
+	"created":      "Description.Created",
+	"created_by":   "Description.CreatedBy",
+	"deprecated":   "Description.Deprecated",
+	"description":  "Description.Description",
+	"eol":          "Description.EOL",
+	"expiry":       "Description.Expiry",
+	"id":           "Description.ID",
+	"is_public":    "Description.IsPublic",
+	"label":        "Description.Label",
+	"regions":      "Description.Regions",
+	"size":         "Description.Size",
+	"status":       "Description.Status",
+	"tags":         "Description.Tags",
+	"total_size":   "Description.TotalSize",
+	"type":         "Description.Type",
+	"updated":      "Description.Updated",
+	"vendor":       "Description.Vendor",
 }
 
 func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1288,17 +1540,24 @@ func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 var getImageFilters = map[string]string{
-	"created":     "Description.Created",
-	"created_by":  "Description.CreatedBy",
-	"deprecated":  "Description.Deprecated",
-	"description": "Description.Description",
-	"expiry":      "Description.Expiry",
-	"id":          "Description.ID",
-	"image_type":  "Description.Type",
-	"is_public":   "Description.IsPublic",
-	"label":       "Description.Label",
-	"size":        "Description.Size",
-	"vendor":      "Description.Vendor",
+	"capabilities": "Description.Capabilities",
+	"created":      "Description.Created",
+	"created_by":   "Description.CreatedBy",
+	"deprecated":   "Description.Deprecated",
+	"description":  "Description.Description",
+	"eol":          "Description.EOL",
+	"expiry":       "Description.Expiry",
+	"id":           "Description.ID",
+	"is_public":    "Description.IsPublic",
+	"label":        "Description.Label",
+	"regions":      "Description.Regions",
+	"size":         "Description.Size",
+	"status":       "Description.Status",
+	"tags":         "Description.Tags",
+	"total_size":   "Description.TotalSize",
+	"type":         "Description.Type",
+	"updated":      "Description.Updated",
+	"vendor":       "Description.Vendor",
 }
 
 func GetImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {

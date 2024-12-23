@@ -84,6 +84,19 @@ var ResourceTypes = map[string]model.ResourceType{
 		GetDescriber:         DescribeSingleByLinode(describer.GetKubernetesCluster),
 	},
 
+	"Linode/Event": {
+		IntegrationType:      configs.IntegrationName,
+		ResourceName:         "Linode/Event",
+		Tags:                 map[string][]string{
+        },
+		Labels:               map[string]string{
+        },
+		Annotations:          map[string]string{
+        },
+		ListDescriber:        DescribeListByLinode(describer.ListEvents),
+		GetDescriber:         DescribeSingleByLinode(describer.GetEvent),
+	},
+
 	"Linode/Instance": {
 		IntegrationType:      configs.IntegrationName,
 		ResourceName:         "Linode/Instance",
