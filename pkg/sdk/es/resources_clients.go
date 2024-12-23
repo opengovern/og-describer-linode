@@ -95,22 +95,11 @@ func (p AccountPaginator) NextPage(ctx context.Context) ([]Account, error) {
 }
 
 var listAccountFilters = map[string]string{
-	"address_1":          "Description.Address1",
-	"address_2":          "Description.Address2",
-	"balance":            "Description.Balance",
-	"balance_uninvoiced": "Description.BalanceUninvoiced",
-	"city":               "Description.City",
-	"company":            "Description.Company",
-	"country":            "Description.Country",
-	"credit_card":        "Description.CreditCard",
-	"email":              "Description.Email",
-	"euuid":              "Description.Euuid",
-	"first_name":         "Description.FirstName",
-	"last_name":          "Description.LastName",
-	"phone":              "Description.Phone",
-	"state":              "Description.State",
-	"tax_id":             "Description.TaxID",
-	"zip":                "Description.Zip",
+	"city":    "Description.City",
+	"company": "Description.Company",
+	"country": "Description.Country",
+	"email":   "Description.Email",
+	"euuid":   "Description.Euuid",
 }
 
 func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -174,22 +163,11 @@ func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 }
 
 var getAccountFilters = map[string]string{
-	"address_1":          "Description.Address1",
-	"address_2":          "Description.Address2",
-	"balance":            "Description.Balance",
-	"balance_uninvoiced": "Description.BalanceUninvoiced",
-	"city":               "Description.City",
-	"company":            "Description.Company",
-	"country":            "Description.Country",
-	"credit_card":        "Description.CreditCard",
-	"email":              "Description.Email",
-	"euuid":              "Description.Euuid",
-	"first_name":         "Description.FirstName",
-	"last_name":          "Description.LastName",
-	"phone":              "Description.Phone",
-	"state":              "Description.State",
-	"tax_id":             "Description.TaxID",
-	"zip":                "Description.Zip",
+	"city":    "Description.City",
+	"company": "Description.Company",
+	"country": "Description.Country",
+	"email":   "Description.Email",
+	"euuid":   "Description.Euuid",
 }
 
 func GetAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1459,14 +1437,14 @@ func (p KubernetesClusterPaginator) NextPage(ctx context.Context) ([]KubernetesC
 }
 
 var listKubernetesClusterFilters = map[string]string{
-	"created":     "Description.Created",
-	"id":          "Description.ID",
-	"k8s_version": "Description.K8sVersion",
-	"label":       "Description.Label",
-	"region":      "Description.Region",
-	"status":      "Description.Status",
-	"tags_src":    "Description.Tags",
-	"updated":     "Description.Updated",
+	"control_plane": "Description.ControlPlane",
+	"created":       "Description.Created",
+	"id":            "Description.ID",
+	"k8s_version":   "Description.K8sVersion",
+	"label":         "Description.Label",
+	"region":        "Description.Region",
+	"status":        "Description.Status",
+	"updated":       "Description.Updated",
 }
 
 func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -1530,14 +1508,14 @@ func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 }
 
 var getKubernetesClusterFilters = map[string]string{
-	"created":     "Description.Created",
-	"id":          "Description.ID",
-	"k8s_version": "Description.K8sVersion",
-	"label":       "Description.Label",
-	"region":      "Description.Region",
-	"status":      "Description.Status",
-	"tags_src":    "Description.Tags",
-	"updated":     "Description.Updated",
+	"control_plane": "Description.ControlPlane",
+	"created":       "Description.Created",
+	"id":            "Description.ID",
+	"k8s_version":   "Description.K8sVersion",
+	"label":         "Description.Label",
+	"region":        "Description.Region",
+	"status":        "Description.Status",
+	"updated":       "Description.Updated",
 }
 
 func GetKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
@@ -2565,6 +2543,7 @@ func (p VolumePaginator) NextPage(ctx context.Context) ([]Volume, error) {
 
 var listVolumeFilters = map[string]string{
 	"created":         "Description.Created",
+	"encryption":      "Description.Encryption",
 	"filesystem_path": "Description.FilesystemPath",
 	"id":              "Description.ID",
 	"label":           "Description.Label",
@@ -2572,7 +2551,6 @@ var listVolumeFilters = map[string]string{
 	"region":          "Description.Region",
 	"size":            "Description.Size",
 	"status":          "Description.Status",
-	"tags_src":        "Description.Tags",
 	"updated":         "Description.Updated",
 }
 
@@ -2638,6 +2616,7 @@ func ListVolume(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 
 var getVolumeFilters = map[string]string{
 	"created":         "Description.Created",
+	"encryption":      "Description.Encryption",
 	"filesystem_path": "Description.FilesystemPath",
 	"id":              "Description.ID",
 	"label":           "Description.Label",
@@ -2645,7 +2624,6 @@ var getVolumeFilters = map[string]string{
 	"region":          "Description.Region",
 	"size":            "Description.Size",
 	"status":          "Description.Status",
-	"tags_src":        "Description.Tags",
 	"updated":         "Description.Updated",
 }
 

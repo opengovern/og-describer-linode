@@ -79,10 +79,10 @@ func tableLinodeKubernetesCluster(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Tags").Transform(transform.StringArrayToMap),
 				Description: "Tags applied to the Kubernetes cluster as a map."},
 			{
-				Name:        "tags_src",
+				Name:        "control_plane",
 				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromField("Description.Tags"),
-				Description: "List of Tags applied to the Kubernetes cluster."},
+				Transform:   transform.FromField("Description.ControlPlane"),
+				Description: ""},
 			{
 				Name:        "updated",
 				Type:        proto.ColumnType_TIMESTAMP,

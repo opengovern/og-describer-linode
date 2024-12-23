@@ -14,30 +14,17 @@ func ListAccounts(ctx context.Context, handler *LinodeAPIHandler, stream *models
 	if err != nil {
 		return nil, err
 	}
-	balance := fmt.Sprintf("%f", account.Balance)
-	balanceUninvoiced := fmt.Sprintf("%f", account.BalanceUninvoiced)
 	var values []models.Resource
 	value := models.Resource{
 		ID:   account.Email,
-		Name: fmt.Sprintf("%s %s", account.FirstName, account.LastName),
+		Name: account.Email,
 		Description: JSONAllFieldsMarshaller{
 			Value: model.AccountDescription{
-				Email:             account.Email,
-				Address1:          account.Address1,
-				Address2:          account.Address2,
-				Balance:           balance,
-				BalanceUninvoiced: balanceUninvoiced,
-				City:              account.City,
-				Company:           account.Company,
-				Country:           account.Country,
-				CreditCard:        account.CreditCard,
-				FirstName:         account.FirstName,
-				LastName:          account.LastName,
-				Euuid:             account.EUUID,
-				Phone:             account.Phone,
-				State:             account.State,
-				TaxID:             account.TaxID,
-				Zip:               account.Zip,
+				Email:   account.Email,
+				City:    account.City,
+				Company: account.Company,
+				Country: account.Country,
+				Euuid:   account.EUUID,
 			},
 		},
 	}

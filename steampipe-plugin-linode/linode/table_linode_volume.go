@@ -68,10 +68,10 @@ func tableLinodeVolume(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Tags").Transform(transform.StringArrayToMap),
 				Description: "Tags applied to this volume as a map."},
 			{
-				Name:        "tags_src",
-				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromField("Description.Tags"),
-				Description: "List of Tags applied to this volume."},
+				Name:        "encryption",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Encryption"),
+				Description: ""},
 			{
 				Name:        "updated",
 				Type:        proto.ColumnType_TIMESTAMP,
