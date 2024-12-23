@@ -12,9 +12,9 @@ import (
 func commonColumns(c []*plugin.Column) []*plugin.Column {
 	return append(c, []*plugin.Column{
 		{
-			Name:        "platform_account_id",
+			Name:        "platform_integration_id",
 			Type:        proto.ColumnType_STRING,
-			Description: "The Platform Account ID in which the resource is located.",
+			Description: "The Platform Integration ID in which the resource is located.",
 			Transform:   transform.FromField("IntegrationID"),
 		},
 		{
