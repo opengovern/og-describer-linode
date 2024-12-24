@@ -8,7 +8,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableLinodeEventClient(ctx context.Context) *plugin.Table {
+func tableLinodeEvent(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "linode_event",
 		Description: "",
