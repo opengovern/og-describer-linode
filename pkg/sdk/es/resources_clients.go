@@ -19,7 +19,7 @@ type Client struct {
 type Account struct {
 	ResourceID      string                    `json:"resource_id"`
 	PlatformID      string                    `json:"platform_id"`
-	Description     linode.AccountDescription `json:"description"`
+	Description     linode.AccountDescription `json:"Description"`
 	Metadata        linode.Metadata           `json:"metadata"`
 	DescribedBy     string                    `json:"described_by"`
 	ResourceType    string                    `json:"resource_type"`
@@ -230,7 +230,7 @@ func GetAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 type Database struct {
 	ResourceID      string                     `json:"resource_id"`
 	PlatformID      string                     `json:"platform_id"`
-	Description     linode.DatabaseDescription `json:"description"`
+	Description     linode.DatabaseDescription `json:"Description"`
 	Metadata        linode.Metadata            `json:"metadata"`
 	DescribedBy     string                     `json:"described_by"`
 	ResourceType    string                     `json:"resource_type"`
@@ -463,7 +463,7 @@ func GetDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 type Domain struct {
 	ResourceID      string                   `json:"resource_id"`
 	PlatformID      string                   `json:"platform_id"`
-	Description     linode.DomainDescription `json:"description"`
+	Description     linode.DomainDescription `json:"Description"`
 	Metadata        linode.Metadata          `json:"metadata"`
 	DescribedBy     string                   `json:"described_by"`
 	ResourceType    string                   `json:"resource_type"`
@@ -690,7 +690,7 @@ func GetDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 type Event struct {
 	ResourceID      string                  `json:"resource_id"`
 	PlatformID      string                  `json:"platform_id"`
-	Description     linode.EventDescription `json:"description"`
+	Description     linode.EventDescription `json:"Description"`
 	Metadata        linode.Metadata         `json:"metadata"`
 	DescribedBy     string                  `json:"described_by"`
 	ResourceType    string                  `json:"resource_type"`
@@ -919,7 +919,7 @@ func GetEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 type Instance struct {
 	ResourceID      string                     `json:"resource_id"`
 	PlatformID      string                     `json:"platform_id"`
-	Description     linode.InstanceDescription `json:"description"`
+	Description     linode.InstanceDescription `json:"Description"`
 	Metadata        linode.Metadata            `json:"metadata"`
 	DescribedBy     string                     `json:"described_by"`
 	ResourceType    string                     `json:"resource_type"`
@@ -1168,7 +1168,7 @@ func GetInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 type Firewall struct {
 	ResourceID      string                     `json:"resource_id"`
 	PlatformID      string                     `json:"platform_id"`
-	Description     linode.FirewallDescription `json:"description"`
+	Description     linode.FirewallDescription `json:"Description"`
 	Metadata        linode.Metadata            `json:"metadata"`
 	DescribedBy     string                     `json:"described_by"`
 	ResourceType    string                     `json:"resource_type"`
@@ -1383,7 +1383,7 @@ func GetFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 type Image struct {
 	ResourceID      string                  `json:"resource_id"`
 	PlatformID      string                  `json:"platform_id"`
-	Description     linode.ImageDescription `json:"description"`
+	Description     linode.ImageDescription `json:"Description"`
 	Metadata        linode.Metadata         `json:"metadata"`
 	DescribedBy     string                  `json:"described_by"`
 	ResourceType    string                  `json:"resource_type"`
@@ -1620,7 +1620,7 @@ func GetImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 type KubernetesCluster struct {
 	ResourceID      string                              `json:"resource_id"`
 	PlatformID      string                              `json:"platform_id"`
-	Description     linode.KubernetesClusterDescription `json:"description"`
+	Description     linode.KubernetesClusterDescription `json:"Description"`
 	Metadata        linode.Metadata                     `json:"metadata"`
 	DescribedBy     string                              `json:"described_by"`
 	ResourceType    string                              `json:"resource_type"`
@@ -1837,7 +1837,7 @@ func GetKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 type LongViewClient struct {
 	ResourceID      string                           `json:"resource_id"`
 	PlatformID      string                           `json:"platform_id"`
-	Description     linode.LongViewClientDescription `json:"description"`
+	Description     linode.LongViewClientDescription `json:"Description"`
 	Metadata        linode.Metadata                  `json:"metadata"`
 	DescribedBy     string                           `json:"described_by"`
 	ResourceType    string                           `json:"resource_type"`
@@ -2052,7 +2052,7 @@ func GetLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 type NodeBalancer struct {
 	ResourceID      string                         `json:"resource_id"`
 	PlatformID      string                         `json:"platform_id"`
-	Description     linode.NodeBalancerDescription `json:"description"`
+	Description     linode.NodeBalancerDescription `json:"Description"`
 	Metadata        linode.Metadata                `json:"metadata"`
 	DescribedBy     string                         `json:"described_by"`
 	ResourceType    string                         `json:"resource_type"`
@@ -2275,7 +2275,7 @@ func GetNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 type ObjectStorageBucket struct {
 	ResourceID      string                                `json:"resource_id"`
 	PlatformID      string                                `json:"platform_id"`
-	Description     linode.ObjectStorageBucketDescription `json:"description"`
+	Description     linode.ObjectStorageBucketDescription `json:"Description"`
 	Metadata        linode.Metadata                       `json:"metadata"`
 	DescribedBy     string                                `json:"described_by"`
 	ResourceType    string                                `json:"resource_type"`
@@ -2490,7 +2490,7 @@ func GetObjectStorageBucket(ctx context.Context, d *plugin.QueryData, _ *plugin.
 type StackScript struct {
 	ResourceID      string                        `json:"resource_id"`
 	PlatformID      string                        `json:"platform_id"`
-	Description     linode.StackScriptDescription `json:"description"`
+	Description     linode.StackScriptDescription `json:"Description"`
 	Metadata        linode.Metadata               `json:"metadata"`
 	DescribedBy     string                        `json:"described_by"`
 	ResourceType    string                        `json:"resource_type"`
@@ -2725,7 +2725,7 @@ func GetStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 type Volume struct {
 	ResourceID      string                   `json:"resource_id"`
 	PlatformID      string                   `json:"platform_id"`
-	Description     linode.VolumeDescription `json:"description"`
+	Description     linode.VolumeDescription `json:"Description"`
 	Metadata        linode.Metadata          `json:"metadata"`
 	DescribedBy     string                   `json:"described_by"`
 	ResourceType    string                   `json:"resource_type"`
@@ -2946,7 +2946,7 @@ func GetVolume(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 type VPC struct {
 	ResourceID      string                `json:"resource_id"`
 	PlatformID      string                `json:"platform_id"`
-	Description     linode.VPCDescription `json:"description"`
+	Description     linode.VPCDescription `json:"Description"`
 	Metadata        linode.Metadata       `json:"metadata"`
 	DescribedBy     string                `json:"described_by"`
 	ResourceType    string                `json:"resource_type"`
@@ -3161,7 +3161,7 @@ func GetVPC(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (in
 type IPAddress struct {
 	ResourceID      string                      `json:"resource_id"`
 	PlatformID      string                      `json:"platform_id"`
-	Description     linode.IPAddressDescription `json:"description"`
+	Description     linode.IPAddressDescription `json:"Description"`
 	Metadata        linode.Metadata             `json:"metadata"`
 	DescribedBy     string                      `json:"described_by"`
 	ResourceType    string                      `json:"resource_type"`
