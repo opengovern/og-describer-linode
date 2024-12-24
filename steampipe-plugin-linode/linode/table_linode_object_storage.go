@@ -10,7 +10,7 @@ import (
 
 func tableLinodeObjectStorageBucket(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "linode_objectstorage_bucket",
+		Name:        "linode_object_storage",
 		Description: "Instances in the Linode account.",
 		List: &plugin.ListConfig{
 			Hydrate: opengovernance.ListObjectStorageBucket,
