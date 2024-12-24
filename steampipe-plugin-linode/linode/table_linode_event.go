@@ -13,11 +13,11 @@ func tableLinodeEventClient(ctx context.Context) *plugin.Table {
 		Name:        "linode_event",
 		Description: "",
 		List: &plugin.ListConfig{
-			Hydrate: opengovernance.ListLongViewClient,
+			Hydrate: opengovernance.ListEvent,
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    opengovernance.GetLongViewClient,
+			Hydrate:    opengovernance.GetEvent,
 		},
 		Columns: commonColumns([]*plugin.Column{
 			// Top columns
