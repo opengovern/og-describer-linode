@@ -54,7 +54,7 @@ var describerCmd = &cobra.Command{
 
 		// TODO: Set the credentials
 		creds := configs.IntegrationCredentials{
-			Token: "",
+			Token: "9bf7aebfc3f1e9213d7e0f2042d411af9d5d8d30e782cd859778e6358c54b159",
 		}
 
 		additionalParameters, err := provider.GetAdditionalParameters(job)
