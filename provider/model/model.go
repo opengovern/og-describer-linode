@@ -43,23 +43,23 @@ type Promotion struct {
 }
 
 type Account struct {
-	FirstName         *string      
-	LastName          *string      
-	Email             *string      
-	Company           *string      
-	Address1          *string      
-	Address2          *string      
+	FirstName         string      
+	LastName          string      
+	Email             string      
+	Company           string      
+	Address1          string      
+	Address2          string      
 	Balance           float32     
 	BalanceUninvoiced float32     
-	City              *string      
-	State             *string      
-	Zip               *string      
-	Country           *string      
-	TaxID             *string      
-	Phone             *string      
-	CreditCard        *CreditCard `json:"credit_card"`
-	EUUID             *string      
-	BillingSource     *string      
+	City              string      
+	State             string      
+	Zip               string      
+	Country           string      
+	TaxID             string      
+	Phone             string      
+	CreditCard        CreditCard `json:"credit_card"`
+	EUUID             string      
+	BillingSource     string      
 	Capabilities      []string    `json:"capabilities"`
 	ActiveSince       string      
 	ActivePromotions  []Promotion `json:"active_promotions"`
