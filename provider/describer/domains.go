@@ -62,7 +62,7 @@ func GetDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 }
 
 func processDomains(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var domains []model.DomainDescription
+	var domains []model.DomainRecord
 	var domainListResponse model.DomainListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/domains"
@@ -106,13 +106,29 @@ func processDomains(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 	}
 	for _, domain := range domains {
 		wg.Add(1)
-		go func(domain model.DomainDescription) {
+		go func(domain model.DomainRecord) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(domain.ID),
 				Name: domain.Domain,
 				Description: JSONAllFieldsMarshaller{
-					Value: domain,
+					Value: model.DomainDescription{
+						ID:     domain.ID,
+						Domain: domain.Domain,
+						Type:  domain.Type,
+						Group: domain.Group,
+						Status: domain.Status,
+						Description: domain.Description,
+						SOAEmail: domain.SOAEmail,
+						RetrySec: domain.RetrySec,
+						MasterIPs: domain.MasterIPs,
+						AXfrIPs: domain.AXfrIPs,
+						Tags: domain.Tags,
+						ExpireSec: domain.ExpireSec,
+						RefreshSec: domain.RefreshSec,
+						TTLSec: domain.TTLSec,
+						
+					},
 				},
 			}
 			openaiChan <- value

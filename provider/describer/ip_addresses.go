@@ -62,7 +62,7 @@ func GetIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID str
 }
 
 func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var ipAddresses []model.IPAddressDescription
+	var ipAddresses []model.IPAddressResp
 	var ipAddressListResponse model.IPAddressListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/networking/ips"
@@ -107,13 +107,25 @@ func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiCh
 
 	for _, ipAddress := range ipAddresses {
 		wg.Add(1)
-		go func(ipAddress model.IPAddressDescription) {
+		go func(ipAddress model.IPAddressResp) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   ipAddress.Address,
 				Name: ipAddress.Address,
 				Description: JSONAllFieldsMarshaller{
-					Value: ipAddress,
+					Value: model.IPAddressDescription{
+						Address: ipAddress.Address,
+						Gateway: ipAddress.Gateway,
+						SubnetMask: ipAddress.SubnetMask,
+						Prefix: ipAddress.Prefix,
+						Type: ipAddress.Type,
+						Public: ipAddress.Public,
+						RDNS: ipAddress.RDNS,
+						LinodeID: ipAddress.LinodeID,
+						Region: ipAddress.Region,
+						VPCNAT1To1: ipAddress.VPCNAT1To1,
+						Reserved: ipAddress.Reserved,
+					},
 				},
 			}
 			openaiChan <- value

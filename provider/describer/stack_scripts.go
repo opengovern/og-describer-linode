@@ -62,7 +62,7 @@ func GetStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID s
 }
 
 func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var stackScripts []model.StackScriptDescription
+	var stackScripts []model.StackScriptResp
 	var stackScriptListResponse model.StackScriptListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/stackscripts"
@@ -107,13 +107,31 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 
 	for _, stackScript := range stackScripts {
 		wg.Add(1)
-		go func(stackScript model.StackScriptDescription) {
+		go func(stackScript model.StackScriptResp) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(stackScript.ID),
 				Name: stackScript.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: stackScript,
+					Value: model.StackScriptDescription{
+						ID: 		stackScript.ID,
+						Label: 		stackScript.Label,
+						Description: stackScript.Description,
+						Username: 	stackScript.Username,
+						Ordinal: 	stackScript.Ordinal,
+						LogoURL: 	stackScript.LogoURL,
+						Images: 	stackScript.Images,
+						DeploymentsTotal: stackScript.DeploymentsTotal,
+						DeploymentsActive: stackScript.DeploymentsActive,
+						IsPublic: 	stackScript.IsPublic,
+						Mine: 		stackScript.Mine,
+						Created: 	stackScript.Created,
+						Updated: 	stackScript.Updated,
+						RevNote: 	stackScript.RevNote,
+						Script: 	stackScript.Script,
+						UserDefinedFields: stackScript.UserDefinedFields,
+						UserGravatarID: stackScript.UserGravatarID,
+					},
 				},
 			}
 			openaiChan <- value

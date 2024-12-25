@@ -47,7 +47,7 @@ func ListDatabases(ctx context.Context, handler *LinodeAPIHandler, stream *model
 }
 
 func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var databases []model.DatabaseDescription
+	var databases []model.DatabaseSingleResponse
 	var databaseListResponse model.DatabaseListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/databases/instances"
@@ -92,13 +92,34 @@ func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 
 	for _, database := range databases {
 		wg.Add(1)
-		go func(database model.DatabaseDescription) {
+		go func(database model.DatabaseSingleResponse) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(database.ID),
 				Name: database.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: database,
+					Value: model.DatabaseDescription{
+						ID:          database.ID,
+						Label:       database.Label,
+						Region:      database.Region,
+						Type:        database.Type,
+						Status: 	database.Status,
+						Created:     database.Created,
+						Updated:     database.Updated,
+						Hosts: 	 model.DatabaseHost{
+							Primary: database.Hosts.Primary,
+							Secondary: database.Hosts.Secondary,
+						},
+						ClusterSize: database.ClusterSize,
+						ReplicationType: database.ReplicationType,
+						SSLConnection: database.SSLConnection,
+						Encrypted: database.Encrypted,
+						AllowList: database.AllowList,
+						InstanceURI: database.InstanceURI,
+						Engine: database.Engine,
+						Version: database.Version,
+						
+					},
 				},
 			}
 			openaiChan <- value

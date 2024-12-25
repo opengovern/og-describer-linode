@@ -1,3 +1,7 @@
 build/
 og-describer-template
 .idea
+
+output.json
+.vscode
+.vscode/** */

@@ -62,7 +62,7 @@ func GetEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID string)
 }
 
 func processEvents(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var events []model.EventDescription
+	var events []model.EventResp
 	var eventListResponse model.EventListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/account/events"
@@ -106,13 +106,28 @@ func processEvents(ctx context.Context, handler *LinodeAPIHandler, openaiChan ch
 	}
 	for _, event := range events {
 		wg.Add(1)
-		go func(event model.EventDescription) {
+		go func(event model.EventResp) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(event.ID),
 				Name: event.Username,
 				Description: JSONAllFieldsMarshaller{
-					Value: event,
+					Value: model.EventDescription{
+						ID:       event.ID,
+						Status:  event.Status,
+						Action: event.Action,
+						PercentComplete: event.PercentComplete,
+						Rate: event.Rate,
+						Read: event.Read,
+						Username: event.Username,
+						Seen: event.Seen,
+						TimeRemaining: event.TimeRemaining,
+						Entity: event.Entity,
+						SecondaryEntity: event.SecondaryEntity,
+						Created: event.Created,
+						Message: event.Message,
+						Duration: event.Duration,
+					},
 				},
 			}
 			openaiChan <- value

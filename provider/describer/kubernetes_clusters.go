@@ -62,7 +62,7 @@ func GetKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, resour
 }
 
 func processKubernetesClusters(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var clusters []model.KubernetesClusterDescription
+	var clusters []model.KubernetesClusterResp
 	var clusterListResponse model.KubernetesClusterListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/lke/clusters"
@@ -107,13 +107,26 @@ func processKubernetesClusters(ctx context.Context, handler *LinodeAPIHandler, o
 
 	for _, cluster := range clusters {
 		wg.Add(1)
-		go func(cluster model.KubernetesClusterDescription) {
+		go func(cluster model.KubernetesClusterResp) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(cluster.ID),
 				Name: cluster.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: cluster,
+					Value: model.KubernetesClusterDescription{
+						ID: 		cluster.ID,
+						Label: 		cluster.Label,
+						Region: 	cluster.Region,
+						Created: 	cluster.Created,
+						Updated: 	cluster.Updated,
+						Status: 	cluster.Status,
+						K8sVersion: cluster.K8sVersion,
+						Tags: 		cluster.Tags,
+						ControlPlane: model.LKEClusterControlPlane{
+
+							HighAvailability: cluster.ControlPlane.HighAvailability,
+						},
+					},
 				},
 			}
 			openaiChan <- value

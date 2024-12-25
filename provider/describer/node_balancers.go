@@ -66,7 +66,7 @@ func GetNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 }
 
 func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var nodeBalancers []model.NodeBalancerDescription
+	var nodeBalancers []model.NodeBalancerResp
 	var nodeBalancerListResponse model.NodeBalancerListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers"
@@ -111,7 +111,7 @@ func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openai
 
 	for _, nodeBalancer := range nodeBalancers {
 		wg.Add(1)
-		go func(nodeBalancer model.NodeBalancerDescription) {
+		go func(nodeBalancer model.NodeBalancerResp) {
 			defer wg.Done()
 			var name string
 			if nodeBalancer.Label != nil {
@@ -121,7 +121,19 @@ func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openai
 				ID:   strconv.Itoa(nodeBalancer.ID),
 				Name: name,
 				Description: JSONAllFieldsMarshaller{
-					Value: nodeBalancer,
+					Value: model.NodeBalancerDescription{
+						ID:   nodeBalancer.ID,
+						Label: nodeBalancer.Label,
+						Region: nodeBalancer.Region,
+						Hostname: nodeBalancer.Hostname,
+						IPv4: nodeBalancer.IPv4,
+						IPv6: nodeBalancer.IPv6,
+						ClientConnThrottle: nodeBalancer.ClientConnThrottle,
+						Transfer: nodeBalancer.Transfer,
+						Tags: nodeBalancer.Tags,
+						Created: nodeBalancer.Created,
+						Updated: nodeBalancer.Updated,
+					},
 				},
 			}
 			openaiChan <- value

@@ -66,29 +66,32 @@ type Account struct {
 }
 
 type AccountDescription struct {
-	Email   string `json:"email"`
-	City    string `json:"city"`
-	Company string `json:"company"`
-	Country string `json:"country"`
-	Euuid   string `json:"euuid"`
+	Email   string 
+	City    string 
+	Company string 
+	Country string 
+	Euuid   string 
 }
 
 type DatabaseListResponse struct {
-	Data  []DatabaseDescription `json:"data"`
+	Data  []DatabaseSingleResponse `json:"data"`
 	Page  int                   `json:"page"`
 	Pages int                   `json:"pages"`
 }
 
 type DatabaseHost struct {
+	Primary   string 	
+	Secondary string 
+}
+type DatabaseHostSingle struct {
 	Primary   string `json:"primary"`
 	Secondary string `json:"secondary,omitempty"`
 }
-
-type DatabaseDescription struct {
-	ID              int          `json:"id"`
+type DatabaseSingleResponse struct {
+ID              int          `json:"id"`
 	Status          string       `json:"status"`
 	Label           string       `json:"label"`
-	Hosts           DatabaseHost `json:"hosts"`
+	Hosts           DatabaseHostSingle `json:"hosts"`
 	Region          string       `json:"region"`
 	Type            string       `json:"type"`
 	Engine          string       `json:"engine"`
@@ -103,13 +106,32 @@ type DatabaseDescription struct {
 	Updated         string       `json:"updated"`
 }
 
+type DatabaseDescription struct {
+	ID              int          
+	Status          string       
+	Label           string       
+	Hosts           DatabaseHost 
+	Region          string       
+	Type            string       
+	Engine          string       
+	Version         string       
+	ClusterSize     int          
+	ReplicationType string       
+	SSLConnection   bool         
+	Encrypted       bool         
+	AllowList       []string     
+	InstanceURI     string       
+	Created         string       
+	Updated         string       
+}
+
 type DomainListResponse struct {
-	Data  []DomainDescription `json:"data"`
+	Data  []DomainRecord `json:"data"`
 	Page  int                 `json:"page"`
 	Pages int                 `json:"pages"`
 }
 
-type DomainDescription struct {
+type DomainRecord struct {
 	ID          int      `json:"id"`
 	Domain      string   `json:"domain"`
 	Type        string   `json:"type"`
@@ -124,23 +146,41 @@ type DomainDescription struct {
 	ExpireSec   int      `json:"expire_sec"`
 	RefreshSec  int      `json:"refresh_sec"`
 	TTLSec      int      `json:"ttl_sec"`
+
+}
+
+type DomainDescription struct {
+	ID          int      
+	Domain      string   
+	Type        string   
+	Group       string   
+	Status      string   
+	Description string   
+	SOAEmail    string   
+	RetrySec    int      
+	MasterIPs   []string 
+	AXfrIPs     []string 
+	Tags        []string 
+	ExpireSec   int      
+	RefreshSec  int      
+	TTLSec      int      
 }
 
 type EventEntity struct {
-	ID     any    `json:"id"`
-	Label  string `json:"label"`
-	Type   string `json:"type"`
-	Status string `json:"status"`
-	URL    string `json:"url"`
+	ID     any    
+	Label  string 
+	Type   string 
+	Status string 
+	URL    string 
 }
 
+
 type EventListResponse struct {
-	Data  []EventDescription `json:"data"`
+	Data  []EventResp `json:"data"`
 	Page  int                `json:"page"`
 	Pages int                `json:"pages"`
 }
-
-type EventDescription struct {
+type EventResp struct {
 	ID              int          `json:"id"`
 	Status          string       `json:"status"`
 	Action          string       `json:"action"`
@@ -155,6 +195,23 @@ type EventDescription struct {
 	Created         string       `json:"created"`
 	Message         string       `json:"message"`
 	Duration        float64      `json:"duration"`
+}
+
+type EventDescription struct {
+	ID              int          
+	Status          string       
+	Action          string       
+	PercentComplete int          
+	Rate            *string      
+	Read            bool         
+	Seen            bool         
+	TimeRemaining   *int         
+	Username        string       
+	Entity          *EventEntity 
+	SecondaryEntity *EventEntity 
+	Created         string       
+	Message         string       
+	Duration        float64      
 }
 
 type InstanceAlert struct {
@@ -190,13 +247,12 @@ type InstancePlacementGroup struct {
 }
 
 type LinodeListResponse struct {
-	Data  []InstanceDescription `json:"data"`
+	Data  []LinodeSingleResponse `json:"data"`
 	Page  int                   `json:"page"`
 	Pages int                   `json:"pages"`
 }
-
-type InstanceDescription struct {
-	ID              int                     `json:"id"`
+type LinodeSingleResponse struct {
+		ID              int                     `json:"id"`
 	Created         string                  `json:"created"`
 	Updated         string                  `json:"updated"`
 	Region          string                  `json:"region"`
@@ -219,6 +275,33 @@ type InstanceDescription struct {
 	DiskEncryption  string                  `json:"disk_encryption"`
 	LKEClusterID    int                     `json:"lke_cluster_id"`
 	Capabilities    []string                `json:"capabilities"`
+}
+
+
+type InstanceDescription struct {
+	ID              int                     
+	Created         string                  
+	Updated         string                  
+	Region          string                  
+	Alerts          *InstanceAlert          
+	Backups         *InstanceBackup         
+	Image           string                  
+	Group           string                  
+	IPv4            []*net.IP               
+	IPv6            string                  
+	Label           string                  
+	Type            string                  
+	Status          string                  
+	HasUserData     bool                    
+	Hypervisor      string                  
+	HostUUID        string                  
+	Specs           *InstanceSpec           
+	WatchdogEnabled bool                    
+	Tags            []string                
+	PlacementGroup  *InstancePlacementGroup 
+	DiskEncryption  string                  
+	LKEClusterID    int                     
+	Capabilities    []string                
 }
 
 type NetworkAddresses struct {
@@ -249,13 +332,13 @@ type FirewallListResponse struct {
 }
 
 type FirewallDescription struct {
-	ID      int             `json:"id"`
-	Label   string          `json:"label"`
-	Status  string          `json:"status"`
-	Tags    []string        `json:"tags,omitempty"`
-	Rules   FirewallRuleSet `json:"rules"`
-	Created string          `json:"created"`
-	Updated string          `json:"updated"`
+	ID      int             
+	Label   string          
+	Status  string          
+	Tags    []string        
+	Rules   FirewallRuleSet 
+	Created string          
+	Updated string          
 }
 
 type ImageRegion struct {
@@ -264,12 +347,12 @@ type ImageRegion struct {
 }
 
 type ImageListResponse struct {
-	Data  []ImageDescription `json:"data"`
+	Data  []ImageResponseSingle `json:"data"`
 	Page  int                `json:"page"`
 	Pages int                `json:"pages"`
 }
 
-type ImageDescription struct {
+type ImageResponseSingle struct {
 	ID           string        `json:"id"`
 	CreatedBy    string        `json:"created_by"`
 	Capabilities []string      `json:"capabilities"`
@@ -290,17 +373,42 @@ type ImageDescription struct {
 	EOL          string        `json:"eol"`
 }
 
+type ImageDescription struct {
+	ID           string        
+	CreatedBy    string        
+	Capabilities []string      
+	Label        string        
+	Description  string        
+	Type         string        
+	Vendor       string        
+	Status       string        
+	Size         int           
+	TotalSize    int           
+	IsPublic     bool          
+	Deprecated   bool          
+	Regions      []ImageRegion 
+	Tags         []string      
+	Updated      string        
+	Created      string        
+	Expiry       string        
+	EOL          string        
+}
+
 type LKEClusterControlPlane struct {
+	HighAvailability bool 
+}
+type LKEClusterControlPlaneResp struct {
 	HighAvailability bool `json:"high_availability"`
 }
 
+
 type KubernetesClusterListResponse struct {
-	Data  []KubernetesClusterDescription `json:"data"`
+	Data  []KubernetesClusterResp `json:"data"`
 	Page  int                            `json:"page"`
 	Pages int                            `json:"pages"`
 }
 
-type KubernetesClusterDescription struct {
+type KubernetesClusterResp struct {
 	ID           int                    `json:"id"`
 	Created      string                 `json:"created"`
 	Updated      string                 `json:"updated"`
@@ -309,7 +417,19 @@ type KubernetesClusterDescription struct {
 	Status       string                 `json:"status"`
 	K8sVersion   string                 `json:"k8s_version"`
 	Tags         []string               `json:"tags"`
-	ControlPlane LKEClusterControlPlane `json:"control_plane"`
+	ControlPlane LKEClusterControlPlaneResp `json:"control_plane"`
+}
+
+type KubernetesClusterDescription struct {
+	ID           int                    
+	Created      string                 
+	Updated      string                 
+	Label        string                 
+	Region       string                 
+	Status       string                 
+	K8sVersion   string                 
+	Tags         []string               
+	ControlPlane LKEClusterControlPlane 
 }
 
 type LongViewClientListResponse struct {
@@ -339,12 +459,11 @@ type NodeBalancerTransfer struct {
 }
 
 type NodeBalancerListResponse struct {
-	Data  []NodeBalancerDescription `json:"data"`
+	Data  []NodeBalancerResp `json:"data"`
 	Page  int                       `json:"page"`
 	Pages int                       `json:"pages"`
 }
-
-type NodeBalancerDescription struct {
+type NodeBalancerResp struct {
 	ID                 int                  `json:"id"`
 	Label              *string              `json:"label"`
 	Region             string               `json:"region"`
@@ -358,6 +477,21 @@ type NodeBalancerDescription struct {
 	Updated            string               `json:"updated"`
 }
 
+
+type NodeBalancerDescription struct {
+	ID                 int                  
+	Label              *string              
+	Region             string               
+	Hostname           *string              
+	IPv4               *string              
+	IPv6               *string              
+	ClientConnThrottle int                  
+	Transfer           NodeBalancerTransfer 
+	Tags               []string             
+	Created            string               
+	Updated            string               
+}
+
 type ObjectStorageBucketListResponse struct {
 	Data  []ObjectStorageBucketDescription `json:"data"`
 	Page  int                              `json:"page"`
@@ -366,15 +500,13 @@ type ObjectStorageBucketListResponse struct {
 
 // ObjectStorageBucketDescription represents a ObjectStorage object
 type ObjectStorageBucketDescription struct {
-	Label string `json:"label"`
-
-	Cluster string `json:"cluster"`
-	Region  string `json:"region"`
-
-	Created  string `json:"-"`
-	Hostname string `json:"hostname"`
-	Objects  int    `json:"objects"`
-	Size     int    `json:"size"`
+	Label string    
+	Cluster string  
+	Region  string  
+	Created  string 
+	Hostname string 
+	Objects  int    
+	Size     int    
 }
 
 type StackScriptUDF struct {
@@ -387,13 +519,12 @@ type StackScriptUDF struct {
 }
 
 type StackScriptListResponse struct {
-	Data  []StackScriptDescription `json:"data"`
+	Data  []StackScriptResp `json:"data"`
 	Page  int                      `json:"page"`
 	Pages int                      `json:"pages"`
 }
-
-type StackScriptDescription struct {
-	ID                int               `json:"id"`
+type StackScriptResp struct {
+ID                int               `json:"id"`
 	Username          string            `json:"username"`
 	Label             string            `json:"label"`
 	Description       string            `json:"description"`
@@ -412,24 +543,58 @@ type StackScriptDescription struct {
 	UserGravatarID    string            `json:"user_gravatar_id"`
 }
 
+type StackScriptDescription struct {
+	ID                int               
+	Username          string            
+	Label             string            
+	Description       string            
+	Ordinal           int               
+	LogoURL           string            
+	Images            []string          
+	DeploymentsTotal  int               
+	DeploymentsActive int               
+	IsPublic          bool              
+	Mine              bool              
+	Created           string            
+	Updated           string            
+	RevNote           string            
+	Script            string            
+	UserDefinedFields *[]StackScriptUDF 
+	UserGravatarID    string            
+}
+
 type VolumeListResponse struct {
-	Data  []VolumeDescription `json:"data"`
+	Data  []VolumeSingleResponse `json:"data"`
 	Page  int                 `json:"page"`
 	Pages int                 `json:"pages"`
 }
 
+type VolumeSingleResponse struct {
+		ID             int      `json:"id"`
+	Label          string   `json:"label"`
+	Status         string   `json:"status"`
+	Region         string   `json:"region"`
+	Size           int      `json:"size"`
+	LinodeID       *int     `json:"linode_id"`
+	FilesystemPath string   `json:"filesystem_path"`
+	Tags           []string `json:"tags"`
+	Created        string   `json:"created"`
+	Updated        string   `json:"updated"`
+	Encryption     string   `json:"encryption"`
+}
+
 type VolumeDescription struct {
 	ID             int      
-	Label          *string   
-	Status         *string   
-	Region         *string   
+	Label          string   
+	Status         string   
+	Region         string   
 	Size           int      
 	LinodeID       *int     
-	FilesystemPath *string   
+	FilesystemPath string   
 	Tags           []string 
-	Created        *string   
-	Updated        *string   
-	Encryption     *string   
+	Created        string   
+	Updated        string   
+	Encryption     string   
 }
 
 type VPCSubnetLinodeInterface struct {
@@ -438,17 +603,17 @@ type VPCSubnetLinodeInterface struct {
 }
 
 type VPCSubnetLinode struct {
-	ID         int                        `json:"id"`
-	Interfaces []VPCSubnetLinodeInterface `json:"interfaces"`
+	ID         int                        
+	Interfaces []VPCSubnetLinodeInterface 
 }
 
 type VPCSubnet struct {
-	ID      int               `json:"id"`
-	Label   string            `json:"label"`
-	IPv4    string            `json:"ipv4"`
-	Linodes []VPCSubnetLinode `json:"linodes"`
-	Created string            `json:"created"`
-	Updated string            `json:"updated"`
+	ID      int               
+	Label   string            
+	IPv4    string            
+	Linodes []VPCSubnetLinode 
+	Created string            
+	Updated string            
 }
 
 type VPCListResponse struct {
@@ -458,13 +623,13 @@ type VPCListResponse struct {
 }
 
 type VPCDescription struct {
-	ID          int         `json:"id"`
-	Label       string      `json:"label"`
-	Description string      `json:"description"`
-	Region      string      `json:"region"`
-	Subnets     []VPCSubnet `json:"subnets"`
-	Created     string      `json:"created"`
-	Updated     string      `json:"updated"`
+	ID          int         
+	Label       string      
+	Description string      
+	Region      string      
+	Subnets     []VPCSubnet 
+	Created     string      
+	Updated     string      
 }
 
 type InstanceIPNAT1To1 struct {
@@ -474,12 +639,11 @@ type InstanceIPNAT1To1 struct {
 }
 
 type IPAddressListResponse struct {
-	Data  []IPAddressDescription `json:"data"`
+	Data  []IPAddressResp `json:"data"`
 	Page  int                    `json:"page"`
 	Pages int                    `json:"pages"`
 }
-
-type IPAddressDescription struct {
+type IPAddressResp struct {
 	Address    string             `json:"address"`
 	Gateway    string             `json:"gateway"`
 	SubnetMask string             `json:"subnet_mask"`
@@ -491,4 +655,18 @@ type IPAddressDescription struct {
 	Region     string             `json:"region"`
 	VPCNAT1To1 *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
 	Reserved   bool               `json:"reserved"`
+}
+
+type IPAddressDescription struct {
+	Address    string             
+	Gateway    string             
+	SubnetMask string             
+	Prefix     int                
+	Type       string             
+	Public     bool               
+	RDNS       string             
+	LinodeID   int                
+	Region     string             
+	VPCNAT1To1 *InstanceIPNAT1To1 
+	Reserved   bool               
 }

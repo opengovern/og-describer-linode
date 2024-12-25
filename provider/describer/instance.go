@@ -62,7 +62,7 @@ func GetLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceI
 }
 
 func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var linodeInstances []model.InstanceDescription
+	var linodeInstances []model.LinodeSingleResponse
 	var linodeListResponse model.LinodeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/linode/instances"
@@ -107,13 +107,36 @@ func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, open
 
 	for _, linode := range linodeInstances {
 		wg.Add(1)
-		go func(linode model.InstanceDescription) {
+		go func(linode model.LinodeSingleResponse) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(linode.ID),
 				Name: linode.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: linode,
+					Value: model.InstanceDescription{
+						ID:          linode.ID,
+						Created:    linode.Created,
+						Updated:    linode.Updated,
+						Type:       linode.Type,
+						Status:     linode.Status,
+						Region:     linode.Region,
+						IPv4:       linode.IPv4,
+						IPv6:       linode.IPv6,
+						Image:      linode.Image,
+						Backups:    linode.Backups,
+						Hypervisor: linode.Hypervisor,
+						Specs:      linode.Specs,
+						Alerts:     linode.Alerts,
+						Group: 	linode.Group,
+						HasUserData: linode.HasUserData,
+						HostUUID: linode.HostUUID,
+						WatchdogEnabled: linode.WatchdogEnabled,
+						Tags: linode.Tags,
+						PlacementGroup: linode.PlacementGroup,
+						DiskEncryption: linode.DiskEncryption,
+						LKEClusterID: linode.LKEClusterID,
+						Capabilities: linode.Capabilities,
+					},
 				},
 			}
 			openaiChan <- value

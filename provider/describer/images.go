@@ -62,7 +62,7 @@ func GetImage(ctx context.Context, handler *LinodeAPIHandler, resourceID string)
 }
 
 func processImages(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var images []model.ImageDescription
+	var images []model.ImageResponseSingle
 	var imageListResponse model.ImageListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/images"
@@ -107,7 +107,7 @@ func processImages(ctx context.Context, handler *LinodeAPIHandler, openaiChan ch
 
 	for _, image := range images {
 		wg.Add(1)
-		go func(image model.ImageDescription) {
+		go func(image model.ImageResponseSingle) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   image.ID,

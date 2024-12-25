@@ -53,7 +53,7 @@ func GetVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 	}
 	value := models.Resource{
 		ID:   strconv.Itoa(volume.ID),
-		Name: *volume.Label,
+		Name: volume.Label,
 		Description: JSONAllFieldsMarshaller{
 			Value: volume,
 		},
@@ -62,7 +62,7 @@ func GetVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 }
 
 func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
-	var volumes []model.VolumeDescription
+	var volumes []model.VolumeSingleResponse
 	var volumeListResponse model.VolumeListResponse
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/volumes"
@@ -106,13 +106,25 @@ func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 	}
 	for _, volume := range volumes {
 		wg.Add(1)
-		go func(volume model.VolumeDescription) {
+		go func(volume model.VolumeSingleResponse) {
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(volume.ID),
-				Name: *volume.Label,
+				Name: volume.Label,
 				Description: JSONAllFieldsMarshaller{
-					Value: volume,
+					Value: model.VolumeDescription{
+						ID:          volume.ID,
+						Label: 	 volume.Label,
+						Status: 	 volume.Status,
+						Region: 	 volume.Region,
+						Size: 	 volume.Size,
+						LinodeID: volume.LinodeID,
+						FilesystemPath: volume.FilesystemPath,
+						Tags: volume.Tags,
+						Created: volume.Created,
+						Updated: volume.Updated,
+						Encryption: volume.Encryption,
+					},
 				},
 			}
 			openaiChan <- value
