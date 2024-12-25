@@ -16,15 +16,15 @@ func ListAccounts(ctx context.Context, handler *LinodeAPIHandler, stream *models
 	}
 	var values []models.Resource
 	value := models.Resource{
-		ID:   account.Email,
-		Name: account.Email,
+		ID:   *account.Email,
+		Name: *account.Email,
 		Description: JSONAllFieldsMarshaller{
 			Value: model.AccountDescription{
-				Email:   account.Email,
-				City:    account.City,
-				Company: account.Company,
-				Country: account.Country,
-				Euuid:   account.EUUID,
+				Email:   *account.Email,
+				City:    *account.City,
+				Company: *account.Company,
+				Country: *account.Country,
+				Euuid:   *account.EUUID,
 			},
 		},
 	}

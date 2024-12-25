@@ -43,25 +43,25 @@ type Promotion struct {
 }
 
 type Account struct {
-	FirstName         string      `json:"first_name"`
-	LastName          string      `json:"last_name"`
-	Email             string      `json:"email"`
-	Company           string      `json:"company"`
-	Address1          string      `json:"address_1"`
-	Address2          string      `json:"address_2"`
-	Balance           float32     `json:"balance"`
-	BalanceUninvoiced float32     `json:"balance_uninvoiced"`
-	City              string      `json:"city"`
-	State             string      `json:"state"`
-	Zip               string      `json:"zip"`
-	Country           string      `json:"country"`
-	TaxID             string      `json:"tax_id"`
-	Phone             string      `json:"phone"`
+	FirstName         *string      
+	LastName          *string      
+	Email             *string      
+	Company           *string      
+	Address1          *string      
+	Address2          *string      
+	Balance           float32     
+	BalanceUninvoiced float32     
+	City              *string      
+	State             *string      
+	Zip               *string      
+	Country           *string      
+	TaxID             *string      
+	Phone             *string      
 	CreditCard        *CreditCard `json:"credit_card"`
-	EUUID             string      `json:"euuid"`
-	BillingSource     string      `json:"billing_source"`
+	EUUID             *string      
+	BillingSource     *string      
 	Capabilities      []string    `json:"capabilities"`
-	ActiveSince       string      `json:"active_since"`
+	ActiveSince       string      
 	ActivePromotions  []Promotion `json:"active_promotions"`
 }
 
