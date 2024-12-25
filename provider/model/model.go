@@ -419,17 +419,17 @@ type VolumeListResponse struct {
 }
 
 type VolumeDescription struct {
-	ID             int      `json:"id"`
-	Label          string   `json:"label"`
-	Status         string   `json:"status"`
-	Region         string   `json:"region"`
-	Size           int      `json:"size"`
-	LinodeID       *int     `json:"linode_id"`
-	FilesystemPath string   `json:"filesystem_path"`
-	Tags           []string `json:"tags"`
-	Created        string   `json:"created"`
-	Updated        string   `json:"updated"`
-	Encryption     string   `json:"encryption"`
+	ID             int      
+	Label          *string   
+	Status         *string   
+	Region         *string   
+	Size           int      
+	LinodeID       *int     
+	FilesystemPath *string   
+	Tags           []string 
+	Created        *string   
+	Updated        *string   
+	Encryption     *string   
 }
 
 type VPCSubnetLinodeInterface struct {

@@ -53,7 +53,7 @@ func GetVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 	}
 	value := models.Resource{
 		ID:   strconv.Itoa(volume.ID),
-		Name: volume.Label,
+		Name: *volume.Label,
 		Description: JSONAllFieldsMarshaller{
 			Value: volume,
 		},
@@ -110,7 +110,7 @@ func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 			defer wg.Done()
 			value := models.Resource{
 				ID:   strconv.Itoa(volume.ID),
-				Name: volume.Label,
+				Name: *volume.Label,
 				Description: JSONAllFieldsMarshaller{
 					Value: volume,
 				},
