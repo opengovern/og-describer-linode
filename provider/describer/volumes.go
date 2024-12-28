@@ -52,11 +52,9 @@ func GetVolume(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(volume.ID),
-		Name: volume.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: volume,
-		},
+		ID:          strconv.Itoa(volume.ID),
+		Name:        volume.Label,
+		Description: volume,
 	}
 	return &value, nil
 }
@@ -111,20 +109,18 @@ func processVolumes(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 			value := models.Resource{
 				ID:   strconv.Itoa(volume.ID),
 				Name: volume.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.VolumeDescription{
-						ID:          volume.ID,
-						Label: 	 volume.Label,
-						Status: 	 volume.Status,
-						Region: 	 volume.Region,
-						Size: 	 volume.Size,
-						LinodeID: volume.LinodeID,
-						FilesystemPath: volume.FilesystemPath,
-						Tags: volume.Tags,
-						Created: volume.Created,
-						Updated: volume.Updated,
-						Encryption: volume.Encryption,
-					},
+				Description: model.VolumeDescription{
+					ID:             volume.ID,
+					Label:          volume.Label,
+					Status:         volume.Status,
+					Region:         volume.Region,
+					Size:           volume.Size,
+					LinodeID:       volume.LinodeID,
+					FilesystemPath: volume.FilesystemPath,
+					Tags:           volume.Tags,
+					Created:        volume.Created,
+					Updated:        volume.Updated,
+					Encryption:     volume.Encryption,
 				},
 			}
 			openaiChan <- value

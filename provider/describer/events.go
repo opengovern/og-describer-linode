@@ -52,11 +52,9 @@ func GetEvent(ctx context.Context, handler *LinodeAPIHandler, resourceID string)
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(event.ID),
-		Name: event.Username,
-		Description: JSONAllFieldsMarshaller{
-			Value: event,
-		},
+		ID:          strconv.Itoa(event.ID),
+		Name:        event.Username,
+		Description: event,
 	}
 	return &value, nil
 }
@@ -111,23 +109,21 @@ func processEvents(ctx context.Context, handler *LinodeAPIHandler, openaiChan ch
 			value := models.Resource{
 				ID:   strconv.Itoa(event.ID),
 				Name: event.Username,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.EventDescription{
-						ID:       event.ID,
-						Status:  event.Status,
-						Action: event.Action,
-						PercentComplete: event.PercentComplete,
-						Rate: event.Rate,
-						Read: event.Read,
-						Username: event.Username,
-						Seen: event.Seen,
-						TimeRemaining: event.TimeRemaining,
-						Entity: event.Entity,
-						SecondaryEntity: event.SecondaryEntity,
-						Created: event.Created,
-						Message: event.Message,
-						Duration: event.Duration,
-					},
+				Description: model.EventDescription{
+					ID:              event.ID,
+					Status:          event.Status,
+					Action:          event.Action,
+					PercentComplete: event.PercentComplete,
+					Rate:            event.Rate,
+					Read:            event.Read,
+					Username:        event.Username,
+					Seen:            event.Seen,
+					TimeRemaining:   event.TimeRemaining,
+					Entity:          event.Entity,
+					SecondaryEntity: event.SecondaryEntity,
+					Created:         event.Created,
+					Message:         event.Message,
+					Duration:        event.Duration,
 				},
 			}
 			openaiChan <- value

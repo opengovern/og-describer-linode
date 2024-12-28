@@ -52,11 +52,9 @@ func GetKubernetesCluster(ctx context.Context, handler *LinodeAPIHandler, resour
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(cluster.ID),
-		Name: cluster.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: cluster,
-		},
+		ID:          strconv.Itoa(cluster.ID),
+		Name:        cluster.Label,
+		Description: cluster,
 	}
 	return &value, nil
 }
@@ -112,20 +110,18 @@ func processKubernetesClusters(ctx context.Context, handler *LinodeAPIHandler, o
 			value := models.Resource{
 				ID:   strconv.Itoa(cluster.ID),
 				Name: cluster.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.KubernetesClusterDescription{
-						ID: 		cluster.ID,
-						Label: 		cluster.Label,
-						Region: 	cluster.Region,
-						Created: 	cluster.Created,
-						Updated: 	cluster.Updated,
-						Status: 	cluster.Status,
-						K8sVersion: cluster.K8sVersion,
-						Tags: 		cluster.Tags,
-						ControlPlane: model.LKEClusterControlPlane{
+				Description: model.KubernetesClusterDescription{
+					ID:         cluster.ID,
+					Label:      cluster.Label,
+					Region:     cluster.Region,
+					Created:    cluster.Created,
+					Updated:    cluster.Updated,
+					Status:     cluster.Status,
+					K8sVersion: cluster.K8sVersion,
+					Tags:       cluster.Tags,
+					ControlPlane: model.LKEClusterControlPlane{
 
-							HighAvailability: cluster.ControlPlane.HighAvailability,
-						},
+						HighAvailability: cluster.ControlPlane.HighAvailability,
 					},
 				},
 			}

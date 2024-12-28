@@ -52,11 +52,9 @@ func GetFirewall(ctx context.Context, handler *LinodeAPIHandler, resourceID stri
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(firewall.ID),
-		Name: firewall.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: firewall,
-		},
+		ID:          strconv.Itoa(firewall.ID),
+		Name:        firewall.Label,
+		Description: firewall,
 	}
 	return &value, nil
 }
@@ -110,11 +108,9 @@ func processFirewalls(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 		go func(firewall model.FirewallDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   strconv.Itoa(firewall.ID),
-				Name: firewall.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: firewall,
-				},
+				ID:          strconv.Itoa(firewall.ID),
+				Name:        firewall.Label,
+				Description: firewall,
 			}
 			openaiChan <- value
 		}(firewall)

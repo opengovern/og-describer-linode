@@ -52,11 +52,9 @@ func GetLinodeInstance(ctx context.Context, handler *LinodeAPIHandler, resourceI
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(linode.ID),
-		Name: linode.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: linode,
-		},
+		ID:          strconv.Itoa(linode.ID),
+		Name:        linode.Label,
+		Description: linode,
 	}
 	return &value, nil
 }
@@ -112,31 +110,29 @@ func processLinodeInstances(ctx context.Context, handler *LinodeAPIHandler, open
 			value := models.Resource{
 				ID:   strconv.Itoa(linode.ID),
 				Name: linode.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.InstanceDescription{
-						ID:          linode.ID,
-						Created:    linode.Created,
-						Updated:    linode.Updated,
-						Type:       linode.Type,
-						Status:     linode.Status,
-						Region:     linode.Region,
-						IPv4:       linode.IPv4,
-						IPv6:       linode.IPv6,
-						Image:      linode.Image,
-						Backups:    linode.Backups,
-						Hypervisor: linode.Hypervisor,
-						Specs:      linode.Specs,
-						Alerts:     linode.Alerts,
-						Group: 	linode.Group,
-						HasUserData: linode.HasUserData,
-						HostUUID: linode.HostUUID,
-						WatchdogEnabled: linode.WatchdogEnabled,
-						Tags: linode.Tags,
-						PlacementGroup: linode.PlacementGroup,
-						DiskEncryption: linode.DiskEncryption,
-						LKEClusterID: linode.LKEClusterID,
-						Capabilities: linode.Capabilities,
-					},
+				Description: model.InstanceDescription{
+					ID:              linode.ID,
+					Created:         linode.Created,
+					Updated:         linode.Updated,
+					Type:            linode.Type,
+					Status:          linode.Status,
+					Region:          linode.Region,
+					IPv4:            linode.IPv4,
+					IPv6:            linode.IPv6,
+					Image:           linode.Image,
+					Backups:         linode.Backups,
+					Hypervisor:      linode.Hypervisor,
+					Specs:           linode.Specs,
+					Alerts:          linode.Alerts,
+					Group:           linode.Group,
+					HasUserData:     linode.HasUserData,
+					HostUUID:        linode.HostUUID,
+					WatchdogEnabled: linode.WatchdogEnabled,
+					Tags:            linode.Tags,
+					PlacementGroup:  linode.PlacementGroup,
+					DiskEncryption:  linode.DiskEncryption,
+					LKEClusterID:    linode.LKEClusterID,
+					Capabilities:    linode.Capabilities,
 				},
 			}
 			openaiChan <- value

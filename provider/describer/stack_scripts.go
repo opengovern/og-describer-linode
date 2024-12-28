@@ -52,11 +52,9 @@ func GetStackScript(ctx context.Context, handler *LinodeAPIHandler, resourceID s
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(stackScript.ID),
-		Name: stackScript.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: stackScript,
-		},
+		ID:          strconv.Itoa(stackScript.ID),
+		Name:        stackScript.Label,
+		Description: stackScript,
 	}
 	return &value, nil
 }
@@ -112,26 +110,24 @@ func processStackScripts(ctx context.Context, handler *LinodeAPIHandler, openaiC
 			value := models.Resource{
 				ID:   strconv.Itoa(stackScript.ID),
 				Name: stackScript.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.StackScriptDescription{
-						ID: 		stackScript.ID,
-						Label: 		stackScript.Label,
-						Description: stackScript.Description,
-						Username: 	stackScript.Username,
-						Ordinal: 	stackScript.Ordinal,
-						LogoURL: 	stackScript.LogoURL,
-						Images: 	stackScript.Images,
-						DeploymentsTotal: stackScript.DeploymentsTotal,
-						DeploymentsActive: stackScript.DeploymentsActive,
-						IsPublic: 	stackScript.IsPublic,
-						Mine: 		stackScript.Mine,
-						Created: 	stackScript.Created,
-						Updated: 	stackScript.Updated,
-						RevNote: 	stackScript.RevNote,
-						Script: 	stackScript.Script,
-						UserDefinedFields: stackScript.UserDefinedFields,
-						UserGravatarID: stackScript.UserGravatarID,
-					},
+				Description: model.StackScriptDescription{
+					ID:                stackScript.ID,
+					Label:             stackScript.Label,
+					Description:       stackScript.Description,
+					Username:          stackScript.Username,
+					Ordinal:           stackScript.Ordinal,
+					LogoURL:           stackScript.LogoURL,
+					Images:            stackScript.Images,
+					DeploymentsTotal:  stackScript.DeploymentsTotal,
+					DeploymentsActive: stackScript.DeploymentsActive,
+					IsPublic:          stackScript.IsPublic,
+					Mine:              stackScript.Mine,
+					Created:           stackScript.Created,
+					Updated:           stackScript.Updated,
+					RevNote:           stackScript.RevNote,
+					Script:            stackScript.Script,
+					UserDefinedFields: stackScript.UserDefinedFields,
+					UserGravatarID:    stackScript.UserGravatarID,
 				},
 			}
 			openaiChan <- value

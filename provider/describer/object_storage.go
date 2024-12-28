@@ -95,11 +95,9 @@ func processObjectStorageBuckets(ctx context.Context, handler *LinodeAPIHandler,
 		go func(linode model.ObjectStorageBucketDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   fmt.Sprintf("%s/%s", linode.Cluster, linode.Label),
-				Name: linode.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: linode,
-				},
+				ID:          fmt.Sprintf("%s/%s", linode.Cluster, linode.Label),
+				Name:        linode.Label,
+				Description: linode,
 			}
 			openaiChan <- value
 		}(linode)

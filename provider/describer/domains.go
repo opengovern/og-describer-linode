@@ -52,11 +52,9 @@ func GetDomain(ctx context.Context, handler *LinodeAPIHandler, resourceID string
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(domain.ID),
-		Name: domain.Domain,
-		Description: JSONAllFieldsMarshaller{
-			Value: domain,
-		},
+		ID:          strconv.Itoa(domain.ID),
+		Name:        domain.Domain,
+		Description: domain,
 	}
 	return &value, nil
 }
@@ -111,24 +109,21 @@ func processDomains(ctx context.Context, handler *LinodeAPIHandler, openaiChan c
 			value := models.Resource{
 				ID:   strconv.Itoa(domain.ID),
 				Name: domain.Domain,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.DomainDescription{
-						ID:     domain.ID,
-						Domain: domain.Domain,
-						Type:  domain.Type,
-						Group: domain.Group,
-						Status: domain.Status,
-						Description: domain.Description,
-						SOAEmail: domain.SOAEmail,
-						RetrySec: domain.RetrySec,
-						MasterIPs: domain.MasterIPs,
-						AXfrIPs: domain.AXfrIPs,
-						Tags: domain.Tags,
-						ExpireSec: domain.ExpireSec,
-						RefreshSec: domain.RefreshSec,
-						TTLSec: domain.TTLSec,
-						
-					},
+				Description: model.DomainDescription{
+					ID:          domain.ID,
+					Domain:      domain.Domain,
+					Type:        domain.Type,
+					Group:       domain.Group,
+					Status:      domain.Status,
+					Description: domain.Description,
+					SOAEmail:    domain.SOAEmail,
+					RetrySec:    domain.RetrySec,
+					MasterIPs:   domain.MasterIPs,
+					AXfrIPs:     domain.AXfrIPs,
+					Tags:        domain.Tags,
+					ExpireSec:   domain.ExpireSec,
+					RefreshSec:  domain.RefreshSec,
+					TTLSec:      domain.TTLSec,
 				},
 			}
 			openaiChan <- value

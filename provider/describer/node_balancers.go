@@ -56,11 +56,9 @@ func GetNodeBalancer(ctx context.Context, handler *LinodeAPIHandler, resourceID 
 		name = *nodeBalancer.Label
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(nodeBalancer.ID),
-		Name: name,
-		Description: JSONAllFieldsMarshaller{
-			Value: nodeBalancer,
-		},
+		ID:          strconv.Itoa(nodeBalancer.ID),
+		Name:        name,
+		Description: nodeBalancer,
 	}
 	return &value, nil
 }
@@ -120,20 +118,18 @@ func processNodeBalancers(ctx context.Context, handler *LinodeAPIHandler, openai
 			value := models.Resource{
 				ID:   strconv.Itoa(nodeBalancer.ID),
 				Name: name,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.NodeBalancerDescription{
-						ID:   nodeBalancer.ID,
-						Label: nodeBalancer.Label,
-						Region: nodeBalancer.Region,
-						Hostname: nodeBalancer.Hostname,
-						IPv4: nodeBalancer.IPv4,
-						IPv6: nodeBalancer.IPv6,
-						ClientConnThrottle: nodeBalancer.ClientConnThrottle,
-						Transfer: nodeBalancer.Transfer,
-						Tags: nodeBalancer.Tags,
-						Created: nodeBalancer.Created,
-						Updated: nodeBalancer.Updated,
-					},
+				Description: model.NodeBalancerDescription{
+					ID:                 nodeBalancer.ID,
+					Label:              nodeBalancer.Label,
+					Region:             nodeBalancer.Region,
+					Hostname:           nodeBalancer.Hostname,
+					IPv4:               nodeBalancer.IPv4,
+					IPv6:               nodeBalancer.IPv6,
+					ClientConnThrottle: nodeBalancer.ClientConnThrottle,
+					Transfer:           nodeBalancer.Transfer,
+					Tags:               nodeBalancer.Tags,
+					Created:            nodeBalancer.Created,
+					Updated:            nodeBalancer.Updated,
 				},
 			}
 			openaiChan <- value

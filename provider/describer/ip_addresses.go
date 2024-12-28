@@ -52,11 +52,9 @@ func GetIPAddress(ctx context.Context, handler *LinodeAPIHandler, resourceID str
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   ipAddress.Address,
-		Name: ipAddress.Address,
-		Description: JSONAllFieldsMarshaller{
-			Value: ipAddress,
-		},
+		ID:          ipAddress.Address,
+		Name:        ipAddress.Address,
+		Description: ipAddress,
 	}
 	return &value, nil
 }
@@ -112,20 +110,18 @@ func processIPAddresses(ctx context.Context, handler *LinodeAPIHandler, openaiCh
 			value := models.Resource{
 				ID:   ipAddress.Address,
 				Name: ipAddress.Address,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.IPAddressDescription{
-						Address: ipAddress.Address,
-						Gateway: ipAddress.Gateway,
-						SubnetMask: ipAddress.SubnetMask,
-						Prefix: ipAddress.Prefix,
-						Type: ipAddress.Type,
-						Public: ipAddress.Public,
-						RDNS: ipAddress.RDNS,
-						LinodeID: ipAddress.LinodeID,
-						Region: ipAddress.Region,
-						VPCNAT1To1: ipAddress.VPCNAT1To1,
-						Reserved: ipAddress.Reserved,
-					},
+				Description: model.IPAddressDescription{
+					Address:    ipAddress.Address,
+					Gateway:    ipAddress.Gateway,
+					SubnetMask: ipAddress.SubnetMask,
+					Prefix:     ipAddress.Prefix,
+					Type:       ipAddress.Type,
+					Public:     ipAddress.Public,
+					RDNS:       ipAddress.RDNS,
+					LinodeID:   ipAddress.LinodeID,
+					Region:     ipAddress.Region,
+					VPCNAT1To1: ipAddress.VPCNAT1To1,
+					Reserved:   ipAddress.Reserved,
 				},
 			}
 			openaiChan <- value

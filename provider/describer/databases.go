@@ -97,29 +97,26 @@ func processDatabases(ctx context.Context, handler *LinodeAPIHandler, openaiChan
 			value := models.Resource{
 				ID:   strconv.Itoa(database.ID),
 				Name: database.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: model.DatabaseDescription{
-						ID:          database.ID,
-						Label:       database.Label,
-						Region:      database.Region,
-						Type:        database.Type,
-						Status: 	database.Status,
-						Created:     database.Created,
-						Updated:     database.Updated,
-						Hosts: 	 model.DatabaseHost{
-							Primary: database.Hosts.Primary,
-							Secondary: database.Hosts.Secondary,
-						},
-						ClusterSize: database.ClusterSize,
-						ReplicationType: database.ReplicationType,
-						SSLConnection: database.SSLConnection,
-						Encrypted: database.Encrypted,
-						AllowList: database.AllowList,
-						InstanceURI: database.InstanceURI,
-						Engine: database.Engine,
-						Version: database.Version,
-						
+				Description: model.DatabaseDescription{
+					ID:      database.ID,
+					Label:   database.Label,
+					Region:  database.Region,
+					Type:    database.Type,
+					Status:  database.Status,
+					Created: database.Created,
+					Updated: database.Updated,
+					Hosts: model.DatabaseHost{
+						Primary:   database.Hosts.Primary,
+						Secondary: database.Hosts.Secondary,
 					},
+					ClusterSize:     database.ClusterSize,
+					ReplicationType: database.ReplicationType,
+					SSLConnection:   database.SSLConnection,
+					Encrypted:       database.Encrypted,
+					AllowList:       database.AllowList,
+					InstanceURI:     database.InstanceURI,
+					Engine:          database.Engine,
+					Version:         database.Version,
 				},
 			}
 			openaiChan <- value

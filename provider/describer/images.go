@@ -52,11 +52,9 @@ func GetImage(ctx context.Context, handler *LinodeAPIHandler, resourceID string)
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   image.ID,
-		Name: image.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: image,
-		},
+		ID:          image.ID,
+		Name:        image.Label,
+		Description: image,
 	}
 	return &value, nil
 }
@@ -110,11 +108,9 @@ func processImages(ctx context.Context, handler *LinodeAPIHandler, openaiChan ch
 		go func(image model.ImageResponseSingle) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   image.ID,
-				Name: image.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: image,
-				},
+				ID:          image.ID,
+				Name:        image.Label,
+				Description: image,
 			}
 			openaiChan <- value
 		}(image)

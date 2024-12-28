@@ -52,11 +52,9 @@ func GetLongViewClient(ctx context.Context, handler *LinodeAPIHandler, resourceI
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(client.ID),
-		Name: client.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: client,
-		},
+		ID:          strconv.Itoa(client.ID),
+		Name:        client.Label,
+		Description: client,
 	}
 	return &value, nil
 }
@@ -110,11 +108,9 @@ func processLongViewClients(ctx context.Context, handler *LinodeAPIHandler, open
 		go func(client model.LongViewClientDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   strconv.Itoa(client.ID),
-				Name: client.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: client,
-				},
+				ID:          strconv.Itoa(client.ID),
+				Name:        client.Label,
+				Description: client,
 			}
 			openaiChan <- value
 		}(client)

@@ -52,11 +52,9 @@ func GetVPC(ctx context.Context, handler *LinodeAPIHandler, resourceID string) (
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   strconv.Itoa(vpc.ID),
-		Name: vpc.Label,
-		Description: JSONAllFieldsMarshaller{
-			Value: vpc,
-		},
+		ID:          strconv.Itoa(vpc.ID),
+		Name:        vpc.Label,
+		Description: vpc,
 	}
 	return &value, nil
 }
@@ -109,11 +107,9 @@ func processVPCs(ctx context.Context, handler *LinodeAPIHandler, openaiChan chan
 		go func(vpc model.VPCDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:   strconv.Itoa(vpc.ID),
-				Name: vpc.Label,
-				Description: JSONAllFieldsMarshaller{
-					Value: vpc,
-				},
+				ID:          strconv.Itoa(vpc.ID),
+				Name:        vpc.Label,
+				Description: vpc,
 			}
 			openaiChan <- value
 		}(vpc)
