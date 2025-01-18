@@ -15,16 +15,16 @@ jobs:
       latest_tag: ${{ steps.set_latest_tag.outputs.latest_tag }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install musl cc
-        uses: awalsh128/cache-apt-pkgs-action@v1
+        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           packages: musl-tools musl-dev musl
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version-file: './go.mod'
-#          cache: false  # Disable Go modules caching
+          cache: false  # Disable built-in caching to use custom caching
       - name: Tag Version
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
@@ -32,36 +32,69 @@ jobs:
           github_token: ${{ secrets.GH_ACCESS_TOKEN }}
           release_branches: main
           tag_prefix: v
-      # Removed Go modules cache step
-      - name: Configure Git for Private Repos
-        run: |
-          git config --global url.https://$GH_ACCESS_TOKEN@github.com/opengovern.insteadOf https://github.com/opengovern
+      - name: Cache Go Modules and Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}-
+            ${{ runner.os }}-go-
+
       - name: Build Linode Plugin App
-        working-directory: ./steampipe-plugin-linode
+        working-directory: ./cloudql
         run: make build
       - name: Pack Linode Plugin Build
-        working-directory: ./steampipe-plugin-linode
+        working-directory: ./cloudql
         run: |
           tar -cvf build.tar build
       - name: Upload Linode Plugin Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
-          name: steampipe-plugin-linode
-          path: ./steampipe-plugin-linode/build.tar
+          name: linode
+          path: ./cloudql/build.tar
           retention-days: 1
       - name: Build Local Describer App
-        working-directory: .
-        run: make local-build
+        working-directory: ./discovery
+        run: make build-describer
       - name: Pack Local Describer Build
-        working-directory: .
+        working-directory: ./discovery
         run: |
           tar -cvf local.tar local
       - name: Upload Local Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: local-og-describer-linode
-          path: ./local.tar
+          path: ./discovery/local.tar
           retention-days: 1
+      - name: Build Integration Plugin
+        working-directory: ./platform
+        run: make build
+      - name: Create output directory
+        working-directory: .
+        run: mkdir -p linode-plugin
+      - name: Copy steampipe plugin to output directory
+        working-directory: .
+        run: cp ./cloudql/build/linode.plugin ./linode-plugin/cloudql-plugin
+      - name: Copy integration plugin to output directory
+        working-directory: .
+        run: cp ./platform/build/integration-plugin ./linode-plugin/
+      - name: Copy manifest to output directory
+        working-directory: .
+        run: cp ./platform/constants/manifest.yaml ./linode-plugin/
+      - name: Pack output
+        working-directory: .
+        run: |
+          tar -czf linode-plugin.tar linode-plugin
+      - name: Upload linode outputs artifact
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: linode-plugins
+          path: ./linode-plugin.tar
+          retention-days: 1
+
       - name: Set Latest Tag Output
         id: set_latest_tag
         run: |
@@ -70,7 +103,6 @@ jobs:
           else
             echo "latest_tag=${{ steps.tag_version.outputs.new_tag }}" >> "$GITHUB_OUTPUT"
           fi
-
   deploy-linode-plugin:
     needs: build
     runs-on: ubuntu-latest
@@ -80,11 +112,11 @@ jobs:
     environment: main
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download Linode Plugin Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: steampipe-plugin-linode
+          name: linode
           path: .
       - name: Unpack Linode Plugin Artifact
         run: |
@@ -102,9 +134,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/steampipe-plugin-linode:0.0.1
             ghcr.io/${{ github.repository_owner }}/steampipe-plugin-linode:${{ needs.build.outputs.latest_tag }}
-          file: steampipe-plugin-linode/docker/Dockerfile
+          file: cloudql/docker/Dockerfile
           context: .
-
   deploy-local-describer:
     needs:
       - build
@@ -115,9 +146,9 @@ jobs:
     environment: main
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download Local Describer Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: local-og-describer-linode
           path: .
@@ -137,5 +168,32 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/og-describer-linode:local-latest
             ghcr.io/${{ github.repository_owner }}/og-describer-linode:local-${{ needs.build.outputs.latest_tag }}
-          file: DockerFileLocal
+          file: discovery/DockerFile
           context: .
+  release-integration-plugin:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    environment: main
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Download Integration Plugin Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linode-plugins
+      - name: Unpack Integration Plugin Artifact
+        run: |
+          tar -xvf linode-plugin.tar
+      - name: Pack folder content into a zip file for release
+        run: |
+          cd linode-plugin
+          zip -r linode-plugin.zip .
+      - name: Release Integration Plugin
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./linode-plugin/linode-plugin.zip
+          tag_name: ${{ needs.build.outputs.latest_tag }}
