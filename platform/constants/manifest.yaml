@@ -1,4 +1,4 @@
-IntegrationType: linode
+IntegrationType: linode_account
 DescriberURL:  ghcr.io/opengovern/og-describer-linode
 Publisher: opencomply.io
 Author : opencomply engineering team
