@@ -13,7 +13,7 @@ require (
 	github.com/jackc/pgtype v1.14.4
 	github.com/linode/linodego v1.43.0
 	github.com/nats-io/nats.go v1.36.0
-	github.com/opengovern/og-util v1.11.0
+	github.com/opengovern/og-util v1.12.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.7.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.10.1
