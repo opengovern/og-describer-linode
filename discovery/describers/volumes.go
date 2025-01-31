@@ -16,7 +16,7 @@ func ListVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, stream
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
-	accounts, err := ListAccounts(ctx, handler, stream)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func ListVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, stream
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processVolumes(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
+		if err := processVolumes(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -55,7 +55,7 @@ func GetVolume(ctx context.Context, handler *provider.LinodeAPIHandler, resource
 	if err != nil {
 		return nil, err
 	}
-	accounts, err := ListAccounts(ctx, handler, nil)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func GetVolume(ctx context.Context, handler *provider.LinodeAPIHandler, resource
 			Created:        volume.Created,
 			Updated:        volume.Updated,
 			Encryption:     volume.Encryption,
-			Account:        accounts[0].ID,
+			Account:        account.EUUID,
 		},
 	}
 	return &value, nil

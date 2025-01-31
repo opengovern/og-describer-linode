@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/opengovern/og-describer-linode/discovery/pkg/models"
 	"github.com/opengovern/og-describer-linode/discovery/provider"
-	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -17,7 +16,7 @@ func ListNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandler, 
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
-	accounts, err := ListAccounts(ctx, handler, stream)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +24,7 @@ func ListNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandler, 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processNodeBalancers(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
+		if err := processNodeBalancers(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -56,7 +55,7 @@ func GetNodeBalancer(ctx context.Context, handler *provider.LinodeAPIHandler, re
 	if err != nil {
 		return nil, err
 	}
-	accounts, err := ListAccounts(ctx, handler, nil)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +78,7 @@ func GetNodeBalancer(ctx context.Context, handler *provider.LinodeAPIHandler, re
 			Tags:               nodeBalancer.Tags,
 			Created:            nodeBalancer.Created,
 			Updated:            nodeBalancer.Updated,
-			Account:            accounts[0].ID,
+			Account:            account.EUUID,
 		},
 	}
 	return &value, nil
@@ -110,9 +109,6 @@ func processNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandle
 				return nil, fmt.Errorf("request execution failed: %w", e)
 			}
 			defer resp.Body.Close()
-			dataBytes, _ := io.ReadAll(resp.Body)
-			fmt.Println(string(dataBytes))
-			fmt.Println(resp.StatusCode)
 
 			if e = json.NewDecoder(resp.Body).Decode(&nodeBalancerListResponse); e != nil {
 				return nil, fmt.Errorf("failed to decode response: %w", e)

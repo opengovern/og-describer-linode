@@ -16,11 +16,11 @@ func ListNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandl
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
-	accounts, err := ListAccounts(ctx, handler, stream)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
-	nodeBalancers, err := ListNodeBalancers(ctx, handler, stream)
+	nodeBalancers, err := provider.ListNodeBalancers(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -29,12 +29,12 @@ func ListNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandl
 		defer close(linodeChan)
 		defer close(errorChan)
 		for _, nodeBalancer := range nodeBalancers {
-			configs, err := provider.ListConfigs(ctx, handler, nodeBalancer.ID)
+			configs, err := provider.ListConfigs(ctx, handler, strconv.Itoa(nodeBalancer.ID))
 			if err != nil {
 				errorChan <- err // Send error to the error channel
 			}
 			for _, config := range configs {
-				if err = processNodeBalancerNodes(ctx, handler, accounts[0].ID, nodeBalancer.ID, strconv.Itoa(config.ID), linodeChan, &wg); err != nil {
+				if err = processNodeBalancerNodes(ctx, handler, account.EUUID, strconv.Itoa(nodeBalancer.ID), strconv.Itoa(config.ID), linodeChan, &wg); err != nil {
 					errorChan <- err // Send error to the error channel
 				}
 			}

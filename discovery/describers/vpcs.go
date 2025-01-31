@@ -16,7 +16,7 @@ func ListVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, stream *m
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
-	accounts, err := ListAccounts(ctx, handler, stream)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func ListVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, stream *m
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processVPCs(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
+		if err := processVPCs(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -55,7 +55,7 @@ func GetVPC(ctx context.Context, handler *provider.LinodeAPIHandler, resourceID 
 	if err != nil {
 		return nil, err
 	}
-	accounts, err := ListAccounts(ctx, handler, nil)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func GetVPC(ctx context.Context, handler *provider.LinodeAPIHandler, resourceID 
 			Subnets:     vpc.Subnets,
 			Created:     vpc.Created,
 			Updated:     vpc.Updated,
-			Account:     accounts[0].ID,
+			Account:     account.EUUID,
 		},
 	}
 	return &value, nil

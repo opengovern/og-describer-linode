@@ -16,7 +16,7 @@ func ListStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler, s
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
-	accounts, err := ListAccounts(ctx, handler, stream)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func ListStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler, s
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processStackScripts(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
+		if err := processStackScripts(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -55,7 +55,7 @@ func GetStackScript(ctx context.Context, handler *provider.LinodeAPIHandler, res
 	if err != nil {
 		return nil, err
 	}
-	accounts, err := ListAccounts(ctx, handler, nil)
+	account, err := provider.GetAccount(ctx, handler)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func GetStackScript(ctx context.Context, handler *provider.LinodeAPIHandler, res
 			Script:            stackScript.Script,
 			UserDefinedFields: stackScript.UserDefinedFields,
 			UserGravatarID:    stackScript.UserGravatarID,
-			Account:           accounts[0].ID,
+			Account:           account.EUUID,
 		},
 	}
 	return &value, nil
