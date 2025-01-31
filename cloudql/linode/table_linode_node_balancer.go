@@ -2,7 +2,6 @@ package linode
 
 import (
 	"context"
-	"github.com/linode/linodego"
 	opengovernance "github.com/opengovern/og-describer-linode/discovery/pkg/es"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
@@ -83,26 +82,4 @@ func tableLinodeNodeBalancer(ctx context.Context) *plugin.Table {
 			//	Description: "The NodeBalancer configurations."},
 		}),
 	}
-}
-
-func getNodeBalancersConfiguration(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	nodeBalanccer := h.Item.(linodego.NodeBalancer)
-
-	conn, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_node_balancer.getNodeBalancersConfiguration", "connection_error", err)
-		return nil, err
-	}
-
-	opts := linodego.ListOptions{}
-
-	items, err := conn.ListNodeBalancerConfigs(ctx, nodeBalanccer.ID, &opts)
-	if err != nil {
-		plugin.Logger(ctx).Error("linode_node_balancer.getNodeBalancersConfiguration", "query_error", err, "opts", opts)
-		return nil, err
-	}
-	if len(items) > 0 {
-		return items, nil
-	}
-	return nil, nil
 }

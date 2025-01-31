@@ -159,6 +159,26 @@ var ResourceTypes = map[string]model.ResourceType{
 		ListDescriber:   provider.DescribeListByLinode(describers.ListIPAddresses),
 		GetDescriber:    provider.DescribeSingleByLinode(describers.GetIPAddress),
 	},
+
+	"Linode/NodeBalancer/Config": {
+		IntegrationType: constants.IntegrationName,
+		ResourceName:    "Linode/NodeBalancer/Config",
+		Tags:            map[string][]string{},
+		Labels:          map[string]string{},
+		Annotations:     map[string]string{},
+		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancerConfigs),
+		GetDescriber:    nil,
+	},
+
+	"Linode/NodeBalancer/Node": {
+		IntegrationType: constants.IntegrationName,
+		ResourceName:    "Linode/NodeBalancer/Node",
+		Tags:            map[string][]string{},
+		Labels:          map[string]string{},
+		Annotations:     map[string]string{},
+		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancerNodes),
+		GetDescriber:    nil,
+	},
 }
 
 var ResourceTypeConfigs = map[string]*interfaces.ResourceTypeConfiguration{
@@ -252,6 +272,18 @@ var ResourceTypeConfigs = map[string]*interfaces.ResourceTypeConfiguration{
 		IntegrationType: constants.IntegrationName,
 		Description:     "",
 	},
+
+	"Linode/NodeBalancer/Config": {
+		Name:            "Linode/NodeBalancer/Config",
+		IntegrationType: constants.IntegrationName,
+		Description:     "",
+	},
+
+	"Linode/NodeBalancer/Node": {
+		Name:            "Linode/NodeBalancer/Node",
+		IntegrationType: constants.IntegrationName,
+		Description:     "",
+	},
 }
 
 var ResourceTypesList = []string{
@@ -270,4 +302,6 @@ var ResourceTypesList = []string{
 	"Linode/Vpc",
 	"Linode/Volume",
 	"Linode/IPAddress",
+	"Linode/NodeBalancer/Config",
+	"Linode/NodeBalancer/Node",
 }
