@@ -55,7 +55,7 @@ var describerCmd = &cobra.Command{
 		logger, _ := zap.NewProduction()
 
 		creds, err := provider.AccountCredentialsFromMap(map[string]any{
-			"token": "1b51cb9a80ce5455f8b478967efa425eeb9142d0d966e0911a709650da4820ef",
+			"token": Token,
 		})
 		if err != nil {
 			return fmt.Errorf(" account credentials: %w", err)
