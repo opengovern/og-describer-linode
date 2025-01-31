@@ -16,11 +16,15 @@ func ListVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, stream
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processVolumes(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processVolumes(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,32 @@ func GetVolume(ctx context.Context, handler *provider.LinodeAPIHandler, resource
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(volume.ID),
-		Name:        volume.Label,
-		Description: volume,
+		ID:   strconv.Itoa(volume.ID),
+		Name: volume.Label,
+		Description: provider.VolumeDescription{
+			ID:             volume.ID,
+			Label:          volume.Label,
+			Status:         volume.Status,
+			Region:         volume.Region,
+			Size:           volume.Size,
+			LinodeID:       volume.LinodeID,
+			FilesystemPath: volume.FilesystemPath,
+			Tags:           volume.Tags,
+			Created:        volume.Created,
+			Updated:        volume.Updated,
+			Encryption:     volume.Encryption,
+			Account:        accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var volumes []provider.VolumeSingleResponse
 	var volumeListResponse provider.VolumeListResponse
 	var resp *http.Response
@@ -121,6 +142,7 @@ func processVolumes(ctx context.Context, handler *provider.LinodeAPIHandler, ope
 					Created:        volume.Created,
 					Updated:        volume.Updated,
 					Encryption:     volume.Encryption,
+					Account:        account,
 				},
 			}
 			openaiChan <- value

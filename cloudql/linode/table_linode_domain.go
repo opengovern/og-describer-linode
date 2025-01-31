@@ -88,6 +88,12 @@ func tableLinodeDomain(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.Tags").Transform(transform.StringArrayToMap),
 				Description: "Tags applied to this domain as a map."},
 			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
+			{
 				Name:        "ttl_sec",
 				Type:        proto.ColumnType_INT,
 				Transform:   transform.FromField("Description.TTLSec").NullIfZero(),

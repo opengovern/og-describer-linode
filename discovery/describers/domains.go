@@ -16,11 +16,15 @@ func ListDomains(ctx context.Context, handler *provider.LinodeAPIHandler, stream
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processDomains(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processDomains(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,35 @@ func GetDomain(ctx context.Context, handler *provider.LinodeAPIHandler, resource
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(domain.ID),
-		Name:        domain.Domain,
-		Description: domain,
+		ID:   strconv.Itoa(domain.ID),
+		Name: domain.Domain,
+		Description: provider.DomainDescription{
+			ID:          domain.ID,
+			Domain:      domain.Domain,
+			Type:        domain.Type,
+			Group:       domain.Group,
+			Status:      domain.Status,
+			Description: domain.Description,
+			SOAEmail:    domain.SOAEmail,
+			RetrySec:    domain.RetrySec,
+			MasterIPs:   domain.MasterIPs,
+			AXfrIPs:     domain.AXfrIPs,
+			Tags:        domain.Tags,
+			ExpireSec:   domain.ExpireSec,
+			RefreshSec:  domain.RefreshSec,
+			TTLSec:      domain.TTLSec,
+			Account:     accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processDomains(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processDomains(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var domains []provider.DomainRecord
 	var domainListResponse provider.DomainListResponse
 	var resp *http.Response
@@ -124,6 +148,7 @@ func processDomains(ctx context.Context, handler *provider.LinodeAPIHandler, ope
 					ExpireSec:   domain.ExpireSec,
 					RefreshSec:  domain.RefreshSec,
 					TTLSec:      domain.TTLSec,
+					Account:     account,
 				},
 			}
 			openaiChan <- value

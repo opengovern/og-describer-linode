@@ -74,9 +74,9 @@ func tableLinodeAccount(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.LastName"),
 				Description: "The last name of the person associated with this Account."},
 			{
-				Name:        "euuid",
+				Name:        "account",
 				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromField("Description.Euuid"),
+				Transform:   transform.FromField("Description.Account"),
 				Description: "An external unique identifier for this account.",
 			},
 			{

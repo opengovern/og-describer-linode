@@ -22,6 +22,12 @@ func tableLinodeIPAddress(ctx context.Context) *plugin.Table {
 		Columns: commonColumns([]*plugin.Column{
 			// Top columns
 			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
+			{
 				Name:      "address",
 				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Address"),

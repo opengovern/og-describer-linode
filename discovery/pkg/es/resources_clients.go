@@ -95,6 +95,7 @@ func (p AccountPaginator) NextPage(ctx context.Context) ([]Account, error) {
 }
 
 var listAccountFilters = map[string]string{
+	"account":            "Description.Account",
 	"address_1":          "Description.Address1",
 	"address_2":          "Description.Address2",
 	"balance":            "Description.Balance",
@@ -104,7 +105,6 @@ var listAccountFilters = map[string]string{
 	"country":            "Description.Country",
 	"credit_card":        "Description.CreditCard",
 	"email":              "Description.Email",
-	"euuid":              "Description.Euuid",
 	"first_name":         "Description.FirstName",
 	"last_name":          "Description.LastName",
 	"phone":              "Description.Phone",
@@ -174,6 +174,7 @@ func ListAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 }
 
 var getAccountFilters = map[string]string{
+	"account":            "Description.Account",
 	"address_1":          "Description.Address1",
 	"address_2":          "Description.Address2",
 	"balance":            "Description.Balance",
@@ -183,7 +184,6 @@ var getAccountFilters = map[string]string{
 	"country":            "Description.Country",
 	"credit_card":        "Description.CreditCard",
 	"email":              "Description.Email",
-	"euuid":              "Description.Euuid",
 	"first_name":         "Description.FirstName",
 	"last_name":          "Description.LastName",
 	"phone":              "Description.Phone",
@@ -328,6 +328,7 @@ func (p DatabasePaginator) NextPage(ctx context.Context) ([]Database, error) {
 }
 
 var listDatabaseFilters = map[string]string{
+	"account":          "Description.Account",
 	"allow_list":       "Description.AllowList",
 	"cluster_size":     "Description.ClusterSize",
 	"created":          "Description.Created",
@@ -407,6 +408,7 @@ func ListDatabase(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 }
 
 var getDatabaseFilters = map[string]string{
+	"account":          "Description.Account",
 	"allow_list":       "Description.AllowList",
 	"cluster_size":     "Description.ClusterSize",
 	"created":          "Description.Created",
@@ -561,6 +563,7 @@ func (p DomainPaginator) NextPage(ctx context.Context) ([]Domain, error) {
 }
 
 var listDomainFilters = map[string]string{
+	"account":     "Description.Account",
 	"axfr_ips":    "Description.AXfrIPs",
 	"description": "Description.Description",
 	"domain":      "Description.Domain",
@@ -637,6 +640,7 @@ func ListDomain(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 }
 
 var getDomainFilters = map[string]string{
+	"account":     "Description.Account",
 	"axfr_ips":    "Description.AXfrIPs",
 	"description": "Description.Description",
 	"domain":      "Description.Domain",
@@ -788,6 +792,7 @@ func (p EventPaginator) NextPage(ctx context.Context) ([]Event, error) {
 }
 
 var listEventFilters = map[string]string{
+	"account":          "Description.Account",
 	"action":           "Description.Action",
 	"created":          "Description.Created",
 	"duration":         "Description.Duration",
@@ -865,6 +870,7 @@ func ListEvent(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 var getEventFilters = map[string]string{
+	"account":          "Description.Account",
 	"action":           "Description.Action",
 	"created":          "Description.Created",
 	"duration":         "Description.Duration",
@@ -1017,6 +1023,7 @@ func (p InstancePaginator) NextPage(ctx context.Context) ([]Instance, error) {
 }
 
 var listInstanceFilters = map[string]string{
+	"account":          "Description.Account",
 	"alerts":           "Description.Alerts",
 	"backups":          "Description.Backups",
 	"capabilities":     "Description.Capabilities",
@@ -1104,6 +1111,7 @@ func ListInstance(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 }
 
 var getInstanceFilters = map[string]string{
+	"account":          "Description.Account",
 	"alerts":           "Description.Alerts",
 	"backups":          "Description.Backups",
 	"capabilities":     "Description.Capabilities",
@@ -1266,6 +1274,7 @@ func (p FirewallPaginator) NextPage(ctx context.Context) ([]Firewall, error) {
 }
 
 var listFirewallFilters = map[string]string{
+	"account": "Description.Account",
 	"created": "Description.Created",
 	"id":      "Description.ID",
 	"label":   "Description.Label",
@@ -1336,6 +1345,7 @@ func ListFirewall(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 }
 
 var getFirewallFilters = map[string]string{
+	"account": "Description.Account",
 	"created": "Description.Created",
 	"id":      "Description.ID",
 	"label":   "Description.Label",
@@ -1481,6 +1491,7 @@ func (p ImagePaginator) NextPage(ctx context.Context) ([]Image, error) {
 }
 
 var listImageFilters = map[string]string{
+	"account":      "Description.Account",
 	"capabilities": "Description.Capabilities",
 	"created":      "Description.Created",
 	"created_by":   "Description.CreatedBy",
@@ -1562,6 +1573,7 @@ func ListImage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 }
 
 var getImageFilters = map[string]string{
+	"account":      "Description.Account",
 	"capabilities": "Description.Capabilities",
 	"created":      "Description.Created",
 	"created_by":   "Description.CreatedBy",
@@ -1718,6 +1730,7 @@ func (p KubernetesClusterPaginator) NextPage(ctx context.Context) ([]KubernetesC
 }
 
 var listKubernetesClusterFilters = map[string]string{
+	"account":       "Description.Account",
 	"control_plane": "Description.ControlPlane",
 	"created":       "Description.Created",
 	"id":            "Description.ID",
@@ -1789,6 +1802,7 @@ func ListKubernetesCluster(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 }
 
 var getKubernetesClusterFilters = map[string]string{
+	"account":       "Description.Account",
 	"control_plane": "Description.ControlPlane",
 	"created":       "Description.Created",
 	"id":            "Description.ID",
@@ -1935,6 +1949,7 @@ func (p LongViewClientPaginator) NextPage(ctx context.Context) ([]LongViewClient
 }
 
 var listLongViewClientFilters = map[string]string{
+	"account":      "Description.Account",
 	"api_key":      "Description.APIKey",
 	"apps":         "Description.Apps",
 	"created":      "Description.Created",
@@ -2005,6 +2020,7 @@ func ListLongViewClient(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 }
 
 var getLongViewClientFilters = map[string]string{
+	"account":      "Description.Account",
 	"api_key":      "Description.APIKey",
 	"apps":         "Description.Apps",
 	"created":      "Description.Created",
@@ -2150,6 +2166,7 @@ func (p NodeBalancerPaginator) NextPage(ctx context.Context) ([]NodeBalancer, er
 }
 
 var listNodeBalancerFilters = map[string]string{
+	"account":              "Description.Account",
 	"client_conn_throttle": "Description.ClientConnThrottle",
 	"created":              "Description.Created",
 	"hostname":             "Description.Hostname",
@@ -2224,6 +2241,7 @@ func ListNodeBalancer(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 }
 
 var getNodeBalancerFilters = map[string]string{
+	"account":              "Description.Account",
 	"client_conn_throttle": "Description.ClientConnThrottle",
 	"created":              "Description.Created",
 	"hostname":             "Description.Hostname",
@@ -2373,6 +2391,7 @@ func (p ObjectStorageBucketPaginator) NextPage(ctx context.Context) ([]ObjectSto
 }
 
 var listObjectStorageBucketFilters = map[string]string{
+	"account":                 "Description.Account",
 	"cluster":                 "Description.Cluster",
 	"created":                 "Description.Created",
 	"hostname":                "Description.Hostname",
@@ -2444,6 +2463,7 @@ func ListObjectStorageBucket(ctx context.Context, d *plugin.QueryData, _ *plugin
 }
 
 var getObjectStorageBucketFilters = map[string]string{
+	"account":                 "Description.Account",
 	"cluster":                 "Description.Cluster",
 	"created":                 "Description.Created",
 	"hostname":                "Description.Hostname",
@@ -2590,6 +2610,7 @@ func (p StackScriptPaginator) NextPage(ctx context.Context) ([]StackScript, erro
 }
 
 var listStackScriptFilters = map[string]string{
+	"account":             "Description.Account",
 	"created":             "Description.Created",
 	"deployments_active":  "Description.DeploymentsActive",
 	"deployments_total":   "Description.DeploymentsTotal",
@@ -2670,6 +2691,7 @@ func ListStackScript(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 }
 
 var getStackScriptFilters = map[string]string{
+	"account":             "Description.Account",
 	"created":             "Description.Created",
 	"deployments_active":  "Description.DeploymentsActive",
 	"deployments_total":   "Description.DeploymentsTotal",
@@ -2825,6 +2847,7 @@ func (p VolumePaginator) NextPage(ctx context.Context) ([]Volume, error) {
 }
 
 var listVolumeFilters = map[string]string{
+	"account":         "Description.Account",
 	"created":         "Description.Created",
 	"encryption":      "Description.Encryption",
 	"filesystem_path": "Description.FilesystemPath",
@@ -2898,6 +2921,7 @@ func ListVolume(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 }
 
 var getVolumeFilters = map[string]string{
+	"account":         "Description.Account",
 	"created":         "Description.Created",
 	"encryption":      "Description.Encryption",
 	"filesystem_path": "Description.FilesystemPath",
@@ -3046,6 +3070,7 @@ func (p VPCPaginator) NextPage(ctx context.Context) ([]VPC, error) {
 }
 
 var listVPCFilters = map[string]string{
+	"account":     "Description.Account",
 	"created":     "Description.Created",
 	"description": "Description.Description",
 	"id":          "Description.ID",
@@ -3116,6 +3141,7 @@ func ListVPC(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (i
 }
 
 var getVPCFilters = map[string]string{
+	"account":     "Description.Account",
 	"created":     "Description.Created",
 	"description": "Description.Description",
 	"id":          "Description.ID",
@@ -3261,6 +3287,7 @@ func (p IPAddressPaginator) NextPage(ctx context.Context) ([]IPAddress, error) {
 }
 
 var listIPAddressFilters = map[string]string{
+	"account":     "Description.Account",
 	"address":     "Description.Address",
 	"gateway":     "Description.Gateway",
 	"linode_id":   "Description.LinodeID",
@@ -3335,6 +3362,7 @@ func ListIPAddress(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDa
 }
 
 var getIPAddressFilters = map[string]string{
+	"account":     "Description.Account",
 	"address":     "Description.Address",
 	"gateway":     "Description.Gateway",
 	"linode_id":   "Description.LinodeID",
@@ -3484,6 +3512,7 @@ func (p NodeBalancerConfigPaginator) NextPage(ctx context.Context) ([]NodeBalanc
 }
 
 var listNodeBalancerConfigFilters = map[string]string{
+	"account":         "Description.Account",
 	"algorithm":       "Description.Algorithm",
 	"check":           "Description.Check",
 	"check_attempts":  "Description.CheckAttempts",
@@ -3568,6 +3597,7 @@ func ListNodeBalancerConfig(ctx context.Context, d *plugin.QueryData, _ *plugin.
 }
 
 var getNodeBalancerConfigFilters = map[string]string{
+	"account":         "Description.Account",
 	"algorithm":       "Description.Algorithm",
 	"check":           "Description.Check",
 	"check_attempts":  "Description.CheckAttempts",
@@ -3727,6 +3757,7 @@ func (p NodePaginator) NextPage(ctx context.Context) ([]Node, error) {
 }
 
 var listNodeFilters = map[string]string{
+	"account":         "Description.Account",
 	"address":         "Description.Address",
 	"config_id":       "Description.ConfigID",
 	"id":              "Description.ID",
@@ -3798,6 +3829,7 @@ func ListNode(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (
 }
 
 var getNodeFilters = map[string]string{
+	"account":         "Description.Account",
 	"address":         "Description.Address",
 	"config_id":       "Description.ConfigID",
 	"id":              "Description.ID",

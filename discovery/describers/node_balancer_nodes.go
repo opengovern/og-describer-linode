@@ -16,6 +16,10 @@ func ListNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandl
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 	nodeBalancers, err := ListNodeBalancers(ctx, handler, stream)
 	if err != nil {
 		return nil, err
@@ -30,7 +34,7 @@ func ListNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandl
 				errorChan <- err // Send error to the error channel
 			}
 			for _, config := range configs {
-				if err = processNodeBalancerNodes(ctx, handler, nodeBalancer.ID, strconv.Itoa(config.ID), linodeChan, &wg); err != nil {
+				if err = processNodeBalancerNodes(ctx, handler, accounts[0].ID, nodeBalancer.ID, strconv.Itoa(config.ID), linodeChan, &wg); err != nil {
 					errorChan <- err // Send error to the error channel
 				}
 			}
@@ -58,7 +62,7 @@ func ListNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandl
 	}
 }
 
-func processNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandler, nodeBalancerID, configID string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHandler, account, nodeBalancerID, configID string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var nodeBalancerNodes []provider.NodeRespJSON
 	var nodeBalancerNodeListResponse provider.NodeBalancerNodeListResponse
 	var resp *http.Response
@@ -118,6 +122,7 @@ func processNodeBalancerNodes(ctx context.Context, handler *provider.LinodeAPIHa
 					NodeBalancerID: nodeBalancerNode.NodeBalancerID,
 					Status:         nodeBalancerNode.Status,
 					Weight:         nodeBalancerNode.Weight,
+					Account:        account,
 				},
 			}
 			openaiChan <- value

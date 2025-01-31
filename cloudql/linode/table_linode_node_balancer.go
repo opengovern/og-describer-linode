@@ -18,6 +18,12 @@ func tableLinodeNodeBalancer(ctx context.Context) *plugin.Table {
 		Columns: commonColumns([]*plugin.Column{
 			// Top columns
 			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
+			{
 				Name:        "id",
 				Type:        proto.ColumnType_INT,
 				Transform:   transform.FromField("Description.ID"),

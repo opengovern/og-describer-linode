@@ -16,11 +16,15 @@ func ListIPAddresses(ctx context.Context, handler *provider.LinodeAPIHandler, st
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processIPAddresses(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processIPAddresses(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,32 @@ func GetIPAddress(ctx context.Context, handler *provider.LinodeAPIHandler, resou
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          ipAddress.Address,
-		Name:        ipAddress.Address,
-		Description: ipAddress,
+		ID:   ipAddress.Address,
+		Name: ipAddress.Address,
+		Description: provider.IPAddressDescription{
+			Address:    ipAddress.Address,
+			Gateway:    ipAddress.Gateway,
+			SubnetMask: ipAddress.SubnetMask,
+			Prefix:     ipAddress.Prefix,
+			Type:       ipAddress.Type,
+			Public:     ipAddress.Public,
+			RDNS:       ipAddress.RDNS,
+			LinodeID:   ipAddress.LinodeID,
+			Region:     ipAddress.Region,
+			VPCNAT1To1: ipAddress.VPCNAT1To1,
+			Reserved:   ipAddress.Reserved,
+			Account:    accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processIPAddresses(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processIPAddresses(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var ipAddresses []provider.IPAddressResp
 	var ipAddressListResponse provider.IPAddressListResponse
 	var resp *http.Response
@@ -122,6 +143,7 @@ func processIPAddresses(ctx context.Context, handler *provider.LinodeAPIHandler,
 					Region:     ipAddress.Region,
 					VPCNAT1To1: ipAddress.VPCNAT1To1,
 					Reserved:   ipAddress.Reserved,
+					Account:    account,
 				},
 			}
 			openaiChan <- value

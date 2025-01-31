@@ -27,6 +27,12 @@ func tableLinodeVolume(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.ID"),
 				Description: "The unique ID of this Volume."},
 			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
+			{
 				Name:        "label",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Label"),

@@ -2,6 +2,7 @@ package linode
 
 import (
 	"context"
+	opengovernance "github.com/opengovern/og-describer-linode/discovery/pkg/es"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -12,11 +13,11 @@ func tableLinodeNodeBalancerNode(ctx context.Context) *plugin.Table {
 		Name:        "linode_node_balancer_node",
 		Description: "Nodes assigned to a NodeBalancer and readable by the requesting User.",
 		List: &plugin.ListConfig{
-			Hydrate: nil,
+			Hydrate: opengovernance.ListNode,
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    nil,
+			Hydrate:    opengovernance.GetNode,
 		},
 		Columns: commonColumns([]*plugin.Column{
 			{
@@ -24,6 +25,12 @@ func tableLinodeNodeBalancerNode(ctx context.Context) *plugin.Table {
 				Type:        proto.ColumnType_INT,
 				Transform:   transform.FromField("Description.ID"),
 				Description: "The unique ID of this NodeBalancer Node.",
+			},
+			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
 			},
 			{
 				Name:        "nodebalancer_id",

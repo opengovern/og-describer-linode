@@ -16,11 +16,15 @@ func ListDatabases(ctx context.Context, handler *provider.LinodeAPIHandler, stre
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processDatabases(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processDatabases(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -46,7 +50,7 @@ func ListDatabases(ctx context.Context, handler *provider.LinodeAPIHandler, stre
 	}
 }
 
-func processDatabases(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processDatabases(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var databases []provider.DatabaseSingleResponse
 	var databaseListResponse provider.DatabaseListResponse
 	var resp *http.Response
@@ -117,6 +121,7 @@ func processDatabases(ctx context.Context, handler *provider.LinodeAPIHandler, o
 					InstanceURI:     database.InstanceURI,
 					Engine:          database.Engine,
 					Version:         database.Version,
+					Account:         account,
 				},
 			}
 			openaiChan <- value

@@ -16,11 +16,15 @@ func ListEvents(ctx context.Context, handler *provider.LinodeAPIHandler, stream 
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processEvents(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processEvents(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,35 @@ func GetEvent(ctx context.Context, handler *provider.LinodeAPIHandler, resourceI
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(event.ID),
-		Name:        event.Username,
-		Description: event,
+		ID:   strconv.Itoa(event.ID),
+		Name: event.Username,
+		Description: provider.EventDescription{
+			ID:              event.ID,
+			Status:          event.Status,
+			Action:          event.Action,
+			PercentComplete: event.PercentComplete,
+			Rate:            event.Rate,
+			Read:            event.Read,
+			Username:        event.Username,
+			Seen:            event.Seen,
+			TimeRemaining:   event.TimeRemaining,
+			Entity:          event.Entity,
+			SecondaryEntity: event.SecondaryEntity,
+			Created:         event.Created,
+			Message:         event.Message,
+			Duration:        event.Duration,
+			Account:         accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processEvents(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processEvents(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var events []provider.EventResp
 	var eventListResponse provider.EventListResponse
 	var resp *http.Response
@@ -124,6 +148,7 @@ func processEvents(ctx context.Context, handler *provider.LinodeAPIHandler, open
 					Created:         event.Created,
 					Message:         event.Message,
 					Duration:        event.Duration,
+					Account:         account,
 				},
 			}
 			openaiChan <- value

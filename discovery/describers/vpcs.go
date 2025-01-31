@@ -16,11 +16,15 @@ func ListVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, stream *m
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processVPCs(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processVPCs(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,28 @@ func GetVPC(ctx context.Context, handler *provider.LinodeAPIHandler, resourceID 
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(vpc.ID),
-		Name:        vpc.Label,
-		Description: vpc,
+		ID:   strconv.Itoa(vpc.ID),
+		Name: vpc.Label,
+		Description: provider.VPCDescription{
+			ID:          vpc.ID,
+			Label:       vpc.Label,
+			Description: vpc.Description,
+			Region:      vpc.Region,
+			Subnets:     vpc.Subnets,
+			Created:     vpc.Created,
+			Updated:     vpc.Updated,
+			Account:     accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var vpcs []provider.VPCDescription
 	var vpcListResponse provider.VPCListResponse
 	var resp *http.Response
@@ -107,9 +124,18 @@ func processVPCs(ctx context.Context, handler *provider.LinodeAPIHandler, openai
 		go func(vpc provider.VPCDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:          strconv.Itoa(vpc.ID),
-				Name:        vpc.Label,
-				Description: vpc,
+				ID:   strconv.Itoa(vpc.ID),
+				Name: vpc.Label,
+				Description: provider.VPCDescription{
+					ID:          vpc.ID,
+					Label:       vpc.Label,
+					Description: vpc.Description,
+					Region:      vpc.Region,
+					Subnets:     vpc.Subnets,
+					Created:     vpc.Created,
+					Updated:     vpc.Updated,
+					Account:     account,
+				},
 			}
 			openaiChan <- value
 		}(vpc)

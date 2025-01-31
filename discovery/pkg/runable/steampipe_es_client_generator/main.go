@@ -25,6 +25,8 @@ var (
 
 var PluginPath = fmt.Sprintf("../../../../cloudql/" + global.IntegrationTypeLower)
 
+//var PluginPath = "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/cloudql/linode"
+
 type IntegrationType struct {
 	Name            string
 	Index           string
@@ -44,10 +46,12 @@ type ResourceType struct {
 func main() {
 	if output == nil || len(*output) == 0 {
 		v := "../../es/resources_clients.go"
+		//v := "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/discovery/pkg/es/resources_clients.go"
 		output = &v
 	}
 	if file == nil || len(*file) == 0 {
 		v := "../../../provider/model.go"
+		//v := "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/discovery/provider/model.go"
 		file = &v
 	}
 
@@ -58,6 +62,7 @@ func main() {
 
 	if resourceTypesFile == nil || len(*resourceTypesFile) == 0 {
 		rt := "../../../../global/maps/resource-types.json"
+		//rt := "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/global/maps/resource-types.json"
 		resourceTypesFile = &rt
 	}
 

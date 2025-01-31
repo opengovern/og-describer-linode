@@ -16,16 +16,21 @@ func ListNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPIHan
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 	nodeBalancers, err := ListNodeBalancers(ctx, handler, stream)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(len(nodeBalancers))
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
 		for _, nodeBalancer := range nodeBalancers {
-			if err := processNodeBalancerConfigs(ctx, handler, nodeBalancer.ID, linodeChan, &wg); err != nil {
+			if err := processNodeBalancerConfigs(ctx, handler, accounts[0].ID, nodeBalancer.ID, linodeChan, &wg); err != nil {
 				errorChan <- err // Send error to the error channel
 			}
 		}
@@ -52,9 +57,10 @@ func ListNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPIHan
 	}
 }
 
-func processNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPIHandler, nodeBalancerID string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPIHandler, account, nodeBalancerID string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var nodeBalancerConfigs []provider.NodeBalancerConfigJSON
 	var nodeBalancerConfigListResponse provider.NodeBalancerConfigListResponse
+	fmt.Println("hello")
 	var resp *http.Response
 	baseURL := "https://api.linode.com/v4/nodebalancers/"
 	page := 1
@@ -77,6 +83,7 @@ func processNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPI
 				return nil, fmt.Errorf("request execution failed: %w", e)
 			}
 			defer resp.Body.Close()
+			fmt.Println(resp.StatusCode)
 
 			if e = json.NewDecoder(resp.Body).Decode(&nodeBalancerConfigListResponse); e != nil {
 				return nil, fmt.Errorf("failed to decode response: %w", e)
@@ -142,6 +149,7 @@ func processNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPI
 					SSLFingerprint: nodeBalancerConfig.SSLFingerprint,
 					SSLKey:         nodeBalancerConfig.SSLKey,
 					Stickiness:     nodeBalancerConfig.Stickiness,
+					Account:        account,
 				},
 			}
 			openaiChan <- value

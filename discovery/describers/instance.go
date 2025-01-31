@@ -16,11 +16,15 @@ func ListLinodeInstances(ctx context.Context, handler *provider.LinodeAPIHandler
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	accounts, err := ListAccounts(ctx, handler, stream)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processLinodeInstances(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processLinodeInstances(ctx, handler, accounts[0].ID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,43 @@ func GetLinodeInstance(ctx context.Context, handler *provider.LinodeAPIHandler, 
 	if err != nil {
 		return nil, err
 	}
+	accounts, err := ListAccounts(ctx, handler, nil)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(linode.ID),
-		Name:        linode.Label,
-		Description: linode,
+		ID:   strconv.Itoa(linode.ID),
+		Name: linode.Label,
+		Description: provider.InstanceDescription{
+			ID:              linode.ID,
+			Created:         linode.Created,
+			Updated:         linode.Updated,
+			Type:            linode.Type,
+			Status:          linode.Status,
+			Region:          linode.Region,
+			IPv4:            linode.IPv4,
+			IPv6:            linode.IPv6,
+			Image:           linode.Image,
+			Backups:         linode.Backups,
+			Hypervisor:      linode.Hypervisor,
+			Specs:           linode.Specs,
+			Alerts:          linode.Alerts,
+			Group:           linode.Group,
+			HasUserData:     linode.HasUserData,
+			HostUUID:        linode.HostUUID,
+			WatchdogEnabled: linode.WatchdogEnabled,
+			Tags:            linode.Tags,
+			PlacementGroup:  linode.PlacementGroup,
+			DiskEncryption:  linode.DiskEncryption,
+			LKEClusterID:    linode.LKEClusterID,
+			Capabilities:    linode.Capabilities,
+			Account:         accounts[0].ID,
+		},
 	}
 	return &value, nil
 }
 
-func processLinodeInstances(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processLinodeInstances(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var linodeInstances []provider.LinodeSingleResponse
 	var linodeListResponse provider.LinodeListResponse
 	var resp *http.Response
@@ -133,6 +165,7 @@ func processLinodeInstances(ctx context.Context, handler *provider.LinodeAPIHand
 					DiskEncryption:  linode.DiskEncryption,
 					LKEClusterID:    linode.LKEClusterID,
 					Capabilities:    linode.Capabilities,
+					Account:         account,
 				},
 			}
 			openaiChan <- value
