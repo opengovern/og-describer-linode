@@ -16,11 +16,15 @@ func ListNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandler, 
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processNodeBalancers(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processNodeBalancers(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,19 +55,36 @@ func GetNodeBalancer(ctx context.Context, handler *provider.LinodeAPIHandler, re
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	var name string
 	if nodeBalancer.Label != nil {
 		name = *nodeBalancer.Label
 	}
 	value := models.Resource{
-		ID:          strconv.Itoa(nodeBalancer.ID),
-		Name:        name,
-		Description: nodeBalancer,
+		ID:   strconv.Itoa(nodeBalancer.ID),
+		Name: name,
+		Description: provider.NodeBalancerDescription{
+			ID:                 nodeBalancer.ID,
+			Label:              nodeBalancer.Label,
+			Region:             nodeBalancer.Region,
+			Hostname:           nodeBalancer.Hostname,
+			IPv4:               nodeBalancer.IPv4,
+			IPv6:               nodeBalancer.IPv6,
+			ClientConnThrottle: nodeBalancer.ClientConnThrottle,
+			Transfer:           nodeBalancer.Transfer,
+			Tags:               nodeBalancer.Tags,
+			Created:            nodeBalancer.Created,
+			Updated:            nodeBalancer.Updated,
+			Account:            account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var nodeBalancers []provider.NodeBalancerResp
 	var nodeBalancerListResponse provider.NodeBalancerListResponse
 	var resp *http.Response
@@ -130,6 +151,7 @@ func processNodeBalancers(ctx context.Context, handler *provider.LinodeAPIHandle
 					Tags:               nodeBalancer.Tags,
 					Created:            nodeBalancer.Created,
 					Updated:            nodeBalancer.Updated,
+					Account:            account,
 				},
 			}
 			openaiChan <- value

@@ -37,11 +37,13 @@ func main() {
 
 	if resourceTypesFile == nil || len(*resourceTypesFile) == 0 {
 		rt := "global/maps/resource-types.json"
+		//rt := "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/global/maps/resource-types.json"
 		resourceTypesFile = &rt
 	}
 
 	if indexMap == nil || len(*indexMap) == 0 {
 		v := "global/maps/table_index_map.gen.go"
+		//v := "/mnt/c/Users/ASUS/GolandProjects/og-describer-linode/global/maps/table_index_map.gen.go"
 		indexMap = &v
 	}
 

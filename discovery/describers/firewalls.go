@@ -16,11 +16,15 @@ func ListFirewalls(ctx context.Context, handler *provider.LinodeAPIHandler, stre
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processFirewalls(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processFirewalls(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,28 @@ func GetFirewall(ctx context.Context, handler *provider.LinodeAPIHandler, resour
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(firewall.ID),
-		Name:        firewall.Label,
-		Description: firewall,
+		ID:   strconv.Itoa(firewall.ID),
+		Name: firewall.Label,
+		Description: provider.FirewallDescription{
+			ID:      firewall.ID,
+			Label:   firewall.Label,
+			Status:  firewall.Status,
+			Tags:    firewall.Tags,
+			Rules:   firewall.Rules,
+			Created: firewall.Created,
+			Updated: firewall.Updated,
+			Account: account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processFirewalls(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processFirewalls(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var firewalls []provider.FirewallDescription
 	var firewallListResponse provider.FirewallListResponse
 	var resp *http.Response
@@ -108,9 +125,18 @@ func processFirewalls(ctx context.Context, handler *provider.LinodeAPIHandler, o
 		go func(firewall provider.FirewallDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:          strconv.Itoa(firewall.ID),
-				Name:        firewall.Label,
-				Description: firewall,
+				ID:   strconv.Itoa(firewall.ID),
+				Name: firewall.Label,
+				Description: provider.FirewallDescription{
+					ID:      firewall.ID,
+					Label:   firewall.Label,
+					Status:  firewall.Status,
+					Tags:    firewall.Tags,
+					Rules:   firewall.Rules,
+					Created: firewall.Created,
+					Updated: firewall.Updated,
+					Account: account,
+				},
 			}
 			openaiChan <- value
 		}(firewall)

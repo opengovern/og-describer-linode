@@ -16,11 +16,15 @@ func ListObjectStorages(ctx context.Context, handler *provider.LinodeAPIHandler,
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processObjectStorageBuckets(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processObjectStorageBuckets(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -46,7 +50,7 @@ func ListObjectStorages(ctx context.Context, handler *provider.LinodeAPIHandler,
 	}
 }
 
-func processObjectStorageBuckets(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processObjectStorageBuckets(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var linodeInstances []provider.ObjectStorageBucketDescription
 	var linodeListResponse provider.ObjectStorageBucketListResponse
 	var resp *http.Response
@@ -95,9 +99,18 @@ func processObjectStorageBuckets(ctx context.Context, handler *provider.LinodeAP
 		go func(linode provider.ObjectStorageBucketDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:          fmt.Sprintf("%s/%s", linode.Cluster, linode.Label),
-				Name:        linode.Label,
-				Description: linode,
+				ID:   fmt.Sprintf("%s/%s", linode.Cluster, linode.Label),
+				Name: linode.Label,
+				Description: provider.ObjectStorageBucketDescription{
+					Label:    linode.Label,
+					Cluster:  linode.Cluster,
+					Region:   linode.Region,
+					Created:  linode.Created,
+					Hostname: linode.Hostname,
+					Objects:  linode.Objects,
+					Size:     linode.Size,
+					Account:  account,
+				},
 			}
 			openaiChan <- value
 		}(linode)

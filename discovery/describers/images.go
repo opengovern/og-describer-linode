@@ -16,11 +16,15 @@ func ListImages(ctx context.Context, handler *provider.LinodeAPIHandler, stream 
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processImages(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processImages(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,39 @@ func GetImage(ctx context.Context, handler *provider.LinodeAPIHandler, resourceI
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          image.ID,
-		Name:        image.Label,
-		Description: image,
+		ID:   image.ID,
+		Name: image.Label,
+		Description: provider.ImageDescription{
+			ID:           image.ID,
+			CreatedBy:    image.CreatedBy,
+			Capabilities: image.Capabilities,
+			Label:        image.Label,
+			Description:  image.Description,
+			Type:         image.Type,
+			Vendor:       image.Vendor,
+			Status:       image.Status,
+			Size:         image.Size,
+			TotalSize:    image.TotalSize,
+			IsPublic:     image.IsPublic,
+			Deprecated:   image.Deprecated,
+			Regions:      image.Regions,
+			Tags:         image.Tags,
+			Updated:      image.Updated,
+			Created:      image.Created,
+			Expiry:       image.Expiry,
+			EOL:          image.EOL,
+			Account:      account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processImages(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processImages(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var images []provider.ImageResponseSingle
 	var imageListResponse provider.ImageListResponse
 	var resp *http.Response
@@ -108,9 +136,29 @@ func processImages(ctx context.Context, handler *provider.LinodeAPIHandler, open
 		go func(image provider.ImageResponseSingle) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:          image.ID,
-				Name:        image.Label,
-				Description: image,
+				ID:   image.ID,
+				Name: image.Label,
+				Description: provider.ImageDescription{
+					ID:           image.ID,
+					CreatedBy:    image.CreatedBy,
+					Capabilities: image.Capabilities,
+					Label:        image.Label,
+					Description:  image.Description,
+					Type:         image.Type,
+					Vendor:       image.Vendor,
+					Status:       image.Status,
+					Size:         image.Size,
+					TotalSize:    image.TotalSize,
+					IsPublic:     image.IsPublic,
+					Deprecated:   image.Deprecated,
+					Regions:      image.Regions,
+					Tags:         image.Tags,
+					Updated:      image.Updated,
+					Created:      image.Created,
+					Expiry:       image.Expiry,
+					EOL:          image.EOL,
+					Account:      account,
+				},
 			}
 			openaiChan <- value
 		}(image)

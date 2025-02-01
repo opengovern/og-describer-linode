@@ -30,6 +30,12 @@ func tableLinodeObjectStorageBucket(ctx context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Cluster"),
 				Description: "The ID of the Object Storage Cluster this bucket is in."},
+			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
 			{Name: "region",
 				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Region")},

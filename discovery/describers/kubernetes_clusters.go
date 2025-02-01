@@ -16,11 +16,15 @@ func ListKubernetesClusters(ctx context.Context, handler *provider.LinodeAPIHand
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processKubernetesClusters(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processKubernetesClusters(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,32 @@ func GetKubernetesCluster(ctx context.Context, handler *provider.LinodeAPIHandle
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(cluster.ID),
-		Name:        cluster.Label,
-		Description: cluster,
+		ID:   strconv.Itoa(cluster.ID),
+		Name: cluster.Label,
+		Description: provider.KubernetesClusterDescription{
+			ID:         cluster.ID,
+			Label:      cluster.Label,
+			Region:     cluster.Region,
+			Created:    cluster.Created,
+			Updated:    cluster.Updated,
+			Status:     cluster.Status,
+			K8sVersion: cluster.K8sVersion,
+			Tags:       cluster.Tags,
+			ControlPlane: provider.LKEClusterControlPlane{
+				HighAvailability: cluster.ControlPlane.HighAvailability,
+			},
+			Account: account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processKubernetesClusters(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processKubernetesClusters(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var clusters []provider.KubernetesClusterResp
 	var clusterListResponse provider.KubernetesClusterListResponse
 	var resp *http.Response
@@ -120,9 +141,9 @@ func processKubernetesClusters(ctx context.Context, handler *provider.LinodeAPIH
 					K8sVersion: cluster.K8sVersion,
 					Tags:       cluster.Tags,
 					ControlPlane: provider.LKEClusterControlPlane{
-
 						HighAvailability: cluster.ControlPlane.HighAvailability,
 					},
+					Account: account,
 				},
 			}
 			openaiChan <- value

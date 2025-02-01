@@ -16,11 +16,15 @@ func ListLongViewClients(ctx context.Context, handler *provider.LinodeAPIHandler
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processLongViewClients(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processLongViewClients(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,36 @@ func GetLongViewClient(ctx context.Context, handler *provider.LinodeAPIHandler, 
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(client.ID),
-		Name:        client.Label,
-		Description: client,
+		ID:   strconv.Itoa(client.ID),
+		Name: client.Label,
+		Description: provider.LongViewClientDescription{
+			ID:          client.ID,
+			APIKey:      client.APIKey,
+			Created:     client.Created,
+			InstallCode: client.InstallCode,
+			Label:       client.Label,
+			Updated:     client.Updated,
+			Apps: struct {
+				Apache any `json:"apache"`
+				MySQL  any `json:"mysql"`
+				NginX  any `json:"nginx"`
+			}{
+				Apache: client.Apps.Apache,
+				MySQL:  client.Apps.MySQL,
+				NginX:  client.Apps.NginX,
+			},
+			Account: account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processLongViewClients(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processLongViewClients(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var clients []provider.LongViewClientDescription
 	var clientListResponse provider.LongViewClientListResponse
 	var resp *http.Response
@@ -108,9 +133,26 @@ func processLongViewClients(ctx context.Context, handler *provider.LinodeAPIHand
 		go func(client provider.LongViewClientDescription) {
 			defer wg.Done()
 			value := models.Resource{
-				ID:          strconv.Itoa(client.ID),
-				Name:        client.Label,
-				Description: client,
+				ID:   strconv.Itoa(client.ID),
+				Name: client.Label,
+				Description: provider.LongViewClientDescription{
+					ID:          client.ID,
+					APIKey:      client.APIKey,
+					Created:     client.Created,
+					InstallCode: client.InstallCode,
+					Label:       client.Label,
+					Updated:     client.Updated,
+					Apps: struct {
+						Apache any `json:"apache"`
+						MySQL  any `json:"mysql"`
+						NginX  any `json:"nginx"`
+					}{
+						Apache: client.Apps.Apache,
+						MySQL:  client.Apps.MySQL,
+						NginX:  client.Apps.NginX,
+					},
+					Account: account,
+				},
 			}
 			openaiChan <- value
 		}(client)

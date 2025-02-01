@@ -103,5 +103,19 @@
     "GetDescriber": "DescribeSingleByLinode(describer.GetIPAddress)",
     "SteampipeTable": "linode_ip_address",
     "Model": "IPAddress"
+  },
+  {
+    "ResourceName": "Linode/NodeBalancer/Config",
+    "ListDescriber": "DescribeListByLinode(describer.ListNodeBalancerConfigs)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_node_balancer_config",
+    "Model": "NodeBalancerConfig"
+  },
+  {
+    "ResourceName": "Linode/NodeBalancer/Node",
+    "ListDescriber": "DescribeListByLinode(describer.ListNodeBalancerNodes)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_node_balancer_node",
+    "Model": "Node"
   }
 ]

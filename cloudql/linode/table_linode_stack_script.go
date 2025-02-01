@@ -27,6 +27,12 @@ func tableLinodeStackScript(ctx context.Context) *plugin.Table {
 				Transform:   transform.FromField("Description.ID"),
 			},
 			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
+			{
 				Name:        "label",
 				Type:        proto.ColumnType_STRING,
 				Description: "The Instance’s label is for display purposes only.",

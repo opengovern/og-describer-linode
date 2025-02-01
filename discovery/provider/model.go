@@ -70,7 +70,7 @@ type AccountDescription struct {
 	City    string
 	Company string
 	Country string
-	Euuid   string
+	Account string
 }
 
 type DatabaseListResponse struct {
@@ -123,6 +123,7 @@ type DatabaseDescription struct {
 	InstanceURI     string
 	Created         string
 	Updated         string
+	Account         string
 }
 
 type DomainListResponse struct {
@@ -163,6 +164,7 @@ type DomainDescription struct {
 	ExpireSec   int
 	RefreshSec  int
 	TTLSec      int
+	Account     string
 }
 
 type EventEntity struct {
@@ -210,6 +212,7 @@ type EventDescription struct {
 	Created         string
 	Message         string
 	Duration        float64
+	Account         string
 }
 
 type InstanceAlert struct {
@@ -299,6 +302,7 @@ type InstanceDescription struct {
 	DiskEncryption  string
 	LKEClusterID    int
 	Capabilities    []string
+	Account         string
 }
 
 type NetworkAddresses struct {
@@ -336,6 +340,7 @@ type FirewallDescription struct {
 	Rules   FirewallRuleSet
 	Created string
 	Updated string
+	Account string
 }
 
 type ImageRegion struct {
@@ -389,6 +394,7 @@ type ImageDescription struct {
 	Created      string
 	Expiry       string
 	EOL          string
+	Account      string
 }
 
 type LKEClusterControlPlane struct {
@@ -426,6 +432,7 @@ type KubernetesClusterDescription struct {
 	K8sVersion   string
 	Tags         []string
 	ControlPlane LKEClusterControlPlane
+	Account      string
 }
 
 type LongViewClientListResponse struct {
@@ -446,6 +453,7 @@ type LongViewClientDescription struct {
 		MySQL  any `json:"mysql"`
 		NginX  any `json:"nginx"`
 	} `json:"apps"`
+	Account string
 }
 
 type NodeBalancerTransfer struct {
@@ -485,6 +493,7 @@ type NodeBalancerDescription struct {
 	Tags               []string
 	Created            string
 	Updated            string
+	Account            string
 }
 
 type ObjectStorageBucketListResponse struct {
@@ -502,6 +511,7 @@ type ObjectStorageBucketDescription struct {
 	Hostname string
 	Objects  int
 	Size     int
+	Account  string
 }
 
 type StackScriptUDF struct {
@@ -556,6 +566,7 @@ type StackScriptDescription struct {
 	Script            string
 	UserDefinedFields *[]StackScriptUDF
 	UserGravatarID    string
+	Account           string
 }
 
 type VolumeListResponse struct {
@@ -590,6 +601,7 @@ type VolumeDescription struct {
 	Created        string
 	Updated        string
 	Encryption     string
+	Account        string
 }
 
 type VPCSubnetLinodeInterface struct {
@@ -625,6 +637,7 @@ type VPCDescription struct {
 	Subnets     []VPCSubnet
 	Created     string
 	Updated     string
+	Account     string
 }
 
 type InstanceIPNAT1To1 struct {
@@ -664,4 +677,121 @@ type IPAddressDescription struct {
 	Region     string
 	VPCNAT1To1 *InstanceIPNAT1To1
 	Reserved   bool
+	Account    string
+}
+
+type NodeJSON struct {
+	Address        string `json:"address"`
+	ConfigID       int    `json:"config_id"`
+	ID             int    `json:"id"`
+	Label          string `json:"label"`
+	Mode           string `json:"mode"`
+	NodeBalancerID int    `json:"nodebalancer_id"`
+	Status         string `json:"status"`
+	Weight         int    `json:"weight"`
+}
+
+type Node struct {
+	Address        string
+	ConfigID       int
+	ID             int
+	Label          string
+	Mode           string
+	NodeBalancerID int
+	Status         string
+	Weight         int
+}
+
+type NodesStatusJSON struct {
+	Down int `json:"down"`
+	Up   int `json:"up"`
+}
+
+type NodesStatus struct {
+	Down int
+	Up   int
+}
+
+type NodeBalancerConfigListResponse struct {
+	Data  []NodeBalancerConfigJSON `json:"data"`
+	Page  int                      `json:"page"`
+	Pages int                      `json:"pages"`
+}
+
+type NodeBalancerConfigJSON struct {
+	Algorithm      string          `json:"algorithm"`
+	Check          string          `json:"check"`
+	CheckAttempts  int             `json:"check_attempts"`
+	CheckBody      string          `json:"check_body"`
+	CheckInterval  int             `json:"check_interval"`
+	CheckPassive   bool            `json:"check_passive"`
+	CheckPath      string          `json:"check_path"`
+	CheckTimeout   int             `json:"check_timeout"`
+	CipherSuite    string          `json:"cipher_suite"`
+	ID             int             `json:"id"`
+	NodeBalancerID int             `json:"nodebalancer_id"`
+	Nodes          []NodeJSON      `json:"nodes"`
+	NodesStatus    NodesStatusJSON `json:"nodes_status"`
+	Port           int             `json:"port"`
+	Protocol       string          `json:"protocol"`
+	ProxyProtocol  string          `json:"proxy_protocol"`
+	SSLCert        *string         `json:"ssl_cert"`
+	SSLCommonName  string          `json:"ssl_commonname"`
+	SSLFingerprint string          `json:"ssl_fingerprint"`
+	SSLKey         *string         `json:"ssl_key"`
+	Stickiness     string          `json:"stickiness"`
+}
+
+type NodeBalancerConfigDescription struct {
+	Algorithm      string
+	Check          string
+	CheckAttempts  int
+	CheckBody      string
+	CheckInterval  int
+	CheckPassive   bool
+	CheckPath      string
+	CheckTimeout   int
+	CipherSuite    string
+	ID             int
+	NodeBalancerID int
+	Nodes          []Node
+	NodesStatus    NodesStatus
+	Port           int
+	Protocol       string
+	ProxyProtocol  string
+	SSLCert        *string
+	SSLCommonName  string
+	SSLFingerprint string
+	SSLKey         *string
+	Stickiness     string
+	Account        string
+}
+
+type NodeBalancerNodeListResponse struct {
+	Data  []NodeRespJSON `json:"data"`
+	Page  int            `json:"page"`
+	Pages int            `json:"pages"`
+}
+
+type NodeRespJSON struct {
+	Address        string `json:"address"`
+	ConfigID       int    `json:"config_id"`
+	ID             int    `json:"id"`
+	Label          string `json:"label"`
+	Mode           string `json:"mode"`
+	NodeBalancerID int    `json:"nodebalancer_id"`
+	Status         string `json:"status"`
+	Weight         int    `json:"weight"`
+}
+
+type NodeDescription struct {
+	Address        string
+	ConfigID       int
+	ID             int
+	Label          string
+	Mode           string
+	NodeBalancerID int
+	Status         string
+	Weight         int
+	Account        string
 }

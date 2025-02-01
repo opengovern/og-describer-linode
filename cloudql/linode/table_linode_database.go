@@ -102,6 +102,12 @@ func tableLinodeDatabase(ctx context.Context) *plugin.Table {
 				Type:      proto.ColumnType_STRING,
 				Transform: transform.FromField("Description.Updated"),
 			},
+			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
 		}),
 	}
 }

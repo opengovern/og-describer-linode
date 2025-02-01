@@ -16,14 +16,14 @@ func ListAccounts(ctx context.Context, handler *provider.LinodeAPIHandler, strea
 	}
 	var values []models.Resource
 	value := models.Resource{
-		ID:   account.Email,
+		ID:   account.EUUID,
 		Name: account.Email,
 		Description: provider.AccountDescription{
 			Email:   account.Email,
 			City:    account.City,
 			Company: account.Company,
 			Country: account.Country,
-			Euuid:   account.EUUID,
+			Account: account.EUUID,
 		},
 	}
 	if stream != nil {

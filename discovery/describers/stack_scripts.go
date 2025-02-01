@@ -16,11 +16,15 @@ func ListStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler, s
 	var wg sync.WaitGroup
 	linodeChan := make(chan models.Resource)
 	errorChan := make(chan error, 1) // Buffered channel to capture errors
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		defer close(linodeChan)
 		defer close(errorChan)
-		if err := processStackScripts(ctx, handler, linodeChan, &wg); err != nil {
+		if err := processStackScripts(ctx, handler, account.EUUID, linodeChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -51,15 +55,38 @@ func GetStackScript(ctx context.Context, handler *provider.LinodeAPIHandler, res
 	if err != nil {
 		return nil, err
 	}
+	account, err := provider.GetAccount(ctx, handler)
+	if err != nil {
+		return nil, err
+	}
 	value := models.Resource{
-		ID:          strconv.Itoa(stackScript.ID),
-		Name:        stackScript.Label,
-		Description: stackScript,
+		ID:   strconv.Itoa(stackScript.ID),
+		Name: stackScript.Label,
+		Description: provider.StackScriptDescription{
+			ID:                stackScript.ID,
+			Label:             stackScript.Label,
+			Description:       stackScript.Description,
+			Username:          stackScript.Username,
+			Ordinal:           stackScript.Ordinal,
+			LogoURL:           stackScript.LogoURL,
+			Images:            stackScript.Images,
+			DeploymentsTotal:  stackScript.DeploymentsTotal,
+			DeploymentsActive: stackScript.DeploymentsActive,
+			IsPublic:          stackScript.IsPublic,
+			Mine:              stackScript.Mine,
+			Created:           stackScript.Created,
+			Updated:           stackScript.Updated,
+			RevNote:           stackScript.RevNote,
+			Script:            stackScript.Script,
+			UserDefinedFields: stackScript.UserDefinedFields,
+			UserGravatarID:    stackScript.UserGravatarID,
+			Account:           account.EUUID,
+		},
 	}
 	return &value, nil
 }
 
-func processStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
+func processStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler, account string, openaiChan chan<- models.Resource, wg *sync.WaitGroup) error {
 	var stackScripts []provider.StackScriptResp
 	var stackScriptListResponse provider.StackScriptListResponse
 	var resp *http.Response
@@ -128,6 +155,7 @@ func processStackScripts(ctx context.Context, handler *provider.LinodeAPIHandler
 					Script:            stackScript.Script,
 					UserDefinedFields: stackScript.UserDefinedFields,
 					UserGravatarID:    stackScript.UserGravatarID,
+					Account:           account,
 				},
 			}
 			openaiChan <- value

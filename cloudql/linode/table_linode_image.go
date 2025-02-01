@@ -25,6 +25,12 @@ func tableLinodeImage(ctx context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.ID"),
 				Description: "The unique ID of this Image."},
+			{
+				Name:        "account",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.Account"),
+				Description: "An external unique identifier for this account.",
+			},
 			{Name: "label",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Label"),
