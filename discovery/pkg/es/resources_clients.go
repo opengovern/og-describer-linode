@@ -3894,3 +3894,435 @@ func GetNode(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (i
 }
 
 // ==========================  END: Node =============================
+
+// ==========================  START: NodePool =============================
+
+type NodePool struct {
+	ResourceID      string                     `json:"resource_id"`
+	PlatformID      string                     `json:"platform_id"`
+	Description     linode.NodePoolDescription `json:"Description"`
+	Metadata        linode.Metadata            `json:"metadata"`
+	DescribedBy     string                     `json:"described_by"`
+	ResourceType    string                     `json:"resource_type"`
+	IntegrationType string                     `json:"integration_type"`
+	IntegrationID   string                     `json:"integration_id"`
+}
+
+type NodePoolHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  NodePool      `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type NodePoolHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []NodePoolHit     `json:"hits"`
+}
+
+type NodePoolSearchResponse struct {
+	PitID string       `json:"pit_id"`
+	Hits  NodePoolHits `json:"hits"`
+}
+
+type NodePoolPaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewNodePoolPaginator(filters []essdk.BoolFilter, limit *int64) (NodePoolPaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_cluster_nodepool", filters, limit)
+	if err != nil {
+		return NodePoolPaginator{}, err
+	}
+
+	p := NodePoolPaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p NodePoolPaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p NodePoolPaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p NodePoolPaginator) NextPage(ctx context.Context) ([]NodePool, error) {
+	var response NodePoolSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []NodePool
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listNodePoolFilters = map[string]string{
+	"account":         "Description.Account",
+	"autoscaler":      "Description.Autoscaler",
+	"count":           "Description.Count",
+	"disk_encryption": "Description.DiskEncryption",
+	"disks":           "Description.Disks",
+	"id":              "Description.ID",
+	"labels":          "Description.Labels",
+	"nodes":           "Description.Nodes",
+	"tags":            "Description.Tags",
+	"taints":          "Description.Taints",
+	"type":            "Description.Type",
+}
+
+func ListNodePool(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListNodePool")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	integrationId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool GetConfigTableValueOrNil for OpenGovernanceConfigKeyIntegrationID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewNodePoolPaginator(essdk.BuildFilter(ctx, d.QueryContext, listNodePoolFilters, integrationId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListNodePool NewNodePoolPaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListNodePool paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getNodePoolFilters = map[string]string{
+	"account":         "Description.Account",
+	"autoscaler":      "Description.Autoscaler",
+	"count":           "Description.Count",
+	"disk_encryption": "Description.DiskEncryption",
+	"disks":           "Description.Disks",
+	"id":              "Description.ID",
+	"labels":          "Description.Labels",
+	"nodes":           "Description.Nodes",
+	"tags":            "Description.Tags",
+	"taints":          "Description.Taints",
+	"type":            "Description.Type",
+}
+
+func GetNodePool(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetNodePool")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	integrationId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewNodePoolPaginator(essdk.BuildFilter(ctx, d.QueryContext, getNodePoolFilters, integrationId, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: NodePool =============================
+
+// ==========================  START: ClusterNode =============================
+
+type ClusterNode struct {
+	ResourceID      string                        `json:"resource_id"`
+	PlatformID      string                        `json:"platform_id"`
+	Description     linode.ClusterNodeDescription `json:"Description"`
+	Metadata        linode.Metadata               `json:"metadata"`
+	DescribedBy     string                        `json:"described_by"`
+	ResourceType    string                        `json:"resource_type"`
+	IntegrationType string                        `json:"integration_type"`
+	IntegrationID   string                        `json:"integration_id"`
+}
+
+type ClusterNodeHit struct {
+	ID      string        `json:"_id"`
+	Score   float64       `json:"_score"`
+	Index   string        `json:"_index"`
+	Type    string        `json:"_type"`
+	Version int64         `json:"_version,omitempty"`
+	Source  ClusterNode   `json:"_source"`
+	Sort    []interface{} `json:"sort"`
+}
+
+type ClusterNodeHits struct {
+	Total essdk.SearchTotal `json:"total"`
+	Hits  []ClusterNodeHit  `json:"hits"`
+}
+
+type ClusterNodeSearchResponse struct {
+	PitID string          `json:"pit_id"`
+	Hits  ClusterNodeHits `json:"hits"`
+}
+
+type ClusterNodePaginator struct {
+	paginator *essdk.BaseESPaginator
+}
+
+func (k Client) NewClusterNodePaginator(filters []essdk.BoolFilter, limit *int64) (ClusterNodePaginator, error) {
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_cluster_node", filters, limit)
+	if err != nil {
+		return ClusterNodePaginator{}, err
+	}
+
+	p := ClusterNodePaginator{
+		paginator: paginator,
+	}
+
+	return p, nil
+}
+
+func (p ClusterNodePaginator) HasNext() bool {
+	return !p.paginator.Done()
+}
+
+func (p ClusterNodePaginator) Close(ctx context.Context) error {
+	return p.paginator.Deallocate(ctx)
+}
+
+func (p ClusterNodePaginator) NextPage(ctx context.Context) ([]ClusterNode, error) {
+	var response ClusterNodeSearchResponse
+	err := p.paginator.Search(ctx, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var values []ClusterNode
+	for _, hit := range response.Hits.Hits {
+		values = append(values, hit.Source)
+	}
+
+	hits := int64(len(response.Hits.Hits))
+	if hits > 0 {
+		p.paginator.UpdateState(hits, response.Hits.Hits[hits-1].Sort, response.PitID)
+	} else {
+		p.paginator.UpdateState(hits, nil, "")
+	}
+
+	return values, nil
+}
+
+var listClusterNodeFilters = map[string]string{
+	"account":     "Description.Account",
+	"id":          "Description.ID",
+	"instance_id": "Description.InstanceID",
+	"status":      "Description.Status",
+}
+
+func ListClusterNode(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("ListClusterNode")
+	runtime.GC()
+
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode NewClientCached", "error", err)
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode NewSelfClientCached", "error", err)
+		return nil, err
+	}
+	integrationId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode GetConfigTableValueOrNil for OpenGovernanceConfigKeyIntegrationID", "error", err)
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode GetConfigTableValueOrNil for OpenGovernanceConfigKeyResourceCollectionFilters", "error", err)
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode GetConfigTableValueOrNil for OpenGovernanceConfigKeyClientType", "error", err)
+		return nil, err
+	}
+
+	paginator, err := k.NewClusterNodePaginator(essdk.BuildFilter(ctx, d.QueryContext, listClusterNodeFilters, integrationId, encodedResourceCollectionFilters, clientType), d.QueryContext.Limit)
+	if err != nil {
+		plugin.Logger(ctx).Error("ListClusterNode NewClusterNodePaginator", "error", err)
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			plugin.Logger(ctx).Error("ListClusterNode paginator.NextPage", "error", err)
+			return nil, err
+		}
+
+		for _, v := range page {
+			d.StreamListItem(ctx, v)
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+var getClusterNodeFilters = map[string]string{
+	"account":     "Description.Account",
+	"id":          "Description.ID",
+	"instance_id": "Description.InstanceID",
+	"status":      "Description.Status",
+}
+
+func GetClusterNode(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	plugin.Logger(ctx).Trace("GetClusterNode")
+	runtime.GC()
+	// create service
+	cfg := essdk.GetConfig(d.Connection)
+	ke, err := essdk.NewClientCached(cfg, d.ConnectionCache, ctx)
+	if err != nil {
+		return nil, err
+	}
+	k := Client{Client: ke}
+
+	sc, err := steampipesdk.NewSelfClientCached(ctx, d.ConnectionCache)
+	if err != nil {
+		return nil, err
+	}
+	integrationId, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyIntegrationID)
+	if err != nil {
+		return nil, err
+	}
+	encodedResourceCollectionFilters, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyResourceCollectionFilters)
+	if err != nil {
+		return nil, err
+	}
+	clientType, err := sc.GetConfigTableValueOrNil(ctx, steampipesdk.OpenGovernanceConfigKeyClientType)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := int64(1)
+	paginator, err := k.NewClusterNodePaginator(essdk.BuildFilter(ctx, d.QueryContext, getClusterNodeFilters, integrationId, encodedResourceCollectionFilters, clientType), &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for paginator.HasNext() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range page {
+			return v, nil
+		}
+	}
+
+	err = paginator.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+// ==========================  END: ClusterNode =============================

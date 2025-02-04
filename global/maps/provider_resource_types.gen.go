@@ -179,6 +179,26 @@ var ResourceTypes = map[string]model.ResourceType{
 		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancerNodes),
 		GetDescriber:    nil,
 	},
+
+	"Linode/Cluster/Node": {
+		IntegrationType: constants.IntegrationName,
+		ResourceName:    "Linode/Cluster/Node",
+		Tags:            map[string][]string{},
+		Labels:          map[string]string{},
+		Annotations:     map[string]string{},
+		ListDescriber:   provider.DescribeListByLinode(describers.ListNodes),
+		GetDescriber:    provider.DescribeSingleByLinode(describers.GetNode),
+	},
+
+	"Linode/Cluster/NodePool": {
+		IntegrationType: constants.IntegrationName,
+		ResourceName:    "Linode/Cluster/NodePool",
+		Tags:            map[string][]string{},
+		Labels:          map[string]string{},
+		Annotations:     map[string]string{},
+		ListDescriber:   provider.DescribeListByLinode(describers.ListNodePools),
+		GetDescriber:    nil,
+	},
 }
 
 var ResourceTypeConfigs = map[string]*interfaces.ResourceTypeConfiguration{
@@ -284,6 +304,18 @@ var ResourceTypeConfigs = map[string]*interfaces.ResourceTypeConfiguration{
 		IntegrationType: constants.IntegrationName,
 		Description:     "",
 	},
+
+	"Linode/Cluster/Node": {
+		Name:            "Linode/Cluster/Node",
+		IntegrationType: constants.IntegrationName,
+		Description:     "",
+	},
+
+	"Linode/Cluster/NodePool": {
+		Name:            "Linode/Cluster/NodePool",
+		IntegrationType: constants.IntegrationName,
+		Description:     "",
+	},
 }
 
 var ResourceTypesList = []string{
@@ -304,4 +336,6 @@ var ResourceTypesList = []string{
 	"Linode/IPAddress",
 	"Linode/NodeBalancer/Config",
 	"Linode/NodeBalancer/Node",
+	"Linode/Cluster/Node",
+	"Linode/Cluster/NodePool",
 }

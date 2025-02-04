@@ -22,6 +22,8 @@ var ResourceTypesToTables = map[string]string{
   "Linode/IPAddress": "linode_ip_address",
   "Linode/NodeBalancer/Config": "linode_node_balancer_config",
   "Linode/NodeBalancer/Node": "linode_node_balancer_node",
+  "Linode/Cluster/Node": "linode_cluster_node",
+  "Linode/Cluster/NodePool": "linode_cluster_node_pool",
 }
 
 var ResourceTypeToDescription = map[string]interface{}{
@@ -42,6 +44,8 @@ var ResourceTypeToDescription = map[string]interface{}{
   "Linode/IPAddress": opengovernance.IPAddress{},
   "Linode/NodeBalancer/Config": opengovernance.NodeBalancerConfig{},
   "Linode/NodeBalancer/Node": opengovernance.Node{},
+  "Linode/Cluster/Node": opengovernance.ClusterNode{},
+  "Linode/Cluster/NodePool": opengovernance.NodePool{},
 }
 
 var TablesToResourceTypes = map[string]string{
@@ -62,4 +66,6 @@ var TablesToResourceTypes = map[string]string{
   "linode_ip_address": "Linode/IPAddress",
   "linode_node_balancer_config": "Linode/NodeBalancer/Config",
   "linode_node_balancer_node": "Linode/NodeBalancer/Node",
+  "linode_cluster_node": "Linode/Cluster/Node",
+  "linode_cluster_node_pool": "Linode/Cluster/NodePool",
 }
