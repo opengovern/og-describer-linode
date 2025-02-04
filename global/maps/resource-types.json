@@ -119,17 +119,17 @@
     "Model": "Node"
   },
   {
-    "ResourceName": "Linode/Cluster/Node",
+    "ResourceName": "Linode/Kubernetes/Node",
     "ListDescriber": "DescribeListByLinode(describer.ListNodes)",
     "GetDescriber": "DescribeSingleByLinode(describer.GetNode)",
-    "SteampipeTable": "linode_cluster_node",
+    "SteampipeTable": "linode_kubernetes_node",
     "Model": "ClusterNode"
   },
   {
-    "ResourceName": "Linode/Cluster/NodePool",
+    "ResourceName": "Linode/Kubernetes/NodePool",
     "ListDescriber": "DescribeListByLinode(describer.ListNodePools)",
     "GetDescriber": "",
-    "SteampipeTable": "linode_cluster_node_pool",
+    "SteampipeTable": "linode_kubernetes_node_pool",
     "Model": "NodePool"
   }
 ]

@@ -10,7 +10,7 @@ import (
 
 func tableLinodeClusterNodePool(ctx context.Context) *plugin.Table {
 	return &plugin.Table{
-		Name:        "linode_cluster_node_pool",
+		Name:        "linode_kubernetes_node_pool",
 		Description: "Node pools in the cluster.",
 		List: &plugin.ListConfig{
 			Hydrate: opengovernance.ListNodePool,

@@ -3933,7 +3933,7 @@ type NodePoolPaginator struct {
 }
 
 func (k Client) NewNodePoolPaginator(filters []essdk.BoolFilter, limit *int64) (NodePoolPaginator, error) {
-	paginator, err := essdk.NewPaginator(k.ES(), "linode_cluster_nodepool", filters, limit)
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_kubernetes_nodepool", filters, limit)
 	if err != nil {
 		return NodePoolPaginator{}, err
 	}
@@ -4156,7 +4156,7 @@ type ClusterNodePaginator struct {
 }
 
 func (k Client) NewClusterNodePaginator(filters []essdk.BoolFilter, limit *int64) (ClusterNodePaginator, error) {
-	paginator, err := essdk.NewPaginator(k.ES(), "linode_cluster_node", filters, limit)
+	paginator, err := essdk.NewPaginator(k.ES(), "linode_kubernetes_node", filters, limit)
 	if err != nil {
 		return ClusterNodePaginator{}, err
 	}
