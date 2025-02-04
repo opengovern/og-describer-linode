@@ -35,6 +35,8 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"linode_event":                tableLinodeEvent(ctx),
 			"linode_node_balancer_config": tableLinodeNodeBalancerConfig(ctx),
 			"linode_node_balancer_node":   tableLinodeNodeBalancerNode(ctx),
+			"linode_kubernetes_node_pool": tableLinodeClusterNodePool(ctx),
+			"linode_kubernetes_node":      tableLinodeClusterNode(ctx),
 		},
 	}
 	for key, table := range p.TableMap {

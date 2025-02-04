@@ -198,6 +198,100 @@ func ListConfigs(ctx context.Context, handler *LinodeAPIHandler, nodeBalancerID 
 	return nodeBalancerConfigs, nil
 }
 
+func ListClusters(ctx context.Context, handler *LinodeAPIHandler) ([]KubernetesClusterResp, error) {
+	var clusters []KubernetesClusterResp
+	var clusterListResponse KubernetesClusterListResponse
+	var resp *http.Response
+	baseURL := "https://api.linode.com/v4/lke/clusters"
+	page := 1
+
+	for {
+		params := url.Values{}
+		params.Set("page", strconv.Itoa(page))
+		params.Set("page_size", "500")
+		finalURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+
+		req, err := http.NewRequest("GET", finalURL, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create request: %w", err)
+		}
+
+		requestFunc := func(req *http.Request) (*http.Response, error) {
+			var e error
+			resp, e = handler.Client.Do(req)
+			if e != nil {
+				return nil, fmt.Errorf("request execution failed: %w", e)
+			}
+			defer resp.Body.Close()
+
+			if e = json.NewDecoder(resp.Body).Decode(&clusterListResponse); e != nil {
+				return nil, fmt.Errorf("failed to decode response: %w", e)
+			}
+			clusters = append(clusters, clusterListResponse.Data...)
+			return resp, nil
+		}
+
+		err = handler.DoRequest(ctx, req, requestFunc)
+		if err != nil {
+			return nil, fmt.Errorf("error during request handling: %w", err)
+		}
+
+		if clusterListResponse.Page == clusterListResponse.Pages {
+			break
+		}
+		page++
+	}
+
+	return clusters, nil
+}
+
+func ListNodePools(ctx context.Context, handler *LinodeAPIHandler, clusterID string) ([]NodePoolJSON, error) {
+	var nodePools []NodePoolJSON
+	var nodePoolListResponse NodePoolListResponse
+	var resp *http.Response
+	baseURL := "https://api.linode.com/v4/lke/clusters/"
+	page := 1
+
+	for {
+		params := url.Values{}
+		params.Set("page", strconv.Itoa(page))
+		params.Set("page_size", "500")
+		finalURL := fmt.Sprintf("%s%s/pools?%s", baseURL, clusterID, params.Encode())
+
+		req, err := http.NewRequest("GET", finalURL, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create request: %w", err)
+		}
+
+		requestFunc := func(req *http.Request) (*http.Response, error) {
+			var e error
+			resp, e = handler.Client.Do(req)
+			if e != nil {
+				return nil, fmt.Errorf("request execution failed: %w", e)
+			}
+			defer resp.Body.Close()
+
+			if e = json.NewDecoder(resp.Body).Decode(&nodePoolListResponse); e != nil {
+				return nil, fmt.Errorf("failed to decode response: %w", e)
+			}
+			nodePools = append(nodePools, nodePoolListResponse.Data...)
+			return resp, nil
+		}
+
+		err = handler.DoRequest(ctx, req, requestFunc)
+		if err != nil {
+			return nil, fmt.Errorf("error during request handling: %w", err)
+		}
+
+		if nodePoolListResponse.Page == nodePoolListResponse.Pages {
+			break
+		}
+		page++
+	}
+
+	return nodePools, nil
+}
+
 func GetAccount(ctx context.Context, handler *LinodeAPIHandler) (*Account, error) {
 	var account Account
 	var resp *http.Response

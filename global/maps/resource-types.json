@@ -117,5 +117,19 @@
     "GetDescriber": "",
     "SteampipeTable": "linode_node_balancer_node",
     "Model": "Node"
+  },
+  {
+    "ResourceName": "Linode/Kubernetes/Node",
+    "ListDescriber": "DescribeListByLinode(describer.ListNodes)",
+    "GetDescriber": "DescribeSingleByLinode(describer.GetNode)",
+    "SteampipeTable": "linode_kubernetes_node",
+    "Model": "ClusterNode"
+  },
+  {
+    "ResourceName": "Linode/Kubernetes/NodePool",
+    "ListDescriber": "DescribeListByLinode(describer.ListNodePools)",
+    "GetDescriber": "",
+    "SteampipeTable": "linode_kubernetes_node_pool",
+    "Model": "NodePool"
   }
 ]

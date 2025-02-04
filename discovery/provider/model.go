@@ -795,3 +795,95 @@ type NodeDescription struct {
 	Weight         int
 	Account        string
 }
+
+type NodePoolListResponse struct {
+	Data  []NodePoolJSON `json:"data"`
+	Page  int            `json:"page"`
+	Pages int            `json:"pages"`
+}
+
+type NodePoolJSON struct {
+	Autoscaler     AutoscalerJSON     `json:"autoscaler"`
+	Count          int                `json:"count"`
+	DiskEncryption string             `json:"disk_encryption"`
+	Disks          []DiskJSON         `json:"disks"`
+	ID             int                `json:"id"`
+	Labels         map[string]string  `json:"labels"`
+	Nodes          []NodePoolNodeJSON `json:"nodes"`
+	Tags           []string           `json:"tags"`
+	Taints         []TaintJSON        `json:"taints"`
+	Type           string             `json:"type"`
+}
+
+type NodePoolDescription struct {
+	Autoscaler     Autoscaler
+	Count          int
+	DiskEncryption string
+	Disks          []Disk
+	ID             int
+	Labels         map[string]string
+	Nodes          []NodePoolNode
+	Tags           []string
+	Taints         []Taint
+	Type           string
+	Account        string
+}
+
+type AutoscalerJSON struct {
+	Enabled bool `json:"enabled"`
+	Max     int  `json:"max"`
+	Min     int  `json:"min"`
+}
+
+type Autoscaler struct {
+	Enabled bool
+	Max     int
+	Min     int
+}
+
+type DiskJSON struct {
+	Size int    `json:"size"`
+	Type string `json:"type"`
+}
+
+type Disk struct {
+	Size int
+	Type string
+}
+
+type NodePoolNodeJSON struct {
+	ID         string `json:"id"`
+	InstanceID int    `json:"instance_id"`
+	Status     string `json:"status"`
+}
+
+type NodePoolNode struct {
+	ID         string
+	InstanceID int
+	Status     string
+}
+
+type TaintJSON struct {
+	Effect string `json:"effect"`
+	Key    string `json:"key"`
+	Value  string `json:"value"`
+}
+
+type Taint struct {
+	Effect string
+	Key    string
+	Value  string
+}
+
+type ClusterNodeJSON struct {
+	ID         string `json:"id"`
+	InstanceID int    `json:"instance_id"`
+	Status     string `json:"status"`
+}
+
+type ClusterNodeDescription struct {
+	ID         string
+	InstanceID int
+	Status     string
+	Account    string
+}
