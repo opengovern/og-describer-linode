@@ -322,3 +322,50 @@ func GetAccount(ctx context.Context, handler *LinodeAPIHandler) (*Account, error
 	}
 	return &account, nil
 }
+
+func ListConfigNodes(ctx context.Context, handler *LinodeAPIHandler, account, nodeBalancerID, configID string) ([]NodeRespJSON, error) {
+	var nodeBalancerNodes []NodeRespJSON
+	var nodeBalancerNodeListResponse NodeBalancerNodeListResponse
+	var resp *http.Response
+	baseURL := "https://api.linode.com/v4/nodebalancers/"
+	page := 1
+
+	for {
+		params := url.Values{}
+		params.Set("page", strconv.Itoa(page))
+		params.Set("page_size", "500")
+		finalURL := fmt.Sprintf("%s%s/configs/%s/nodes?%s", baseURL, nodeBalancerID, configID, params.Encode())
+
+		req, err := http.NewRequest("GET", finalURL, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create request: %w", err)
+		}
+
+		requestFunc := func(req *http.Request) (*http.Response, error) {
+			var e error
+			resp, e = handler.Client.Do(req)
+			if e != nil {
+				return nil, fmt.Errorf("request execution failed: %w", e)
+			}
+			defer resp.Body.Close()
+
+			if e = json.NewDecoder(resp.Body).Decode(&nodeBalancerNodeListResponse); e != nil {
+				return nil, fmt.Errorf("failed to decode response: %w", e)
+			}
+			nodeBalancerNodes = append(nodeBalancerNodes, nodeBalancerNodeListResponse.Data...)
+			return resp, nil
+		}
+
+		err = handler.DoRequest(ctx, req, requestFunc)
+		if err != nil {
+			return nil, fmt.Errorf("error during request handling: %w", err)
+		}
+
+		if nodeBalancerNodeListResponse.Page == nodeBalancerNodeListResponse.Pages {
+			break
+		}
+		page++
+	}
+
+	return nodeBalancerNodes, nil
+}

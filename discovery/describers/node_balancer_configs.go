@@ -104,8 +104,9 @@ func processNodeBalancerConfigs(ctx context.Context, handler *provider.LinodeAPI
 		wg.Add(1)
 		go func(nodeBalancerConfig provider.NodeBalancerConfigJSON) {
 			defer wg.Done()
+			nodesJSON, _ := provider.ListConfigNodes(ctx, handler, account, nodeBalancerID, strconv.Itoa(nodeBalancerConfig.ID))
 			var nodes []provider.Node
-			for _, node := range nodeBalancerConfig.Nodes {
+			for _, node := range nodesJSON {
 				nodes = append(nodes, provider.Node{
 					Address:        node.Address,
 					ConfigID:       node.ConfigID,
