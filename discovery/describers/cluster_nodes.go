@@ -95,6 +95,7 @@ func GetNode(ctx context.Context, handler *provider.LinodeAPIHandler, resourceID
 		Description: provider.ClusterNodeDescription{
 			ID:         node.ID,
 			InstanceID: node.InstanceID,
+			ClusterID:  clusterID,
 			Status:     node.Status,
 			Account:    account.EUUID,
 		},
@@ -119,6 +120,7 @@ func processNodes(ctx context.Context, handler *provider.LinodeAPIHandler, accou
 					Description: provider.ClusterNodeDescription{
 						ID:         node.ID,
 						InstanceID: node.InstanceID,
+						ClusterID:  clusterID,
 						Status:     node.Status,
 						Account:    account,
 					},

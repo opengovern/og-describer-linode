@@ -1,7 +1,7 @@
 package maps
 
 import (
-	"github.com/opengovern/og-describer-linode/discovery/describers"
+	describer "github.com/opengovern/og-describer-linode/discovery/describers"
 	model "github.com/opengovern/og-describer-linode/discovery/pkg/models"
 	"github.com/opengovern/og-describer-linode/discovery/provider"
 	"github.com/opengovern/og-describer-linode/platform/constants"
@@ -16,7 +16,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListAccounts),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListAccounts),
 		GetDescriber:    nil,
 	},
 
@@ -26,7 +26,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListDatabases),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListDatabases),
 		GetDescriber:    nil,
 	},
 
@@ -36,8 +36,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListDomains),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetDomain),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListDomains),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetDomain),
 	},
 
 	"Linode/Firewall": {
@@ -46,8 +46,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListFirewalls),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetFirewall),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListFirewalls),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetFirewall),
 	},
 
 	"Linode/Image": {
@@ -56,8 +56,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListImages),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetImage),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListImages),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetImage),
 	},
 
 	"Linode/Kubernetes/Cluster": {
@@ -66,8 +66,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListKubernetesClusters),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetKubernetesCluster),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListKubernetesClusters),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetKubernetesCluster),
 	},
 
 	"Linode/Event": {
@@ -76,8 +76,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListEvents),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetEvent),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListEvents),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetEvent),
 	},
 
 	"Linode/Instance": {
@@ -86,8 +86,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListLinodeInstances),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetLinodeInstance),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListLinodeInstances),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetLinodeInstance),
 	},
 
 	"Linode/Longview/Client": {
@@ -96,8 +96,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListLongViewClients),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetLongViewClient),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListLongViewClients),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetLongViewClient),
 	},
 
 	"Linode/NodeBalancer": {
@@ -106,8 +106,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancers),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetNodeBalancer),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListNodeBalancers),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetNodeBalancer),
 	},
 
 	"Linode/ObjectStorage": {
@@ -116,7 +116,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListObjectStorages),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListObjectStorages),
 		GetDescriber:    nil,
 	},
 
@@ -126,8 +126,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListStackScripts),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetStackScript),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListStackScripts),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetStackScript),
 	},
 
 	"Linode/Vpc": {
@@ -136,8 +136,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListVPCs),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetVPC),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListVPCs),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetVPC),
 	},
 
 	"Linode/Volume": {
@@ -146,8 +146,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListVolumes),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetVolume),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListVolumes),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetVolume),
 	},
 
 	"Linode/IPAddress": {
@@ -156,8 +156,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListIPAddresses),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetIPAddress),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListIPAddresses),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetIPAddress),
 	},
 
 	"Linode/NodeBalancer/Config": {
@@ -166,7 +166,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancerConfigs),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListNodeBalancerConfigs),
 		GetDescriber:    nil,
 	},
 
@@ -176,7 +176,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListNodeBalancerNodes),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListNodeBalancerNodes),
 		GetDescriber:    nil,
 	},
 
@@ -186,8 +186,8 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListNodes),
-		GetDescriber:    provider.DescribeSingleByLinode(describers.GetNode),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListNodes),
+		GetDescriber:    provider.DescribeSingleByLinode(describer.GetNode),
 	},
 
 	"Linode/Kubernetes/NodePool": {
@@ -196,7 +196,7 @@ var ResourceTypes = map[string]model.ResourceType{
 		Tags:            map[string][]string{},
 		Labels:          map[string]string{},
 		Annotations:     map[string]string{},
-		ListDescriber:   provider.DescribeListByLinode(describers.ListNodePools),
+		ListDescriber:   provider.DescribeListByLinode(describer.ListNodePools),
 		GetDescriber:    nil,
 	},
 }

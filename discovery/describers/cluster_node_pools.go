@@ -137,6 +137,7 @@ func processNodePools(ctx context.Context, handler *provider.LinodeAPIHandler, a
 				Name: strconv.Itoa(nodePool.ID),
 				Description: provider.NodePoolDescription{
 					Autoscaler:     autoScaler,
+					ClusterID:      clusterID,
 					Count:          nodePool.Count,
 					DiskEncryption: nodePool.DiskEncryption,
 					Disks:          disks,

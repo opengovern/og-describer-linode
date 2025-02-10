@@ -3978,6 +3978,7 @@ func (p NodePoolPaginator) NextPage(ctx context.Context) ([]NodePool, error) {
 var listNodePoolFilters = map[string]string{
 	"account":         "Description.Account",
 	"autoscaler":      "Description.Autoscaler",
+	"cluster_id":      "Description.ClusterID",
 	"count":           "Description.Count",
 	"disk_encryption": "Description.DiskEncryption",
 	"disks":           "Description.Disks",
@@ -4052,6 +4053,7 @@ func ListNodePool(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 var getNodePoolFilters = map[string]string{
 	"account":         "Description.Account",
 	"autoscaler":      "Description.Autoscaler",
+	"cluster_id":      "Description.ClusterID",
 	"count":           "Description.Count",
 	"disk_encryption": "Description.DiskEncryption",
 	"disks":           "Description.Disks",
@@ -4200,6 +4202,7 @@ func (p ClusterNodePaginator) NextPage(ctx context.Context) ([]ClusterNode, erro
 
 var listClusterNodeFilters = map[string]string{
 	"account":     "Description.Account",
+	"cluster_id":  "Description.ClusterID",
 	"id":          "Description.ID",
 	"instance_id": "Description.InstanceID",
 	"status":      "Description.Status",
@@ -4267,6 +4270,7 @@ func ListClusterNode(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 
 var getClusterNodeFilters = map[string]string{
 	"account":     "Description.Account",
+	"cluster_id":  "Description.ClusterID",
 	"id":          "Description.ID",
 	"instance_id": "Description.InstanceID",
 	"status":      "Description.Status",

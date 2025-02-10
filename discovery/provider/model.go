@@ -821,6 +821,7 @@ type NodePoolDescription struct {
 	DiskEncryption string
 	Disks          []Disk
 	ID             int
+	ClusterID      string
 	Labels         map[string]string
 	Nodes          []NodePoolNode
 	Tags           []string
@@ -884,6 +885,7 @@ type ClusterNodeJSON struct {
 type ClusterNodeDescription struct {
 	ID         string
 	InstanceID int
+	ClusterID  string
 	Status     string
 	Account    string
 }

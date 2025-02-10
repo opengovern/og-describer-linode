@@ -33,6 +33,12 @@ func tableLinodeClusterNode(ctx context.Context) *plugin.Table {
 				Description: "The instance ID of the node.",
 			},
 			{
+				Name:        "cluster_id",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.ClusterID"),
+				Description: "The cluster ID of the node.",
+			},
+			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Description.Status"),

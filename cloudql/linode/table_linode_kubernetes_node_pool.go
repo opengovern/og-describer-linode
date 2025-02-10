@@ -27,6 +27,12 @@ func tableLinodeClusterNodePool(ctx context.Context) *plugin.Table {
 				Description: "The unique identifier of the node pool.",
 			},
 			{
+				Name:        "cluster_id",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Description.ClusterID"),
+				Description: "The cluster ID of the node pool.",
+			},
+			{
 				Name:        "autoscaler",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromField("Description.Autoscaler"),

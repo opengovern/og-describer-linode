@@ -96,7 +96,7 @@ func main() {
 	b := &strings.Builder{}
 	b.WriteString(fmt.Sprintf(`package maps
 import (
-	"%[1]s/discovery/describers"
+	describer "%[1]s/discovery/describers"
 	"%[1]s/discovery/provider"
 	"%[1]s/platform/constants"
 	"github.com/opengovern/og-util/pkg/integration/interfaces"
